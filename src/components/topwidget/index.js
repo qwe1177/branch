@@ -6,19 +6,14 @@ import { connect_cas } from '../../util/connectConfig';
 import {getLoginInfo } from '../../util/baseTool';
 import axios from 'axios';
 import EffectFrom from './EffectFrom';
-import PlatformComponent from '../../components/common/PlatformComponent';
 
-class TopWidget extends PlatformComponent{
-  constructor(props) {
-    super(props);
-    this.state=Object.assign(this.state,{
-      userInfo:{
-        realName:'SRM默认用户',
-        userPhoto:require('./img/an13.jpg')
-      },
-      visible:false
-    })
-
+class TopWidget extends React.Component{
+  state={
+    userInfo:{
+      realName:'SRM默认用户',
+      userPhoto:require('./img/an13.jpg')
+    },
+    visible:false
   }
   // 从sass系统api中用户信息
   componentWillMount() {
