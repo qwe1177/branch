@@ -1,4 +1,5 @@
 import {combineReducers} from 'redux'
+import commonReducer from '../../common/reducers/commonreducer';
 import {
     SELECT_REDDIT, INVALIDATE_REDDIT,
     REQUEST_POSTS, RECEIVE_POSTS, baseInfo, modalmodelInfo, tablemodelInfo,PaginationmodelInfo,paramsInfo
@@ -86,7 +87,7 @@ function Params(state = {}
 
 
 const rootReducer = combineReducers({
-    Infos, modalmodel, tablemodel,Paginationmodel,Params,
+    ...commonReducer,Infos, modalmodel, tablemodel,Paginationmodel,Params,
 })
 
 export default rootReducer

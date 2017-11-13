@@ -27,7 +27,7 @@ body{
 }
 .crm_inx{position: absolute; width: 100%; height: 100%; top:0; bottom: 0; left:0;right: 0; overflow: hidden;}
 .lfwh{width: 240px; height: 100%; overflow-y:auto; overflow-x:hidden; }
-.rgwh{position: absolute; left: 240px; right:0;width: auto;height: 100%;}
+.rgwh{position: absolute; left: 240px; right:0;width: auto;height: 100%; }
 
 .collapse .lfwh{
   width: 0;
@@ -38,7 +38,9 @@ body{
 }
 
 .main{
-  height: 100%;
+  align-self:  stretch;
+  flex: 1;
+width: 100%;
   background: #edf1f5;  
   padding: 0 30px;
   overflow-y: scroll;
@@ -62,4 +64,19 @@ body{
 
 .clearfix {
   zoom: 1;
+}
+::-webkit-scrollbar-track-piece {
+background-color:#f8f8f8;
+}
+::-webkit-scrollbar {
+width:7px;
+  height:7px;
+}
+::-webkit-scrollbar-thumb {
+background-color:#999;
+  background-clip:padding-box;
+  min-height:28px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background-color:#666;
 }

@@ -1,14 +1,9 @@
-import personListShower from '../../components/business/personlistshower/redux';
-import companyShower from '../../components/business/companyshower/redux';
-import followupShower from '../../components/business/followupshower/redux';
-import companyBaseShower from '../../components/business/companybaseshower/redux';
+import { combineReducers } from 'redux';
+import commonReducer from '../../common/reducers/commonreducer';
 
 //使用combineReducers把store内容分到不同作用域
-const rootReducer = {
-    personListShower,
-    companyShower,
-    followupShower,
-    companyBaseShower
-}
+const rootReducer = combineReducers({
+    ...commonReducer,
+})
 
 export default rootReducer

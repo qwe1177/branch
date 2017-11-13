@@ -41,10 +41,13 @@ class App extends PlatformComponent {
 			<div className={mainClassName}>
 				<div className="g-fl lfwh"><Leftwidget data={platformMenu} /></div>
 				<div className="g-fl rgwh">
-					<div><TopWidget onTransform={this.handleExpandOrCollapse.bind(this)} /></div>
-					<div><TopTab data={platformMenu} /></div>
+					<div style={{height:'100%',display:'flex',flexDirection:'column'}}>
+					<div style={{width:'100%'}}><TopWidget onTransform={this.handleExpandOrCollapse.bind(this)} /></div>
+					<div style={{width:'100%'}}><TopTab data={platformMenu} /></div>
 					<div className="main">
+						
 						{this.props.children}
+					</div>
 					</div>
 				</div>
 			</div>

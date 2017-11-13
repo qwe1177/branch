@@ -159,8 +159,6 @@ class UserForm extends Component {
     }
 
 
-
-
     formItemLayout = {
         labelCol: {span: 5},
         wrapperCol: {span: 19}
@@ -198,9 +196,6 @@ class UserForm extends Component {
     }
 
 
-
-
-
     rangeConfig = {
         rules: [{type: 'array', required: false, message: '请选择'}],
     }
@@ -210,8 +205,6 @@ class UserForm extends Component {
         console.log('selectedRowKeys changed: ', selectedRowKeys);
         this.props.dispatch(tablemodelaction({selectedRowKeys}));
     }
-
-
 
 
     Paginatihandle = (page, pageSize)=> {
@@ -259,262 +252,267 @@ class UserForm extends Component {
 
 
         return (
-            <div className="newCluewk">
-                <Form layout="inline" onSubmit={this.handleSubmit}>
-                    <div className="newCluewk">
-                        <div className="newCluenk">
+            <div className="newClue">
+                <h2>全部供应商线索</h2>
+                <div className="newCluewk">
+                    <Form layout="inline" onSubmit={this.handleSubmit}>
+                        <div className="newCluewk">
+                            <div className="newCluenk">
 
-                            <div className="content">
-
-
-                                <Row style={{'padding':'8px 0px'}}>
-
-                                    <Col span={3}>
-                                        <FormItem {...{...this.formItemLayout, ...{wrapperCol: {span: 24}}}}
-                                            label="" style={{"width":"100%",paddingRight:'10px'}}
-                                        >
-
-                                            {getFieldDecorator('companynameSelect', {
-                                                rules: [{required: false, message: '请选择名称'}],
-                                                initialValue: 'companyname1'
-                                            })(
-                                                <Select placeholder="请选择名称">
-                                                    <Option value="companyname1">企业名称</Option>
-                                                    <Option value="companyname2">企业地址</Option>
-                                                    <Option value="companyname3">手机</Option>
-                                                </Select>
-                                            )}
+                                <div className="content">
 
 
-                                        </FormItem>
-                                    </Col>
-                                    <Col span={5}>
-                                        <FormItem {...{...this.formItemLayout, ...{wrapperCol: {span: 24}}}}
-                                            label="" style={{"width":"100%",paddingRight:'10px'}}
-                                        >
+                                    <Row style={{'padding':'8px 0px'}}>
 
-                                            {getFieldDecorator('companyname', {
-                                                rules: [{required: false, message: '请输入'}],
-                                            })(
-                                                <Input placeholder=""/>
-                                            )}
-
-
-                                        </FormItem>
-                                    </Col>
-                                    <Col span={4}>
-                                        <FormItem
-                                            label="线索来源" style={{"width":"100%"}}
-                                        >
-
-                                            {getFieldDecorator('sourceSelect', {
-                                                rules: [{required: false, message: '请选择来源'}], initialValue: 'source1'
-                                            })(
-                                                <Select style={{ width:100 }} placeholder="请选择来源">
-                                                    <Option value="source1">全部</Option>
-                                                    <Option value="source2">自行开发</Option>
-                                                    <Option value="source3">来电咨询</Option>
-                                                    <Option value="source4">网络推广</Option>
-                                                    <Option value="source5">CSC86</Option>
-                                                    <Option value="source6">buy5j</Option>
-                                                    <Option value="source7">网络爬取</Option>
-                                                </Select>
-                                            )}
-
-
-                                        </FormItem>
-                                    </Col>
-
-                                    <Col span={4}>
-                                        <FormItem
-                                            label="线索级别" style={{"width":"100%"}}
-                                        >
-
-                                            {getFieldDecorator('levelSelect', {
-                                                rules: [{required: false, message: '请选择级别'}], initialValue: 'level1'
-                                            })(
-                                                <Select style={{ width: 100 }} placeholder="请选择级别">
-                                                    <Option value="level1">全部</Option>
-                                                    <Option value="level2">即将签约</Option>
-                                                    <Option value="level3">意向客户</Option>
-                                                    <Option value="level4">待培育客户</Option>
-                                                    <Option value="level5">暂无兴趣</Option>
-                                                    <Option value="level6">无效线索</Option>
-                                                    <Option value="level7">暂无</Option>
-                                                </Select>
-                                            )}
-
-
-                                        </FormItem>
-                                    </Col>
-
-                                    <Col span={4}>
-                                        <FormItem
-                                            label="客户类型" style={{"width":"100%"}}
-                                        >
-
-                                            {getFieldDecorator('typeSelect', {
-                                                rules: [{required: false, message: '请选择类型'}], initialValue: 'type1'
-                                            })(
-                                                <Select style={{ width: 100 }} placeholder="请选择级别">
-                                                    <Option value="type1">全部</Option>
-                                                    <Option value="type2">企业客户</Option>
-                                                    <Option value="type3">零售商</Option>
-                                                    <Option value="type4">终端用户</Option>
-                                                </Select>
-                                            )}
-
-
-                                        </FormItem>
-                                    </Col>
-
-                                    <Col span={4}>
-                                        <FormItem
-                                            label="区域" style={{"width":"100%"}}
-                                        >
-
-                                            {getFieldDecorator('areaSelect', {
-                                                rules: [{required: false, message: '请选择区域'}], initialValue: 'area1'
-                                            })(
-                                                <Select style={{ width:100 }} placeholder="请选择区域">
-                                                    <Option value="area1">全部</Option>
-                                                    <Option value="area2">城内商户</Option>
-                                                    <Option value="area3">城外商户</Option>
-                                                </Select>
-                                            )}
-
-
-                                        </FormItem>
-                                    </Col>
-
-                                </Row>
-
-                                <Row style={{'padding':'8px 0px'}}>
-                                    <Col span={24}>
-                                        <FormItem
-                                            label="创建日期" style={{"width":"100%"}}
-                                        >
-
-                                            {getFieldDecorator('range-time', this.rangeConfig)(
-                                                <RangePicker style={{"width":"50%"}}/>
-                                            )}
-                                            <Button style={{marginLeft:'10px'}}
-                                                    type="primary"
-                                                    ghost onClick={this.setDate(1)}
-                                                    disabled={this.hasErrors(getFieldsError())}
+                                        <Col span={3}>
+                                            <FormItem {...{...this.formItemLayout, ...{wrapperCol: {span: 24}}}}
+                                                label="" style={{"width":"100%",paddingRight:'10px'}}
                                             >
-                                                今天
-                                            </Button>
-                                            <Button style={{marginLeft:'10px'}}
-                                                    type="primary"
-                                                    ghost onClick={this.setDate(7)}
-                                                    disabled={this.hasErrors(getFieldsError())}
+
+                                                {getFieldDecorator('companynameSelect', {
+                                                    rules: [{required: false, message: '请选择名称'}],
+                                                    initialValue: 'companyname1'
+                                                })(
+                                                    <Select placeholder="请选择名称">
+                                                        <Option value="companyname1">企业名称</Option>
+                                                        <Option value="companyname2">企业地址</Option>
+                                                        <Option value="companyname3">手机</Option>
+                                                    </Select>
+                                                )}
+
+
+                                            </FormItem>
+                                        </Col>
+                                        <Col span={5}>
+                                            <FormItem {...{...this.formItemLayout, ...{wrapperCol: {span: 24}}}}
+                                                label="" style={{"width":"100%",paddingRight:'10px'}}
                                             >
-                                                近7天
-                                            </Button>
 
-                                        </FormItem>
-                                    </Col>
-
-                                </Row>
-
-                                <Row style={{'padding':'8px 0px'}}>
-                                    <Col span={12}>
-                                        <FormItem
-                                            label="其他条件" style={{"width":"100%"}}
-                                        >
-                                            {getFieldDecorator('other', this.rangeConfig)(
-                                                <CheckboxGroup options={plainOptions}/>
-                                            )}
+                                                {getFieldDecorator('companyname', {
+                                                    rules: [{required: false, message: '请输入'}],
+                                                })(
+                                                    <Input placeholder=""/>
+                                                )}
 
 
-                                        </FormItem>
-
-                                    </Col>
-                                    <Col span={12}>
-                                        <div style={{textAlign:'right'}}>
-                                            <FormItem >
-                                                <Button
-                                                    type="primary" style={{padding:'5px 30px'}}
-                                                    htmlType="submit"
-                                                    disabled={this.hasErrors(getFieldsError())}
-                                                >
-                                                    查询
-                                                </Button>
                                             </FormItem>
-                                            <FormItem style={{marginLeft:'10px'}}>
-                                                <Button
-                                                    type="primary"
-                                                    style={{backgroundColor:'#fe7676',borderColor:'#fe7676',padding:'5px 30px'}}
-                                                    htmlType="submit"
-                                                    onClick={this.handleReset}
-                                                >
-                                                    重置
-                                                </Button>
+                                        </Col>
+                                        <Col span={4}>
+                                            <FormItem
+                                                label="线索来源" style={{"width":"100%"}}
+                                            >
+
+                                                {getFieldDecorator('sourceSelect', {
+                                                    rules: [{required: false, message: '请选择来源'}],
+                                                    initialValue: 'source1'
+                                                })(
+                                                    <Select style={{ width:100 }} placeholder="请选择来源">
+                                                        <Option value="source1">全部</Option>
+                                                        <Option value="source2">自行开发</Option>
+                                                        <Option value="source3">来电咨询</Option>
+                                                        <Option value="source4">网络推广</Option>
+                                                        <Option value="source5">CSC86</Option>
+                                                        <Option value="source6">buy5j</Option>
+                                                        <Option value="source7">网络爬取</Option>
+                                                    </Select>
+                                                )}
+
+
                                             </FormItem>
-                                        </div>
-                                    </Col>
-                                </Row>
+                                        </Col>
+
+                                        <Col span={4}>
+                                            <FormItem
+                                                label="线索级别" style={{"width":"100%"}}
+                                            >
+
+                                                {getFieldDecorator('levelSelect', {
+                                                    rules: [{required: false, message: '请选择级别'}], initialValue: 'level1'
+                                                })(
+                                                    <Select style={{ width: 100 }} placeholder="请选择级别">
+                                                        <Option value="level1">全部</Option>
+                                                        <Option value="level2">即将签约</Option>
+                                                        <Option value="level3">意向客户</Option>
+                                                        <Option value="level4">待培育客户</Option>
+                                                        <Option value="level5">暂无兴趣</Option>
+                                                        <Option value="level6">无效线索</Option>
+                                                        <Option value="level7">暂无</Option>
+                                                    </Select>
+                                                )}
 
 
+                                            </FormItem>
+                                        </Col>
+
+                                        <Col span={4}>
+                                            <FormItem
+                                                label="客户类型" style={{"width":"100%"}}
+                                            >
+
+                                                {getFieldDecorator('typeSelect', {
+                                                    rules: [{required: false, message: '请选择类型'}], initialValue: 'type1'
+                                                })(
+                                                    <Select style={{ width: 100 }} placeholder="请选择级别">
+                                                        <Option value="type1">全部</Option>
+                                                        <Option value="type2">企业客户</Option>
+                                                        <Option value="type3">零售商</Option>
+                                                        <Option value="type4">终端用户</Option>
+                                                    </Select>
+                                                )}
+
+
+                                            </FormItem>
+                                        </Col>
+
+                                        <Col span={4}>
+                                            <FormItem
+                                                label="区域" style={{"width":"100%"}}
+                                            >
+
+                                                {getFieldDecorator('areaSelect', {
+                                                    rules: [{required: false, message: '请选择区域'}], initialValue: 'area1'
+                                                })(
+                                                    <Select style={{ width:100 }} placeholder="请选择区域">
+                                                        <Option value="area1">全部</Option>
+                                                        <Option value="area2">城内商户</Option>
+                                                        <Option value="area3">城外商户</Option>
+                                                    </Select>
+                                                )}
+
+
+                                            </FormItem>
+                                        </Col>
+
+                                    </Row>
+
+                                    <Row style={{'padding':'8px 0px'}}>
+                                        <Col span={24}>
+                                            <FormItem
+                                                label="创建日期" style={{"width":"100%"}}
+                                            >
+
+                                                {getFieldDecorator('range-time', this.rangeConfig)(
+                                                    <RangePicker style={{"width":"50%"}}/>
+                                                )}
+                                                <Button style={{marginLeft:'10px'}}
+                                                        type="primary"
+                                                        ghost onClick={this.setDate(1)}
+                                                        disabled={this.hasErrors(getFieldsError())}
+                                                >
+                                                    今天
+                                                </Button>
+                                                <Button style={{marginLeft:'10px'}}
+                                                        type="primary"
+                                                        ghost onClick={this.setDate(7)}
+                                                        disabled={this.hasErrors(getFieldsError())}
+                                                >
+                                                    近7天
+                                                </Button>
+
+                                            </FormItem>
+                                        </Col>
+
+                                    </Row>
+
+                                    <Row style={{'padding':'8px 0px'}}>
+                                        <Col span={12}>
+                                            <FormItem
+                                                label="其他条件" style={{"width":"100%"}}
+                                            >
+                                                {getFieldDecorator('other', this.rangeConfig)(
+                                                    <CheckboxGroup options={plainOptions}/>
+                                                )}
+
+
+                                            </FormItem>
+
+                                        </Col>
+                                        <Col span={12}>
+                                            <div style={{textAlign:'right'}}>
+                                                <FormItem >
+                                                    <Button
+                                                        type="primary" style={{padding:'5px 30px'}}
+                                                        htmlType="submit"
+                                                        disabled={this.hasErrors(getFieldsError())}
+                                                    >
+                                                        查询
+                                                    </Button>
+                                                </FormItem>
+                                                <FormItem style={{marginLeft:'10px'}}>
+                                                    <Button
+                                                        type="primary"
+                                                        style={{backgroundColor:'#fe7676',borderColor:'#fe7676',padding:'5px 30px'}}
+                                                        htmlType="submit"
+                                                        onClick={this.handleReset}
+                                                    >
+                                                        重置
+                                                    </Button>
+                                                </FormItem>
+                                            </div>
+                                        </Col>
+                                    </Row>
+
+
+                                </div>
                             </div>
+
+                            <div className="newCluenk">
+                                <div className="title"><Button
+                                    type="primary" style={{padding:'5px 30px',marginRight:'10px'}}
+                                    ghost size="large" onClick={this.handleSubmit}
+                                >
+                                    刷新列表
+                                </Button>
+                                    <Button
+                                        type="primary" style={{padding:'5px 30px',marginRight:'10px'}}
+                                        ghost size="large"
+                                    >
+                                        移入公海
+                                    </Button>
+                                    <Button
+                                        type="primary" style={{padding:'5px 30px',marginRight:'10px'}}
+                                        ghost size="large"
+                                    >
+                                        分配负责人
+                                    </Button>
+                                    <Button
+                                        type="danger" style={{padding:'5px 30px',marginRight:'10px'}}
+                                        ghost size="large"
+                                    >
+                                        删除
+                                    </Button></div>
+                                <div className="content">
+
+
+                                    <Spin spinning={this.props.tablemodel.loading}>
+                                        <Table rowSelection={rowSelection} columns={columns} dataSource={data} bordered
+                                               pagination={false}/>
+                                    </Spin>
+                                    <Pagination style={{padding:'10px 0px',textAlign:'right'}}
+                                                showTotal={total => `共 ${total} 条`}
+                                                pageSizeOptions={['10', '20', '30', '40','50']}
+                                                showSizeChanger showQuickJumper
+                                                current={this.props.Paginationmodel.current}
+                                                defaultCurrent={1} onShowSizeChange={this.Paginatihandle}
+                                                total={this.props.Paginationmodel.total}
+                                                pageSize={this.props.Paginationmodel.pageSize}
+                                                onChange={this.Paginatihandle}/>
+
+
+                                    <Modalmodel  {...{
+                                        ...this.props.modalmodel,
+                                        visible: this.props.modalmodel.visible,
+                                        ModalText: this.props.modalmodel.ModalText,
+                                    }}
+                                        onOk={this.ModalhandleOk} confirmLoading={this.props.modalmodel.confirmLoading}
+                                        onCancel={this.ModalhandleCancel('visible')}/>
+                                </div>
+                            </div>
+
                         </div>
 
-                        <div className="newCluenk">
-                            <div className="title"><Button
-                                type="primary" style={{padding:'5px 30px',marginRight:'10px'}}
-                                ghost size="large" onClick={this.handleSubmit}
-                            >
-                                刷新列表
-                            </Button>
-                                <Button
-                                    type="primary" style={{padding:'5px 30px',marginRight:'10px'}}
-                                    ghost size="large"
-                                >
-                                    移入公海
-                                </Button>
-                                <Button
-                                    type="primary" style={{padding:'5px 30px',marginRight:'10px'}}
-                                    ghost size="large"
-                                >
-                                    分配负责人
-                                </Button>
-                                <Button
-                                    type="danger" style={{padding:'5px 30px',marginRight:'10px'}}
-                                    ghost size="large"
-                                >
-                                    删除
-                                </Button></div>
-                            <div className="content">
-
-
-                                <Spin spinning={this.props.tablemodel.loading}>
-                                    <Table rowSelection={rowSelection} columns={columns} dataSource={data} bordered
-                                           pagination={false}/>
-                                </Spin>
-                                <Pagination style={{padding:'10px 0px',textAlign:'right'}}
-                                            showTotal={total => `共 ${total} 条`}
-                                            pageSizeOptions={['10', '20', '30', '40','50']}
-                                            showSizeChanger showQuickJumper current={this.props.Paginationmodel.current}
-                                            defaultCurrent={1} onShowSizeChange={this.Paginatihandle}
-                                            total={this.props.Paginationmodel.total}
-                                            pageSize={this.props.Paginationmodel.pageSize}
-                                            onChange={this.Paginatihandle}/>
-
-
-                                <Modalmodel  {...{
-                                    ...this.props.modalmodel,
-                                    visible: this.props.modalmodel.visible,
-                                    ModalText: this.props.modalmodel.ModalText,
-                                }}
-                                    onOk={this.ModalhandleOk} confirmLoading={this.props.modalmodel.confirmLoading}
-                                    onCancel={this.ModalhandleCancel('visible')}/>
-                            </div>
-                        </div>
-
-                    </div>
-
-                </Form>
+                    </Form>
+                </div>
             </div>
         );
     }
