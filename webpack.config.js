@@ -23,7 +23,7 @@ const vendors=[
 ];
 
 //var  entries = getEntries('src/**/index.js');  //编译所有页面
-var  entries = getEntries('src/AttackClue/index.js');  //编译某个页面
+var  entries = getEntries('src/myClue/index.js');  //编译某个页面
 // var  entries = getEntries('src/home/srm/index.js');  //编译某个页面
 
 entries.push(getEntries('src/home/srm/index.js')[0]);  //编译首页

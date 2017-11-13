@@ -2,10 +2,6 @@
 #root{
   height: 100%;
 }
-.main{
-    padding-bottom:150px; 
-}
-
 .main .page-title{
   color:#666666;
   font-size: 20px;

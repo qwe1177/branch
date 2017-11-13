@@ -1,17 +1,9 @@
 import { combineReducers } from 'redux';
+import emptyreducer from '../../../common/reducers/emptyreducer';
 
-
-
-const defaultState={}
-
-const emptyReducer = function (state = defaultState, action = {}) {
-  switch (action.type) {
-    default:
-      return state
-  }
-}
+//使用combineReducers把store内容分到不同作用域
 const rootReducer = combineReducers({
-    emptyReducer
+    emptyreducer
 })
 
 export default rootReducer

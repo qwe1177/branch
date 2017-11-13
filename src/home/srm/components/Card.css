@@ -1,0 +1,20 @@
+.briefly-card .header{
+    color: #000; 
+    font-size: 18px;
+    border-bottom:solid 1px #797979;
+}
+
+.briefly-card .title{
+    font-size: 16px;
+    color: #666; 
+}
+
+.briefly-card .count{
+    color: #2e5781; 
+    font-size: 30px;
+}
+
+.briefly-card .modify-info{
+    color: #797979; 
+    font-size: 12px;
+}
