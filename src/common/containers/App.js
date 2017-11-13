@@ -45,7 +45,6 @@ class App extends PlatformComponent {
 					<div style={{width:'100%'}}><TopWidget onTransform={this.handleExpandOrCollapse.bind(this)} /></div>
 					<div style={{width:'100%'}}><TopTab data={platformMenu} /></div>
 					<div className="main">
-						
 						{this.props.children}
 					</div>
 					</div>
