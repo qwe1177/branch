@@ -1,0 +1,23 @@
+.rangeButton{
+    color:#6699cc;
+    line-height: 32px;
+}
+.pd20{padding: 20px 30px;}
+.tit{color: #666666; font-size: 16px; overflow: hidden;}
+.g-fl{float: left;}
+.g-rt{float:right}
+.ant-table-thead > tr > th{ text-align: center}
+.column-money {
+    text-align: center;
+  }
+.g-mt{margin-top: 20px;}
+.ant-form-item{margin-bottom: 0px;}
+
+.rangeButton{
+    color:#6699cc;
+    line-height: 32px;
+    cursor: pointer;
+}
+.ant-form-item-label{ text-align: left;}
+.resetButton{ margin-left:8px;}
+.audit-tit{ background-color: #fff; height:50px; line-height:50px; font-size: 16px; border-bottom:1px solid #ccc; padding-left:20px;}

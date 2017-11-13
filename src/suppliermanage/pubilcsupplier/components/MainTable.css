@@ -1,0 +1,9 @@
+.tabel-extend-option{
+    line-height: 50px;
+ }
+ .tabel-extend-option span{
+    cursor: pointer;
+ }
+ .tabel-extend-option span:hover{
+    color: #6699cc;
+ }

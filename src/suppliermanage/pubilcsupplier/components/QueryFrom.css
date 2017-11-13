@@ -1,0 +1,8 @@
+.rangeButton{
+    color:#6699cc;
+    line-height: 32px;
+    cursor: pointer;
+}
+.resetButton{
+    margin-left:8px; 
+}

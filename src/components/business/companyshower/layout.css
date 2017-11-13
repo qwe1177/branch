@@ -1,0 +1,46 @@
+
+.company-shower {
+    padding: 0 10px;
+}
+    
+.company-shower .title-1{
+    color: #333333;
+    font-weight: bolder;
+    font-size: 14px;
+}
+
+.company-shower .title-2{
+    color: #7a7a7a;
+    font-weight: bold;
+}
+
+.company-shower .content-1{
+    color: #999;
+    margin-left: 6px;
+}
+
+.company-shower>div{
+    border-top: solid 1px #e4e7ea; 
+    padding: 6px 0;
+}
+
+.icon-wrap {
+    cursor: pointer;
+}
+
+.extend .icon-wrap .anticon-down{
+    display: none;
+}
+
+.extend  .icon-wrap .anticon-up,.extend  .more-info{
+    display: block;
+}
+
+.collapse .icon-wrap .anticon-up,.collapse  .more-info{
+    display: none;
+}
+
+.collapse  .icon-wrap .anticon-down{
+    display: block;
+}
+

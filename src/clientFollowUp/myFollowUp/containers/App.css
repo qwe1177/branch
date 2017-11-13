@@ -1,0 +1,88 @@
+
+/* 待跟进模块的样式 */
+#root{
+  height: 100%;
+  font-size: 14px;
+}
+.main{
+  height: 100%;
+  background: #edf1f5; 
+  padding: 0 30px;
+}
+/* 选择框整体的样式 */
+.query-wrap{
+  padding: 20px;
+  background: #fff;
+}
+/* 记录显示整体样式 */
+.card-wrap {
+  padding: 20px;
+  margin-top: 20px;
+  background: #fff;
+}
+/* label字体大小 */
+.main label {
+  font-size: 14px;
+  margin-right: 5px;
+}
+.content {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 150px;
+}
+.left-content{
+  flex: 1;
+}
+/* 跟进统计模块的样式 */
+.statistics {
+  width: 278px;
+  margin-left: 18px;
+  padding: 20px;
+  background-color: #fff;
+}
+.pagination-wrap {
+  display: flex;
+  justify-content: flex-end;
+}
+/* 选择跟进企业模态框的样式 */
+#department {
+  margin-left: 30px;
+}
+.addFollowUp form {
+  padding: 5px 18px;
+  background-color: #ededed;
+  margin-bottom: 5px;
+  font-size: 14px;
+}
+.addFollowUp .ant-modal-title {
+  font-weight: 600;
+}
+.addRefresh {
+  height: 40px;
+  padding-left: 25px;
+  background-color: #ededed;
+  font-weight: 600;
+  line-height: 40px;
+  cursor: pointer;
+  color: #108ee9;
+}
+.add-table table tr {
+  height: 35px;
+  text-align: center;
+}
+.add-table table {
+  border-left: 1px solid #ededed;
+  border-right:  1px solid #ededed;
+}
+.add-table .ant-table-thead th{
+  border-bottom:  1px solid #ededed;
+}
+.add-table table tr th {
+  text-align: center;
+} 
+.ant-table-thead > tr > th, .ant-table-tbody > tr > td {
+  padding: 0px;
+}
+.add-table .ant-tag {
+  background-color: #ededed;
+}

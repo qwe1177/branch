@@ -1,0 +1,66 @@
+.toptaball{height: 60px; line-height: 60px; background-color: #2f323e; overflow: hidden;}
+/* .toptaball ul{} */
+.toptaball ul li{ width: 110px; float:left; font-size: 18px; color: #97999f; text-align: center;cursor: pointer}
+
+
+/* .toptaball ul li span.spn1{ display: inline-block; vertical-align: top; line-height:64px; padding-right:5px;}
+.toptaball ul li span.spn2{ display: inline-block; vertical-align: top; line-height:64px; padding-right:5px;}
+.toptaball ul li span.spn3{ display: inline-block; vertical-align: top; line-height:64px; padding-right:5px;}
+.toptaball ul li span.spn4{ display: inline-block; vertical-align: top; line-height:64px; padding-right:5px;}
+.toptaball ul li span.spn5{ display: inline-block; vertical-align: top; line-height:64px; padding-right:5px;}
+.toptaball ul li span.spn6{ display: inline-block; vertical-align: top; line-height:64px; padding-right:5px;}
+.toptaball ul li span.spn7{ display: inline-block; vertical-align: top; line-height:64px; padding-right:5px;} */
+.toptaball ul li a{
+    color: #97999f;
+    text-decoration: none;
+    padding-left:26px; 
+}
+.toptaball ul li:hover a{
+    color: #fff; 
+}
+.toptaball ul li:hover{
+    background: #272a34;
+}
+.toptaball ul li.actived {background: #272a34;}
+.toptaball ul li.actived a{  color: #fff; }
+
+.toptaball ul li .index{
+    background: url('./img/1-1.png') no-repeat;
+}
+
+.toptaball ul li:hover .index ,.toptaball ul li.actived .index{
+    background: url('./img/2-1.png') no-repeat;
+}
+
+.toptaball ul li .supplier{
+    background: url('./img/1-2.png') no-repeat;
+}
+
+.toptaball ul li:hover .supplier ,.toptaball ul li.actived .supplier{
+    background: url('./img/2-2.png') no-repeat;
+}
+
+.toptaball ul li .purchase{
+    background: url('./img/1-3.png') no-repeat;
+}
+
+.toptaball ul li:hover .purchase ,.toptaball ul li.actived .purchase{
+    background: url('./img/2-3.png') no-repeat;
+}
+.toptaball ul li .daily{
+    background: url('./img/1-5.png') no-repeat;
+}
+
+.toptaball ul li:hover .daily ,.toptaball ul li.actived .daily{
+    background: url('./img/2-5.png') no-repeat;
+}
+
+/* .toptaball ul li.cur{ background-color: #272a34; color: #fff;} */
+
+
+
+
+
+
+
+

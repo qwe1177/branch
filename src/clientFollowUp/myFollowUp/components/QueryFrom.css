@@ -1,0 +1,40 @@
+
+
+/* 文本框和按钮的大小 */
+.ant-select-lg .ant-select-selection--single,.ant-btn-lg,.ant-input-lg {
+    height: 36px;
+    font-size: 14px;
+  }
+  /* 下拉框行高 */
+  .ant-select-lg .ant-select-selection__rendered {
+    line-height: 34px;
+  }
+  /* 标题的样式 */
+  .page-title{
+    color:#666666;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 60px;
+  }
+  /* 红色按钮的样式 */
+.ant-btn-danger {
+    background-color: #f04134;
+    border-color: #f04134;
+    color: #fff;
+  }
+  /* 让多选狂显示一排 */
+  .ant-checkbox-group {
+    display: inline-block;
+  }
+  .ant-form-item {
+    margin-bottom: 0px;
+  }
+  /* 跟进类型一栏的margin */
+  .followType {
+    margin-top: 15px;
+  }
+  /* 多选框的大小 */
+.ant-checkbox-inner {
+  width: 20px;
+  height: 20px;
+}

@@ -1,0 +1,19 @@
+.followup-shower .card-wrap{
+    padding: 0 12px 12px 12px;
+}
+
+.followup-shower .pagination-wrap{
+    padding: 0 12px 20px 12px;
+    text-align: right;
+}
+
+
+.followup-shower .normal{
+    background-color: #6699cc;
+    border-color: #6699cc;
+    border-radius:0
+}
+
+.followup-shower .query-wrap{
+    padding: 0 12px;
+}

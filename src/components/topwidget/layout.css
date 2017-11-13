@@ -1,0 +1,34 @@
+.topwidget{height: 60px; line-height: 60px;}
+.topwidget .toplf{ width:280px; height:100%; float: left}
+.topwidget .topgt{ min-width:450px; height:100%; float: right}
+
+
+.topwidget .toplf .icft20{font-size: 20px; width: 70px; float:left; text-align: center; position: relative;cursor: pointer}
+.topwidget .toplf .cur{ background-color:#e5e5e5;}
+
+.ico{position: absolute; width:14px; height: 14px; background: #f33155; text-align: center; top:15px; left:40px; border-radius:7px; color: #fff; line-height: 14px; font-size: 10px;}
+
+.pd_l30{padding-left:30px;}
+.pd_l50{padding-left:50px;}
+.pd-r20{padding-right: 20px;}
+
+.crm-wh300{width:300px;}
+.crm-fllt{float: left;}
+.crm-flrt{float: right;}
+
+.top_user{margin-top:10px; height:40px; line-height:40px; margin-bottom: 10px;}
+.top_user a{color: #686868; font-size: 16px;}
+.anticon:hover{color: #c5c5c5; font-weight:700;}
+
+.curs{clear: both}
+
+
+.topwidget .normal{
+    background-color: #6699cc;
+    border-color: #6699cc;
+    border-radius:0
+}
+
+.topwidget-submit{
+    text-align: center;
+}

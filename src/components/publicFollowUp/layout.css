@@ -1,0 +1,33 @@
+.editModal .ant-form-item {
+    margin-top: 15px;
+    font-size: 14px;
+}
+.editModal label {
+    font-size: 14px;
+}
+.editModal .marginStyle {
+    margin: -10px 0;
+}
+.marginStyle .ant-form-item {
+    margin-top: 0px;
+}
+.editModal .marginLeft .ant-form-item-label {
+    margin-left: -10px;
+}
+.editModal textarea {
+    /* min-height: 60px; */
+    max-height: 60px;
+}
+.editModal .marginStyle .echo {
+    display: flex;
+    align-items: center;
+}
+.editModal .tagsWrap {
+    display: flex;
+    align-items: center;
+}
+.editModal button {
+    float: right;
+}
+ 
+

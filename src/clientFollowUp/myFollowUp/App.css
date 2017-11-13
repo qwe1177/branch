@@ -1,0 +1,39 @@
+/* 待跟进模块的样式 */
+#root{
+  height: 100%;
+  font-size: 14px;
+}
+.main{
+  height: 100%;
+  background: #edf1f5; 
+  padding: 0 30px;
+}
+/* 选择框整体的样式 */
+.query-wrap{
+  padding: 20px;
+  background: #fff;
+}
+/* 记录显示整体样式 */
+.card-wrap {
+  padding: 20px;
+  margin-top: 20px;
+  background: #fff;
+}
+/* label字体大小 */
+.main label {
+  font-size: 14px;
+}
+.content {
+  display: flex;
+  justify-content: space-between;
+}
+.left-content{
+  flex: 1;
+}
+/* 跟进统计模块的样式 */
+.statistics {
+  width: 278px;
+  margin-left: 18px;
+  padding: 20px;
+  background-color: #fff;
+}

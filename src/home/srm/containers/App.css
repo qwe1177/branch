@@ -1,0 +1,39 @@
+.main{
+  padding: 0 20px 80px 20px;
+}
+
+.main .page-title {
+  color: #666666;
+  font-size: 20px;
+  line-height: 60px;
+}
+
+.main .page-main{
+  margin-bottom: 60px;
+}
+
+.main .top-wrap .card-item{
+  float:left;
+  width:33.33333333333%;
+  padding: 0 10px;
+}
+
+.main .bottom-wrap .list-item{
+  float:left;
+  width:50%;
+  padding: 0 10px;
+}
+.main .top-wrap .card-item>div,.main .bottom-wrap .list-item>div{
+  width: 100%;
+  background: #fff;
+}
+.main .top-wrap .card-item>div{
+  min-height: 280px;
+}
+
+.bottom-wrap .list-item>div{
+  min-height: 300px;
+}
+.main .bottom-wrap{
+  margin-top: 26px;
+}

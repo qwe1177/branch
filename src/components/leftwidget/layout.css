@@ -1,0 +1,66 @@
+.leftwidget{
+    width:240px;
+    border-right: 1px solid #edf1f5;
+    height:100%;
+}
+.leftlogo{height:60px; line-height: 60px;}
+.leftlogo .sp1{padding-left:25px;}
+.leftlogo .sp2{padding-left:20px; color: #2f323e; font-size: 24px; font-family: 'yahei';}
+.leftlogo span img{vertical-align:sub}
+
+.leftwidget .switch{background-color: #5489bf; height: 60px; position: relative;}
+.leftwidget .system{color: #fff;font-size: 20px; width: 100%;height:100%;padding-right: 60px;    line-height: 60px;
+    text-align: center;}
+.leftwidget .switch-wrap{position: absolute;right: 0;top: 0;width: 60px;background: #417ab3;}
+.switch-icon{background: url('./img/switch.png') 16px 0 no-repeat; 
+    font-size: 16px;
+    line-height: 86px;
+    padding-top: 24px;
+    padding-left: 10px;
+    color: #fff;
+    cursor: pointer;
+}
+.leftwidget .switch-wrap a:hover{
+    color:#fff;
+}
+
+.ant-menu-submenu-title{background-color: #ededed;}
+.ant-menu-item{font-size: 16px !important; color:#666666; }
+.pdl5{padding-left: 20px; font-size: 16px; color: #333333; text-decoration: none;}
+.crm_vsub{vertical-align:sub}
+
+.leftwidget .left-menu-1{
+    background: url('./img/left-1.png') 0 4px no-repeat;
+}
+
+
+.leftwidget .left-menu-2{
+    background: url('./img/left-1.png') no-repeat;
+}
+
+.leftwidget .left-menu-3{
+    background: url('./img/left-1.png') no-repeat;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
