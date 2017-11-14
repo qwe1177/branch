@@ -1,4 +1,5 @@
 import React from 'react';
+import axios from 'axios';
 import PropTypes from 'prop-types'
 import { Table,Button,Modal } from 'antd';
 import './MainTable.css';
@@ -25,23 +26,25 @@ class MainTable extends React.Component {
     visible: false,
     selectedRowKeys: [],
   }
-  showModal=(modelType)=>{
-    this.setState({visible:true,showModal:modelType});
+  showModal=(key)=>{
+    this.setState({visible:true,key:key});
   } 
   handleOk=()=>{
-    let {modelType} = this.state;
-    if(modelType='removeplan'){
-      this.setState({visible:false,modelType: ""});
-      console.log(modelType)
-    }else if(modelType='shiftout'){
-      onDelete = (index) => {
-        const dataSource = [...this.state.dataSource];
-        dataSource.splice(index, 1);
-        this.setState({ dataSource });
+    let {key} = this.state;
+    console.log(key)
+    axios.get('http://10.10.10.29:9407'+ '/v1/supplier/deleteSupplierFollowupRecords.do',{
+      params: {
+        ids: key
       }
-      this.setState({visible:false,modelType: ""});
-      console.log(modelType)
-    }
+    })
+    .then(function (response) {
+      console.log(response);
+      this.setState({visible:false});
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+    
   }
   handleCancel=()=>{
     this.setState({visible:false});
@@ -81,28 +84,24 @@ class MainTable extends React.Component {
       dataIndex: 'companyName',
       key:'companyName',
       render: (text, record) => (
-        <a href={record.link1}>{text}</a>
+        <a href={'http://10.10.10.114:8080/srm-app/v1/management/selectSupplierDetails.do?supplierId='+record.supplierId}>{text}</a>
       )
     } , {
       title: '计划内容',
-      dataIndex: 'planContent',
-      key:'planContent'
+      dataIndex: 'planNextContent',
+      key:'planNextContent'
     }, {
       title: '计划完成日期',
-      dataIndex: 'finishData',
-      key:'finishData'
-    }, {
-      title: '剩余完成时间',
-      dataIndex: 'timeLeft',
-      key:'timeLeft'
-    }, {
+      dataIndex: 'planNextContactTime',
+      key:'planNextContactTime'
+    },  {
       title: '操作',
       dataIndex: 'option',
       key:'option',
       render: (text, record) => (
         <div className="tabel-extend-option">
-            <a href={record.link2}>{text[0]}</a>
-            <span onClick={() => this.showModal('shiftout')}>{text[1]}</span>
+            <a href={'http://10.10.10.114:8080/srm-app/v1/management/selectSupplierDetails.do?supplierId='+record.supplierId}>去跟进</a>
+            <span onClick={(key) => this.showModal(record.id)}>移出</span>
         </div>
       )
     }];
@@ -113,7 +112,7 @@ class MainTable extends React.Component {
       <div>
         <div className="tabel-extend-option title">
             <span onClick={this.handleRefresh}>刷新</span> 
-            <button disabled={!hasSelected} onClick={() => this.showModal('removeplan')}>移除计划</button>
+            <button disabled={!hasSelected} onClick={() => this.showModal(selectedList)}>移除计划</button>
         </div>
         <Modal
           visible={this.state.visible}
@@ -131,7 +130,7 @@ class MainTable extends React.Component {
        <Table 
           bordered
           columns={columns}
-          rowKey={record => record.key}  //数据中已key为唯一标识
+          rowKey={record => record.id}  //数据中已key为唯一标识
           dataSource={tableData}
           pagination={pagination}
           loading={isFetching}

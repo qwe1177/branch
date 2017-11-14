@@ -28,7 +28,7 @@
   background: #fff;
 }
 .main .top-wrap .card-item>div{
-  min-height: 280px;
+  height: 280px;
 }
 
 .bottom-wrap .list-item>div{

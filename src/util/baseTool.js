@@ -26,44 +26,57 @@ const createUUID = (len, radix) => {
  * @param {*} componentName  组件名称
  * @param {*} index //组件序号
  */
-export const getRef  = (componentName,index)=>{
-    var uuid = componentName+createUUID(8,index);//位数，基数 ，基数必须是数字
+export const getRef = (componentName, index) => {
+    var uuid = componentName + createUUID(8, index);//位数，基数 ，基数必须是数字
     // console.log(uuid);
     return uuid
 }
 
 
-export const getUrlParams  = (url)=>{
+export const getUrlParams = (url) => {
     var queryArr = url.split('?');
-    var querys  = queryArr.length>1?querystring.parse(queryArr[1]):{};
+    var querys = queryArr.length > 1 ? querystring.parse(queryArr[1]) : {};
     return querys;
 }
 
 /**
  * token过期的时候跳转登录页面
  */
-export const jumpToLoginPage  = ()=>{
-    location.href='http://admin.csc86.com/';
+export const jumpToLoginPage = () => {
+    location.href = 'http://admin.csc86.com/';
 }
 
 /**
  * 没权限的时候跳转没权限警告页面页面
  */
-export const  jumpToUnauthorizedPage = ()=>{
-    location.href='http://admin.csc86.com/nopower.html';
+export const jumpToUnauthorizedPage = () => {
+    location.href = 'http://admin.csc86.com/nopower.html';
 }
 
 
 
-export const  getLoginInfo = ()=>{
-    var token ='',platformId='';
+export const getLoginInfo = () => {
+    var token = '', platformId = '';
     if (window.localStorage) {
-        var loginToken =localStorage.getItem('loginToken'); //保存登录token
-        var srmStore =localStorage.getItem('srm'); //保存登录token
-        token =loginToken?loginToken:token;
-        platformId =srmStore?srmStore['platformId']:'';
+        var loginToken = localStorage.getItem('loginToken'); //保存登录token
+        var srmStore = localStorage.getItem('srm'); //保存登录token
+        token = loginToken ? loginToken : token;
+        platformId = srmStore ? JSON.parse(srmStore)['platformId'] : '';
     } else {
         //Cookie.get("menuTitle", arrDisplay);	
     }
-    return {token:token,platformId:platformId};
+    return { token: token, platformId: platformId };
+}
+
+
+export const setLoginInfo = () => {
+    var params = getUrlParams(location.href);
+    if (params.platformId && params.token) {
+        if (window.localStorage) {
+            localStorage.setItem("srm", JSON.stringify({ platformId: params.platformId }));	 //保存platformId在crm的key值下面
+            localStorage.setItem("loginToken", params.token);  //保存登录token
+        } else {
+            //Cookie.write("menuTitle", arrDisplay);	
+        }
+    }
 }

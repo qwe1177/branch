@@ -9,8 +9,17 @@ import {
 // 初始化state数据
 
 const initQueryform = {
-  companyName: "",
-  finishData: []
+  brand: '',
+  createdate: [],
+  eara: "城内商家",
+  level: "一星",
+  name: "",
+  other: ["上传产品"],
+  prefix: "企业名称",
+  relationship: "战略合作",
+  selltype: "劳保产品",
+  source: "csc86",
+  type: "厂家"
 }
 
 const defaultStateOne = { queryform: initQueryform };
@@ -33,12 +42,13 @@ const initTableData = {
   pagination:{
     showQuickJumper: true,
     showSizeChanger: true,
-    total: '',
-    current: '',
-    pageSize: '',
+    total: 1,
+    current: 1,
+    pageSize: 10,
     showTotal: total => `共 ${total} 条`
   }
 }
+
 const mainTableData = (state = initTableData, action) => {
   switch (action.type) {
     case REQUEST_SUPPLIER:

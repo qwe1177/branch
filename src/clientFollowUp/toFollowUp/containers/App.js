@@ -43,7 +43,7 @@ class App extends Component {
 					
 								<div className="tabel-wrap">
 									<MainTable />
-									{/* <MainTable doChangeMainCheck={this.handleChangeMainCheck} /> */}
+								
 								</div>
 							</div>
 							<div className="statistics">

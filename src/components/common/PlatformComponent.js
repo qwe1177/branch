@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import { connect_cas } from '../../util/connectConfig';
-import { getUrlParams,getLoginInfo } from '../../util/baseTool';
+import { getLoginInfo } from '../../util/baseTool';
 import axios from 'axios';
 import data from './mock';
 
@@ -35,18 +35,6 @@ export default class PlatformComponent extends Component {
           // this.setState({platformMenu:res.data.data.menu});
         }
       });
-  }
-  //如果是登录后跳当前页面，写入登录信息
-  setLoginInfo=()=>{
-    var params = getUrlParams(location.href);
-    if(params.platformId && params.token){
-      if (window.localStorage) {
-          localStorage.setItem("srm", JSON.stringify({platformId:params.platformId}));	 //保存platformId在crm的key值下面
-          localStorage.setItem("loginToken", params.token);  //保存登录token
-      } else {
-          //Cookie.write("menuTitle", arrDisplay);	
-      }
-    }
   }
 
 }

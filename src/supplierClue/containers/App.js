@@ -218,8 +218,8 @@ class UserForm extends Component {
     }
 
     setDate = (value)=>()=> {
-        const start = moment().add(1, 'days').format('YYYY-MM-DD')
-        const end = moment().add(value, 'days').format('YYYY-MM-DD')
+        const start = moment().add(0, 'days').format('YYYY-MM-DD')
+        const end = moment().add(value-1, 'days').format('YYYY-MM-DD')
         this.props.form.setFieldsValue({
             'range-time': [moment(start), moment(end)],
         })

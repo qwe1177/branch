@@ -3,12 +3,6 @@ import axios from 'axios';
 import { connect_srm } from '../../../util/connectConfig';
 import _ from 'lodash';
 
-
-export const GET_HEAD_FIRST = 'GET_HEAD_FIRST'  //获取公共头1的数据
-export const GET_HEAD_SECOND = 'GET_HEAD_SECOND' //获取公共投2的数据
-export const GET_LEFT_MENU = 'GET_LEFT_MENU' //获取左侧菜单的信息
-
-
 export const INIT_QUERY = 'INIT_QUERY' //初始化查询条件 重置查询条件的时候也用这个
 export const RESET_QUERY = 'RESET_QUERY' //重置查询条件
 export const SET_QUERY = 'SET_QUERY' //设置查询条件
@@ -88,12 +82,21 @@ export const queryTableData = (data) => async (dispatch, getState) => {
     try {
         await dispatch(requestSupplier(data));
         var queryform = data.queryform;
-        var params = { ...queryform }; //查询条件和分页条件传入
-            params.startTime = params.startTime
-            params.endTime = params.endTime
+        if (queryform.finishData && queryform.finishData.length > 0) {
+            queryform.startTime = queryform.finishData[0].format("YYYY-MM-DD");
+            queryform.endTime = queryform.finishData[1].format("YYYY-MM-DD");
+        }
+        var params = { ...queryform};
+        params.finishData = undefined
         params = _.omitBy(params, _.isUndefined); //删除undefined参数
-        let res = await axios.get(connect_srm + '/v1/supplier/queryFollowupList.do', { params: params });
-        return await dispatch(receiveSupplier({ tableData: res.data.data }));
+        // console.log(params)
+        let res = await axios.get('http://10.10.10.29:9407'+ '/v1/supplier/queryFollowupList.do', 
+                            { params: params ,
+                             headers:{'Content-Type': 'application/json;charset=UTF-8'}});
+        return await dispatch(receiveSupplier({ tableData: res.data.data.supplierFollowupPlanList,
+                                                pagination:{ total: res.data.data.rowCount,
+                                                        current: res.data.data.pageCount, 
+                                                        pageSize: res.data.data.pageSize,} }));
     } catch (error) {
         console.log('error: ', error)
         return await dispatch(receiveSupplierFail());

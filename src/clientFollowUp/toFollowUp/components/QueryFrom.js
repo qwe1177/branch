@@ -74,7 +74,7 @@ class QueryFrom extends React.Component {
 							<Col span={12}>
 								<FormItem {...formItemLayout} label="计划完成日期">
 								{getFieldDecorator('finishData',)(
-								<RangePicker />
+											<RangePicker />
 								)}
 								</FormItem>
 							</Col>
