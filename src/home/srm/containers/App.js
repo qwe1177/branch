@@ -11,24 +11,25 @@ import ListCard from '../components/ListCard';
 
 const mockCard1Data = {
 	wode: { count: 2411935, add: 5, turn: 4 },
-	xiashu: { count: 2411935, add: 5, turn: 4 },
-	gonghai: { count: 2411935, add: 5, turn: 4 },
-	quanbu: { count: 2411935, add: 5, turn: 4 }
+	xiashu: { count: 323, add: 5, turn: 4 },
+	gonghai: { count: 88, add: 5, turn: 4 },
+	quanbu: { count: 45245, add: 5, turn: 4 }
 }
 
 
 const mockCard2Data = {
-	wode: { count: 2411935, add: 5, turn: 4 },
-	xiashu: { count: 2411935, add: 5, turn: 4 },
-	gonghai: { count: 2411935, add: 5, turn: 4 },
-	quanbu: { count: 2411935, add: 5, turn: 4 }
+	wode: { count: 564, add: 5, trend:'up', rate: '100%' },
+	xiashu: { count: 654, add: 5, trend:'down', rate: '80%'},
+	gonghai: { count: 645, add: 5, turn: 4 },
+	quanbu: { count: 645, add: 5, trend:'just', rate: '0%' }
 }
 
 const mockCard3Data = {
-	wode: { count: 2411935, add: 5, turn: 4 },
-	xiashu: { count: 2411935, add: 5, turn: 4 },
-	gonghai: { count: 10, add: 5, turn: 4 },
-	quanbu: { count: 20, add: 5, turn: 4 }
+	wode: { count: 534, add: 5, turn: 4 },
+	xiashu: { count: 345, add: 5, turn: 4 },
+	xunjia: { count: 10},
+	chengjiaobishu: { count: 20 },
+	chengjiaojine: { count: 209675 }
 }
 
 class App extends Component {

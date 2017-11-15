@@ -20,7 +20,7 @@ class MainTable extends React.Component {
     pagination:{
         total: 2,
         current: 1,
-        pageSize: 5
+        pageSize: 6
     },
     tableData:[],
     isFetching:false
@@ -103,7 +103,7 @@ class MainTable extends React.Component {
     const {tableData,pagination,isFetching} =this.state; 
     return (
       <div  className='table-card-wrap'>
-        <div className="card-title"><span>待跟进客户(<span>22</span>)</span>  <a href='#'>more<Icon type="double-right" /></a>  </div>
+        <div className="card-title">跟进计划(<span className='card-title-number'>22</span>) <a href='#' className='more-link'>more<Icon type="double-right" /></a>  </div>
         <Table bordered columns={columns}
           rowKey={record => record.key}  //数据中已key为唯一标识
           dataSource={tableData}

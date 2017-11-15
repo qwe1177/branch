@@ -10,6 +10,8 @@ const Option = Select.Option;
 const { MonthPicker, RangePicker } = DatePicker;
 const CheckboxGroup = Checkbox.Group;
 
+import BrandSelector from '../../../components/business/brandselector';
+
 const checkListFirst = ['上传产品', '有跟进记录', '询价单', '能开专票'];
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -26,7 +28,8 @@ class QueryFrom extends React.Component {
 		queryform: PropTypes.object  //查询条件
 	}
 	state = {
-		checkListFirst: checkListFirst
+		checkListFirst: checkListFirst,
+		brandSelectorVisible:false
 	}
 	componentWillMount() {
 		this.props.initQueryFrom();
@@ -80,6 +83,24 @@ class QueryFrom extends React.Component {
 		this.props.form.setFieldsValue({
 			createdate: [moment(), moment()]
 		});
+	}
+	handleOpenChoose = () => {
+		this.setState({ brandSelectorVisible: true });
+	}
+	handleChoosed = (checkedList) => {
+		var brandNames = checkedList.map((o)=>{
+			return o.brandName;
+		});
+		var brandIds = checkedList.map((o)=>{
+			return o.key;
+		});
+		if(brandIds.length>0){
+			this.props.form.setFieldsValue({brandNames:brandNames.toString(),brandIds:brandIds.toString()});
+		}
+		this.setState({ brandSelectorVisible: false });
+	}
+	disabledInput=(e)=>{
+		e.preventDefault();
 	}
 	render() {
 		const { getFieldDecorator } = this.props.form;
@@ -208,22 +229,16 @@ class QueryFrom extends React.Component {
 					</Col>
 				</Row>
 				<Row gutter={16}>
-					<Col span={24}>
-						<FormItem {...checkItemLayoutFirst} label="主营品牌"  >
-							{getFieldDecorator('brand')(
-								<Select mode='multiple' style={{ width: '100%' }}  >
-									<Option value="奥迪">奥迪</Option>
-									<Option value="阿迪达斯">阿迪达斯</Option>
-									<Option value="安利">安利</Option>
-									<Option value="阿尔卑斯">阿尔卑斯</Option>
-									<Option value="本田">本田</Option>
-									<Option value="波士顿">波士顿</Option>
-								</Select>
+					<Col span={5}>
+						{getFieldDecorator('brandIds')(
+								<Input type='hidden' />
+							)}
+						<FormItem {...formItemLayout2} label="主营品牌"  >
+							{getFieldDecorator('brandNames')(
+								<Input onClick={this.handleOpenChoose} onKeyDown={this.disabledInput}  onKeyPress={this.disabledInput} onKeyUp={this.disabledInput} />
 							)}
 						</FormItem>
 					</Col>
-				</Row>
-				<Row gutter={16}>
 					<Col span={5}>
 						<FormItem {...formItemLayout} label="客户区域">
 							{getFieldDecorator('eara', { initialValue: '城内商家' })(
@@ -274,6 +289,7 @@ class QueryFrom extends React.Component {
 						<Button type="ghost" className="resetButton" onClick={this.handleReset}>重置</Button>
 					</Col>
 				</Row>
+				<BrandSelector onChoosed={this.handleChoosed} title={'分配负责人'} visible={this.state.brandSelectorVisible} />
 			</Form>
 		);
 	}

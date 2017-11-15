@@ -6,6 +6,13 @@
     font-weight: bold;
 }
 
+.list-card-wrap .card-title{
+    border-bottom: solid 1px #ebebeb;
+}
+
+.table-card-wrap .card-title{
+    border-bottom: solid 1px #fff;
+}
 
 .card-title-number{
     color: #336699;
@@ -24,3 +31,93 @@
     position: relative
 }
 
+.list-card-wrap .one-item{
+    position: relative;
+    padding: 0 12px;
+    border-bottom: solid 1px #ebebeb;
+}
+
+.one-item .item-info{
+    width: 100%;
+    padding-right:140px; 
+    float: left;
+}
+
+.one-item .item-info .item-message{
+    color: #417ab3;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+
+.one-item .progress-wrap{
+    width: 140px;
+    position: absolute;
+    right: 0;
+    top:0;
+    z-index: 1;
+}
+
+
+.progress-wrap .nowarning{
+    color: #417ab3;
+}
+.progress-wrap .warning{
+    color: #ff6666;
+}
+
+.progress-wrap .btn-wrap{
+    text-align: center;
+}
+
+.item-info .column-2 {
+    width: 50%;
+    float: left;
+}
+.one-item .row-1{
+    line-height: 40px;
+    height: 32px;
+}
+.one-item  .progress-wrap .row-1{
+    text-align: center;
+}
+
+.one-item .row-2{
+    line-height: 28px;
+    height: 36px;
+}
+
+.table-card-wrap .ant-table-thead > tr > th,.table-card-wrap .ant-table-tbody > tr > td{
+    padding: 10px 8px;
+}
+.table-card-wrap .ant-pagination{
+    margin-right: 12px;
+}
+
+
+.list-card-wrap .pagination-wrap{
+    height: 58px;
+    background: #fff;
+}
+.list-card-wrap .ant-pagination {
+    margin: 16px 0;
+    float: right;
+    margin-right: 12px;
+}
+
+.list-card-wrap .alignment-wrap,.table-card-wrap .ant-table-wrapper{
+    height: 334px;
+}
+
+.list-card-wrap .item-info .important-tag{
+    color: #f6b37f;
+    border: solid 1px #f6b37f;
+    padding: 4px 8px;
+}
+
+.list-card-wrap .item-info .normal-tag{
+    color: #417ab3;
+    border: solid 1px #417ab3;
+    padding: 4px 8px;
+}

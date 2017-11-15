@@ -27,6 +27,7 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    text-align: center;
 }
 
 .briefly-card .count-1 {
@@ -79,10 +80,14 @@
     border-right: none;
 }
 
-.briefly-card .trend-up {
+.briefly-card .up {
     color: #44c759;
 }
 
-.briefly-card .trend-down {
+.briefly-card .down {
     color: #ff4040;
+}
+
+.briefly-card .just {
+    color: #797979;
 }
