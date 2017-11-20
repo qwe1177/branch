@@ -7,22 +7,10 @@ import Card2 from '../components/Card2';
 import Card3 from '../components/Card3';
 import TableCard from '../components/TableCard';
 import ListCard from '../components/ListCard';
+import axios from 'axios';
 
-
-const mockCard1Data = {
-	wode: { count: 2411935, add: 5, turn: 4 },
-	xiashu: { count: 323, add: 5, turn: 4 },
-	gonghai: { count: 88, add: 5, turn: 4 },
-	quanbu: { count: 45245, add: 5, turn: 4 }
-}
-
-
-const mockCard2Data = {
-	wode: { count: 564, add: 5, trend:'up', rate: '100%' },
-	xiashu: { count: 654, add: 5, trend:'down', rate: '80%'},
-	gonghai: { count: 645, add: 5, turn: 4 },
-	quanbu: { count: 645, add: 5, trend:'just', rate: '0%' }
-}
+import { connect_cas } from '../../../util/connectConfig';
+import { getLoginInfo ,getUrlParams} from '../../../util/baseTool';
 
 const mockCard3Data = {
 	wode: { count: 534, add: 5, turn: 4 },
@@ -32,7 +20,26 @@ const mockCard3Data = {
 	chengjiaojine: { count: 209675 }
 }
 
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import {getOperateData,getCurrentData,getFieldData} from '../../../components/common/power/redux';
+
+
+@connect(
+	state => ({ power: state.power }),
+	dispatch => bindActionCreators({ getOperateData,getCurrentData,getFieldData}, dispatch)
+)
+
 class App extends Component {
+	componentWillMount() {
+		// this.queryData();
+		var token = getLoginInfo()['token'];  //获取token　登录用
+		var urlParams = getUrlParams();
+		var moduleId = urlParams['moduleId']?urlParams['moduleId']:'';
+		this.props.getOperateData(token,moduleId);/**操作权限 */
+		this.props.getCurrentData(token,moduleId);/**数据权限 */
+		this.props.getFieldData(token,moduleId);/**字段权限 */
+	}
 	render() {
 		return (
 			<div className='home-page'>
@@ -40,10 +47,10 @@ class App extends Component {
 				<div className='page-main'>
 					<div className="top-wrap clearfix">
 						<div className='card-item'>
-							<Card1 data={mockCard1Data} />
+							<Card1/>
 						</div>
 						<div className='card-item'>
-							<Card2 data={mockCard2Data} />
+							<Card2/>
 						</div>
 						<div className='card-item'>
 							<Card3 data={mockCard3Data} />

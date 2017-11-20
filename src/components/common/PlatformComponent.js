@@ -32,7 +32,7 @@ export default class PlatformComponent extends Component {
     axios.get(connect_cas + '/api/menu/getPlatformMenu', { params: { platformId: platformId, token: token } }).then((res) => {
         if (res.data.code == '0') {
           // console.log(JSON.stringify(res.data.data.menu));
-          // this.setState({platformMenu:res.data.data.menu});
+          this.setState({platformMenu:res.data.data.menu});
         }
       });
   }

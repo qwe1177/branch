@@ -1,16 +1,10 @@
 import React, {Component} from 'react'
 import {render} from 'react-dom'
 import {connect} from 'react-redux'
-import {
-    baseInfoForm,
-    modalmodelaction,
-    tablemodelaction,
-    tablemodelaction2,
-    tablemodelaction3,
-    fetchPosts,
-    fetchcitysPosts
-} from '../actions'
+import {bindActionCreators} from 'redux';
+import actions from '../actions'
 import Modalmodel  from '../components/Modalmodel'
+
 import {
     Form,
     Icon,
@@ -36,42 +30,49 @@ const RadioButton = Radio.Button
 const RadioGroup = Radio.Group
 import axios from 'axios'
 const RangePicker = DatePicker.RangePicker;
+axios.defaults.timeout = 30000;                        //响应时间
+axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8';           //配置请求头
+
+import CategorySelector from '../../components/business/categoryselector';
+import BrandSelector from '../../components/business/brandselector';
+
 
 
 class UserForm extends Component {
 
     constructor(props) {
         super(props);
+
         this.columns = [{
             title: (<div><em style={{color:'#ff0000',marginRight:'5px'}}>*</em>姓名</div>),
-            dataIndex: 'name',
+            dataIndex: 'fullname',
             render: this.addinputdata,
             width: 80,
         }, {
             title: '性别',
             className: 'column-money',
-            dataIndex: 'sex',
+            dataIndex: 'gender',
             render: this.addselectdata,
             width: 60,
         }, {
             title: (<div><em style={{color:'#ff0000',marginRight:'5px'}}>*</em>手机</div>),
-            dataIndex: 'phone',
+            dataIndex: 'mobile',
             render: this.addinputdata,
             width: 105,
         },
             {
                 title: '固话',
-                dataIndex: 'tel',
+                dataIndex: 'telephone',
                 render: this.addinputdata,
             },
             {
                 title: '职位',
-                dataIndex: 'profession',
+                dataIndex: 'position',
                 render: this.addinputdata,
             },
             {
                 title: '生日',
-                dataIndex: 'Birthday',
+                dataIndex: 'birthday',
                 render: this.addinputdata,
 
             },
@@ -92,7 +93,7 @@ class UserForm extends Component {
             },
             {
                 title: 'QQ',
-                dataIndex: 'QQ',
+                dataIndex: 'qq',
                 render: this.addinputdata,
             },
             {
@@ -102,13 +103,13 @@ class UserForm extends Component {
             },
             {
                 title: '备注',
-                dataIndex: 'mark',
+                dataIndex: 'remark',
                 render: this.addinputdata,
             },
             {
                 title: '操作',
                 width: 60,
-                dataIndex: 'Operation',
+                dataIndex: 'del',
                 render: (text, record, index) => {
                     return (
                         this.props.tablemodel.data.length > 1 ?
@@ -192,6 +193,44 @@ class UserForm extends Component {
 
     }
 
+    handleOpenChoose = () => {
+        this.setState({ brandSelectorVisible: true });
+    }
+    handleOpenChooseForCategory = () => {
+        this.setState({ categorySelectorVisible: true });
+    }
+    handleChoosed = (ids, labels) => {
+        this.props.form.setFieldsValue({ mainBrandNames: labels, mainBrand: ids });
+        this.setState({ brandSelectorVisible: false });
+    }
+    handleCancel = () => {
+        this.setState({ brandSelectorVisible: false });
+    }
+    handleChoosedForCategory = (ids, labels) => {
+        this.props.form.setFieldsValue({ varietyNameNames: labels, varietyNameId: ids });
+        this.setState({ categorySelectorVisible: false });
+    }
+    handleCancelForCategory = () => {
+        this.setState({ categorySelectorVisible: false });
+    }
+    getLastSelectBrand = () => {
+        var labelstr = this.props.form.getFieldValue('mainBrandNames');
+        var idstr = this.props.form.getFieldValue('mainBrand');
+        console.log({ labelstr, idstr })
+        return { labelstr, idstr }
+    }
+    getLastSelectCategory = () => {
+        var idstr = this.props.form.getFieldValue('varietyNameId');
+        return idstr;
+    }
+
+
+    state = {
+        brandSelectorVisible: false,
+        categorySelectorVisible: false
+    }
+
+
     getBase64(img, callback) {
         const reader = new FileReader();
         reader.addEventListener('load', () => callback(reader.result));
@@ -214,12 +253,12 @@ class UserForm extends Component {
 
     uploadhandleChange = (name)=>(info) => {
         if (info.file.status === 'uploading') {
-            this.getBase64(info.file.originFileObj, imageUrl => this.props.dispatch(baseInfoForm({
+            this.getBase64(info.file.originFileObj, imageUrl => this.props.baseInfoForm({
                 [name]: {
                     name: name,
                     value: imageUrl
                 }
-            })));
+            }));
         }
     }
 
@@ -263,22 +302,22 @@ class UserForm extends Component {
         const {count, data} = this.props.tablemodel;
         const newData = {
             key: count + '',
-            name: {name: 'name' + count, message: '请输入姓名', placeholder: '姓名', required: true},
-            sex: {name: 'sex' + count, message: '请选择性别', placeholder: '性别',},
-            phone: {name: 'phone' + count, message: '请输入手机', placeholder: '手机', required: true},
-            tel: {name: 'tel' + count, message: '请输入固话', placeholder: '固话',},
-            profession: {name: 'profession' + count, message: '请输入职位', placeholder: '职位',},
-            Birthday: {name: 'Birthday' + count, message: '请输入生日', placeholder: '生日',},
+            fullname: {name: 'fullname' + count, message: '请输入姓名', placeholder: '姓名', required: true},
+            gender: {name: 'gender' + count, message: '请选择性别', placeholder: '性别',},
+            mobile: {name: 'mobile' + count, message: '请输入手机', placeholder: '手机', required: true},
+            telephone: {name: 'telephone' + count, message: '请输入固话', placeholder: '固话',},
+            position: {name: 'position' + count, message: '请输入职位', placeholder: '职位',},
+            birthday: {name: 'birthday' + count, message: '请输入生日', placeholder: '生日',},
             email: {name: 'email' + count, message: '请输入邮箱', placeholder: '邮箱', required: false, type: 'email',},
             fax: {name: 'fax' + count, message: '请输入传真', placeholder: '传真',},
             wangwang: {name: 'wangwang' + count, message: '请输入旺旺', placeholder: '旺旺',},
-            QQ: {name: 'QQ' + count, message: '请输入QQ', placeholder: 'QQ',},
+            qq: {name: 'qq' + count, message: '请输入QQ', placeholder: 'QQ',},
             weixin: {name: 'weixin' + count, message: '请输入微信', placeholder: '微信',},
-            mark: {name: 'mark' + count, message: '请输入备注', placeholder: '备注',},
-            Operation: '删除',
+            remark: {name: 'remark' + count, message: '请输入备注', placeholder: '备注',},
+            del: '删除',
         };
 
-        this.props.dispatch(tablemodelaction({data: [...data, newData], count: count + 1,}))
+        this.props.tablemodelaction({data: [...data, newData], count: count + 1,})
     }
 
     handleAdd2 = () => {
@@ -295,60 +334,61 @@ class UserForm extends Component {
             Operation: '删除',
         };
 
-        this.props.dispatch(tablemodelaction2({data2: [...data2, newData], count: count + 1,}))
+        this.props.tablemodelaction2({data2: [...data2, newData], count: count + 1,})
     }
 
 
     Modalshow = (index)=>()=> {
-        this.props.dispatch(modalmodelaction({visible: true,}))
-        this.props.dispatch(tablemodelaction({delkey: index,}))
+        this.props.modalmodelaction({visible: true,})
+        this.props.tablemodelaction({delkey: index,})
     }
     Modalshow2 = (index)=>()=> {
-        this.props.dispatch(modalmodelaction({visible2: true,}))
-        this.props.dispatch(tablemodelaction2({delkey2: index,}))
+        this.props.modalmodelaction({visible2: true,})
+        this.props.tablemodelaction2({delkey2: index,})
     }
     ModalhandleOk = ()=> {
         const data = [...this.props.tablemodel.data];
         const delkey = this.props.tablemodel.delkey;
         data.splice(delkey, 1);
-        this.props.dispatch(modalmodelaction({ModalText: '删除中···', confirmLoading: true,}))
+        this.props.modalmodelaction({ModalText: '删除中···', confirmLoading: true,})
         setTimeout(() => {
-            this.props.dispatch(tablemodelaction({data: data,}));
-            this.props.dispatch(modalmodelaction({
+            this.props.tablemodelaction({data: data,});
+            this.props.modalmodelaction({
                 visible: false,
                 confirmLoading: false,
-            }));
+            });
 
-        }, 1000);
+        }, 500);
     }
 
     ModalhandleOk2 = ()=> {
         const data2 = [...this.props.tablemodel2.data2];
         const delkey2 = this.props.tablemodel2.delkey2;
         data2.splice(delkey2, 1);
-        this.props.dispatch(modalmodelaction({ModalText: '删除中···', confirmLoading: true,}))
+        this.props.modalmodelaction({ModalText: '删除中···', confirmLoading: true,})
         setTimeout(() => {
-            this.props.dispatch(tablemodelaction2({data2: data2,}));
-            this.props.dispatch(modalmodelaction({
+            this.props.tablemodelaction2({data2: data2,});
+            this.props.modalmodelaction({
                 visible2: false,
                 confirmLoading: false,
-            }));
+            });
 
-        }, 1000);
+        }, 500);
     }
     ModalhandleCancel = (value) =>()=> {
-        this.props.dispatch(modalmodelaction({[value]: false}))
+        this.props.modalmodelaction({[value]: false})
     }
 
 
     onChange = (e) => {
         const name = e.target.name;
         const value = e.target.value;
-        this.props.dispatch(baseInfoForm({name: {name: name, value: value}}))
+        this.props.baseInfoForm({name: {name: name, value: value}})
     }
 
-    handleChange = (name = 'name')=>(value) => {
-        this.props.dispatch(baseInfoForm({[name]: {name: name, value: value}}))
+    handleChange =(value) => {
+        //this.props.baseInfoForm({[name]: {name: name, value: value}})
+        console.log(value)
     }
 
 
@@ -357,12 +397,27 @@ class UserForm extends Component {
         wrapperCol: {span: 19}
     }
 
+    formItemLayout2 = {
+        labelCol: {span: 0},
+        wrapperCol: {span: 24}
+    }
+
 
     componentDidMount() {
 
-        const {dispatch} = this.props
-        dispatch(fetchPosts('categoryChild'))
-        dispatch(fetchcitysPosts({name: 'province', value: '', returnName: 'provinces'}))
+        //this.props.fetchPosts('categoryChild')
+        this.props.fetchzonesPosts({
+            url: '//srm.csc86.com/v1/clue/getZone.do',
+            name: 'id',
+            value: '',
+            returnName: 'provinces'
+        })
+        this.props.fetchzonesPosts({
+            url: '//srm.csc86.com/v1/clue/getArea.do',
+            name: 'id',
+            value: '',
+            returnName: 'Hareas'
+        })
     }
 
 
@@ -373,12 +428,91 @@ class UserForm extends Component {
     ajaxpost = false
     isajaxpost = true
 
+
+    objToarrsort = (obj)=> {
+        let arr = [], arr2 = [], newarr;
+        for (let i in obj) {
+            if (i.match(/\d+/g)) {
+                arr.push([i, obj[i]]);
+            } else {
+                arr2.push([i, obj[i]]);
+            }
+        }
+
+        arr.sort((a, b)=> {
+            a[0].match(/\d+/g).join('') - b[0].match(/\d+/g).join('')
+        })
+        newarr = [...arr, ...arr2]
+        return newarr;
+    }
+
+    objTodata = (obj)=> {
+        const arr = []
+        for (let o in obj) {
+            if (obj[o]) {
+                arr.push(o + '=' + obj[o])
+            }
+        }
+        return arr.join('&')
+    }
+
     handleSubmit = (e) => {
         e.preventDefault();
-        this.ajaxpost = true
+
         this.props.form.validateFieldsAndScroll((err, values) => {
             if (!err) {
-                console.log('Received values of form: ', values);
+
+                const params = {}
+
+                const newarrobj = this.objToarrsort(values)
+                const newarrobjlen = newarrobj.length
+
+                for (let i = 0; i < newarrobjlen; i++) {
+
+
+                    const re = /\d+$/g;
+                    const arr0 = newarrobj[i][0]
+                    const arr1 = newarrobj[i][1]
+                    if (re.test(arr0)) {
+                        const key = arr0.replace(/(.*)\d+/, '$1')
+                        if (Reflect.has(params, key)) {
+                            params[key].push(arr1)
+                        } else {
+                            params[key] = []
+                            params[key].push(arr1)
+                        }
+
+                    } else {
+                        params[arr0] = arr1
+                    }
+
+
+                }
+
+                const newparams = {}
+                for (let o in params) {
+                    if (typeof params[o] === 'object') {
+                        if (params[o].constructor === Array) {
+                            newparams[o] = params[o].join(',')
+                        }
+                    } else {
+                        if (params[o]) {
+                            newparams[o] = params[o]
+                        }
+                    }
+                }
+
+                const data = this.objTodata(newparams)
+
+                axios.post('http://srm.csc86.com/v1/clue/addSupplierClue.do', data)
+                    .then(function (response) {
+                        console.log(response);
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+
+
             }
         });
     }
@@ -386,7 +520,7 @@ class UserForm extends Component {
 
     jcbuttion = () => {
         this.ajaxpost = true
-        this.props.form.validateFieldsAndScroll(['CompanyName'], {force: true},
+        this.props.form.validateFieldsAndScroll(['companyName'], {force: true},
             (err) => {
                 if (err) {
                     return false;
@@ -398,7 +532,7 @@ class UserForm extends Component {
 
 
     timechange = (time, timeString)=> {
-        this.props.dispatch(baseInfoForm({'rangeTime': timeString}));
+        this.props.baseInfoForm({'rangeTime': timeString});
 
     }
 
@@ -411,27 +545,29 @@ class UserForm extends Component {
             this.ajaxpost = false;
             callback('企业名称不能超过20个字符')
         } else if (this.ajaxpost) {
-            this.props.dispatch(baseInfoForm({jsbutton: true}))
-            axios.get('http://localhost:3333/testApi/js', {
+            this.props.baseInfoForm({jsbutton: true})
+            axios.get(`//srm.csc86.com/v1/clue/checkCompanyName.do`, {
                 params: {
-                    username: value
+                    companyName: value
                 }
             }).then(response => {
                 if (response.status == 200) {
                     this.isajaxpost = false
-                    if (response.data.usernameState == -1) {
+                    if (response.data.code == 0) {
 
-                        this.props.dispatch(modalmodelaction({jsbuttionVisible: true,}))
-                        this.props.dispatch(tablemodelaction3({
+                        this.props.modalmodelaction({jsbuttionVisible: true,})
+                        this.props.tablemodelaction3({
                             data3: response.data.data,
                             count: response.data.data.length
-                        }))
+                        })
+                        callback()
+                    } else {
                         callback()
                     }
                 } else {
                     callback()
                 }
-                this.props.dispatch(baseInfoForm({jsbutton: false}))
+                this.props.baseInfoForm({jsbutton: false})
                 this.ajaxpost = false;
 
             })
@@ -446,16 +582,16 @@ class UserForm extends Component {
     bindinghandle = (rule, value, callback) => {
         const reg = /^\s*$/g;
         if (!reg.test(value)) {
-            axios.get('http://localhost:3333/testApi/binding', {
+            axios.get('http://srm.csc86.com/v1/clue/getAccountBycompanyName.do', {
                 params: {
-                    username: value
+                    companyName: value
                 }
             }).then(response => {
                 if (response.status == 200) {
-                    if (response.data.error == -1) {
-                        callback('账户名不存在')
-                    } else if (response.data.error == -2) {
-                        callback('该账户名已被其它企业绑定')
+                    if (response.data.code == 0) {
+                        callback(response.data.msg)
+                    } else if (response.data.code == 1) {
+                        callback()
                     }
                 } else {
                     callback()
@@ -483,17 +619,17 @@ class UserForm extends Component {
 
     handlePreview = (file) => {
 
-        this.props.dispatch(modalmodelaction({
+        this.props.modalmodelaction({
             previewVisible: true,
             previewImage: file.url || file.thumbUrl,
-        }));
+        });
 
     }
 
 
-    handleCancel2 = () => this.props.dispatch(modalmodelaction({previewVisible: false,}))
+    handleCancel2 = () => this.props.modalmodelaction({previewVisible: false,})
 
-    handleCancel3 = () => this.props.dispatch(modalmodelaction({jsbuttionVisible: false,}))
+    handleCancel3 = () => this.props.modalmodelaction({jsbuttionVisible: false,})
 
 
     uploadsprops2 = {
@@ -502,7 +638,8 @@ class UserForm extends Component {
         className: 'upload-list-inline',
         onPreview: this.handlePreview,
         multiple: true,
-        action: '//jsonplaceholder.typicode.com/posts/',
+        accept: 'image/*',
+        action: '//img.csc86.com/upload?type=approve',
     }
 
 
@@ -518,8 +655,10 @@ class UserForm extends Component {
     }
 
     provincehandle = (name, returnName)=>(value)=> {
-        this.props.dispatch(fetchcitysPosts({name, value: value['key'], returnName}))
+        const url = this.props.Infos.orOut.value == 2 ? '//srm.csc86.com/v1/clue/getZone.do' : '//srm.csc86.com/v1/clue/getArea.do'
+        this.props.fetchzonesPosts({url, name, value: value['key'], returnName})
     }
+
 
     companyIntroductionHandle = (n, v)=>(e)=> {
         const {value} = e.target;
@@ -543,6 +682,9 @@ class UserForm extends Component {
 
 
     render() {
+
+
+
         const {getFieldDecorator, getFieldsError, getFieldError, isFieldTouched} = this.props.form;
 
 
@@ -552,22 +694,139 @@ class UserForm extends Component {
         const columns2 = this.columns2;
 
         const {
-            categoryChild, jsbutton, province, provinces, city, citys, county, countys, town, towns, registAddressCitys
+            categoryChild, jsbutton, province, provinces, city, citys, county, countys, town, towns, Harea, Hareas, Hvenue, Hvenues, Hfloor, Hfloors, Hdistrict, Hdistricts, registAddressCitys
         } = this.props.Infos;
         const categorysarr = categoryChild ? categoryChild.map((v, i, a)=>(
-            <Option key={v['value']}>{v['name']}</Option>)) : []
-        const provincesarr = provinces ? provinces.map((v, i, a)=>(<Option key={v['value']}>{v['name']}</Option>)) : []
-        const citysarr = citys ? citys.map((v, i, a)=>(<Option key={v['value']}>{v['name']}</Option>)) : []
-        const countysarr = countys ? countys.map((v, i, a)=>(<Option key={v['value']}>{v['name']}</Option>)) : []
-        const townsarr = towns ? towns.map((v, i, a)=>(<Option key={v['value']}>{v['name']}</Option>)) : []
+            <Option key={v['cid']}>{v['c_name']}</Option>)) : []
+        const provincesarr = provinces ? provinces.map((v, i, a)=>(<Option key={v['id']}>{v['name']}</Option>)) : []
+        const citysarr = citys ? citys.map((v, i, a)=>(<Option key={v['id']}>{v['name']}</Option>)) : []
+        const countysarr = countys ? countys.map((v, i, a)=>(<Option key={v['id']}>{v['name']}</Option>)) : []
+        const townsarr = towns ? towns.map((v, i, a)=>(<Option key={v['id']}>{v['name']}</Option>)) : []
+
+        const Hareasarr = Hareas ? Hareas.map((v, i, a)=>(<Option key={v['id']}>{v['name']}</Option>)) : []
+        const Hvenuesarr = Hvenues ? Hvenues.map((v, i, a)=>(<Option key={v['id']}>{v['name']}</Option>)) : []
+        const Hfloorsarr = Hfloors ? Hfloors.map((v, i, a)=>(<Option key={v['id']}>{v['name']}</Option>)) : []
+        const Hdistrictsarr = Hdistricts ? Hdistricts.map((v, i, a)=>(<Option key={v['id']}>{v['name']}</Option>)) : []
+
         const registAddressCitysarr = registAddressCitys ? registAddressCitys.map((v, i, a)=>(
             <Option key={v['value']}>{v['name']}</Option>)) : []
         const provinceText = province ? province.value ? province.value.label + ' ' : '' : '';
         const cityText = city ? city.value ? city.value.label + ' ' : '' : '';
         const countyText = county ? county.value ? county.value.label + ' ' : '' : '';
         const townText = town ? town.value ? town.value.label + ' ' : '' : '';
-        const addressText = provinceText + cityText + countyText + townText
 
+        const HareaText = Harea ? Harea.value ? Harea.value.label + ' ' : '' : '';
+        const HvenueText = Hvenue ? Hvenue.value ? Hvenue.value.label + ' ' : '' : '';
+        const HfloorText = Hfloor ? Hfloor.value ? Hfloor.value.label + ' ' : '' : '';
+        const HdistrictText = Hdistrict ? Hdistrict.value ? Hdistrict.value.label + ' ' : '' : '';
+
+        const orOutval = this.props.Infos.orOut.value
+
+        const addressText1 = provinceText + cityText + countyText + townText
+        const addressText2 = HareaText + HvenueText + HfloorText + HdistrictText
+        const addressText = orOutval == 2 ? addressText1 : addressText2
+
+
+        const choosedKeys1 = this.getLastSelectCategory();
+        const choosedKeys = this.getLastSelectBrand();
+
+        const ssqx = orOutval == 2 ? (<FormItem
+            label=""  {...{
+            ...this.formItemLayout, ...{
+                wrapperCol: {
+                    span: 19,
+                    offset: 5
+                }
+            }
+        }} style={{"width":"100%",'marginTop':'5px'}} colon={false}
+        >
+            {getFieldDecorator('province', {
+                rules: [{required: false, message: '请选择省'}],
+            })(
+                <Select labelInValue style={{"width":"23%","marginRight":"5px"}}
+                        placeholder="请选择省"
+                        onChange={this.provincehandle('id','citys')}>
+                    {provincesarr}
+                </Select>
+            )}
+
+            {getFieldDecorator('city', {
+                rules: [{required: false, message: '请选择市'}],
+            })(
+                <Select labelInValue style={{"width":"23%","marginRight":"5px"}}
+                        placeholder="请选择市"
+                        onChange={this.provincehandle('id','countys')}>
+                    {citysarr}
+                </Select>
+            )}
+
+            {getFieldDecorator('county', {
+                rules: [{required: false, message: '请选择镇'}],
+            })(
+                <Select labelInValue style={{"width":"23%","marginRight":"5px"}}
+                        placeholder="请选择镇"
+                        onChange={this.provincehandle('id','towns')}>
+                    {countysarr}
+                </Select>
+            )}
+
+            {getFieldDecorator('town', {
+                rules: [{required: false, message: '请选择县'}],
+            })(
+                <Select labelInValue style={{"width":"23%","marginRight":"5px"}}
+                        placeholder="请选择县">
+                    {townsarr}
+                </Select>
+            )}
+        </FormItem>) : (<FormItem
+            label=""  {...{
+            ...this.formItemLayout, ...{
+                wrapperCol: {
+                    span: 19,
+                    offset: 5
+                }
+            }
+        }} style={{"width":"100%",'marginTop':'5px'}} colon={false}
+        >
+            {getFieldDecorator('Harea', {
+                rules: [{required: false, message: '请选择市'}],
+            })(
+                <Select labelInValue style={{"width":"23%","marginRight":"5px"}}
+                        placeholder="请选择市"
+                        onChange={this.provincehandle('cityId','Hvenues')}>
+                    {Hareasarr}
+                </Select>
+            )}
+
+            {getFieldDecorator('Hvenue', {
+                rules: [{required: false, message: '请选择广场'}],
+            })(
+                <Select labelInValue style={{"width":"23%","marginRight":"5px"}}
+                        placeholder="请选择广场"
+                        onChange={this.provincehandle('venueId','Hfloors')}>
+                    {Hvenuesarr}
+                </Select>
+            )}
+
+            {getFieldDecorator('Hfloor', {
+                rules: [{required: false, message: '请选择楼层'}],
+            })(
+                <Select labelInValue style={{"width":"23%","marginRight":"5px"}}
+                        placeholder="请选择楼层"
+                        onChange={this.provincehandle('floorId','Hdistricts')}>
+                    {Hfloorsarr}
+                </Select>
+            )}
+
+            {getFieldDecorator('Hdistrict', {
+                rules: [{required: false, message: '请选择区号'}],
+            })(
+                <Select labelInValue style={{"width":"23%","marginRight":"5px"}}
+                        placeholder="请选择区号">
+                    {Hdistrictsarr}
+                </Select>
+            )}
+        </FormItem>)
 
         const cttext = <div>
             <p style={{textAlign:'left',padding:'10px 0px'}}>
@@ -593,58 +852,70 @@ class UserForm extends Component {
                                     <Row style={{'padding':'8px 0px'}}>
 
                                         <Col span={12} style={{ textAlign: 'left' }}>
-                                            <FormItem   {...{...this.formItemLayout, ...{wrapperCol: {span: 19}}}}
-                                                label="企业名称" style={{"width":"100%"}}
+                                            <Col span={5}>
+                                                <div
+                                                    style={{display:'block',verticalAlign:'middle',textAlign:'right',lineHeight:'29px',fontSize:'12px',paddingRight:'10px',color:'rgba(0, 0, 0, 0.85)'}}>
+                                                    <em style={{color:'#ff0000',marginRight:'5px'}}>*</em>企业名称 :
+                                                </div>
+                                            </Col>
+                                            <Col span={19}>
 
-                                            >
-                                                {getFieldDecorator('CompanyName', {
-                                                    rules: [{
-                                                        validator: this.CompanyNamehandle
-                                                    }], initialValue: '',
-                                                })(
-                                                    <Input prefix={<Icon type="idcard" style={{ fontSize: 13 }} />}
-                                                           placeholder="请输入企业名称" name="companyName"
-                                                           style={{"width":"320px","marginRight":"5px"}}/>
-                                                )}
-                                                <Button type="primary" onClick={this.jcbuttion}
-                                                        disabled={jsbutton}>检测</Button>
-                                                <Modalmodel  {...{
-                                                    ...this.props.modalmodel,
-                                                    visible: this.props.modalmodel.jsbuttionVisible,
-                                                    title: '冲突提示',
-                                                    width: '650px',
-                                                    style: {'maxWidth': '100%'},
-                                                }}
-                                                    ModalText={cttext} footer={null} onCancel={this.handleCancel3}/>
-                                            </FormItem>
+                                                <Col span={20} style={{paddingRight:'5px'}}>
+                                                    <FormItem hasFeedback
+                                                              label=""  {...this.formItemLayout2}
+                                                              style={{"width":"100%"}}
+                                                    >
+                                                        {getFieldDecorator('companyName', {
+                                                            rules: [{
+                                                                validator: this.CompanyNamehandle
+                                                            }], initialValue: '',
+                                                        })(
+                                                            <Input
+                                                                prefix={<Icon type="idcard" style={{ fontSize: 13 }} />}
+                                                                placeholder="请输入企业名称"
+                                                                style={{"width":"100%",}}/>
+                                                        )}
+                                                    </FormItem>
+                                                </Col>
+                                                <Col span={4}>
+                                                    <Button type="primary" onClick={this.jcbuttion} size="large"
+                                                            style={{width: '100%'}}
+                                                            disabled={jsbutton}>检测</Button>
+                                                    <Modalmodel  {...{
+                                                        ...this.props.modalmodel,
+                                                        visible: this.props.modalmodel.jsbuttionVisible,
+                                                        title: '冲突提示',
+                                                        width: '650px',
+                                                        style: {'maxWidth': '100%'},
+                                                    }}
+                                                        ModalText={cttext} footer={null} onCancel={this.handleCancel3}/>
+                                                </Col>
+
+                                            </Col>
 
 
                                         </Col>
+
+
                                         <Col span={12} style={{ textAlign: 'left' }}>
                                             <FormItem
                                                 label="经营品类"  {...this.formItemLayout} style={{"width":"100%"}}
                                             >
 
+                                                {getFieldDecorator('varietyNameNames')(
+                                                    <Input onClick={this.handleOpenChooseForCategory} readOnly placeholder="点击选择经营类目"/>
+                                                )}
 
-                                                {getFieldDecorator('category', {
-                                                    rules: [{
-                                                        required: false, message: '点击选择经营的类目', type: 'array',
-                                                    }], initialValue: [],
-                                                })(
-                                                    <Select
-                                                        mode="multiple"
-
-                                                        placeholder="点击选择经营的类目"
-                                                        onChange={this.handleChange}
-                                                        style={{ width: '100%' }}
-                                                    >
-
-                                                        {categorysarr}
-                                                    </Select>
+                                                {getFieldDecorator('varietyNameId')(
+                                                    <Input type='hidden' />
                                                 )}
 
                                             </FormItem>
-
+                                            <CategorySelector onChoosed={this.handleChoosedForCategory}
+                                                              choosedKeys={choosedKeys1}
+                                                              visible={this.state.categorySelectorVisible}
+                                                              onCancel={this.handleCancelForCategory}
+                                            />
 
                                         </Col>
                                     </Row>
@@ -652,36 +923,52 @@ class UserForm extends Component {
                                         <Col span={12} style={{ textAlign: 'left' }}>
                                             <Col span={5}>
                                                 <div
-                                                    style={{display:'block',verticalAlign:'middle',textAlign:'right',lineHeight:'29px',paddingRight:'10px',color:'rgba(0, 0, 0, 0.85)'}}>
+                                                    style={{display:'block',verticalAlign:'middle',textAlign:'right',lineHeight:'29px',fontSize:'12px',paddingRight:'10px',color:'rgba(0, 0, 0, 0.85)'}}>
                                                     绑定账号 :
                                                 </div>
                                             </Col>
                                             <Col span={19}>
                                                 <Col span={12}>
-                                                    <FormItem>
-                                                        <Button type="primary">csc86</Button>
-                                                        {getFieldDecorator('BindingAccount1', {
-                                                            rules: [{
-                                                                validator: this.bindinghandle
-                                                            }], initialValue: '', validateTrigger: 'onBlur'
-                                                        })(
-                                                            <Input placeholder="输入账号"
-                                                                   style={{'width':'120px','margin':'0px 5px'}}/>
-                                                        )}
-                                                    </FormItem>
+                                                    <Col span={8} style={{paddingRight:'5px'}}>
+                                                        <Button type="primary" style={{width:'100%'}}
+                                                                size="large">csc86</Button>
+                                                    </Col>
+                                                    <Col span={16} style={{paddingRight:'5px'}}>
+                                                        <FormItem {...this.formItemLayout2} style={{"width":"100%"}}
+                                                                                            hasFeedback>
+
+                                                            {getFieldDecorator('cscAccount', {
+                                                                rules: [{
+                                                                    validator: this.bindinghandle
+                                                                }], initialValue: '', validateTrigger: 'onBlur'
+                                                            })(
+                                                                <Input placeholder="输入账号"
+                                                                       style={{'width':'100%',}}/>
+                                                            )}
+                                                        </FormItem>
+                                                    </Col>
+
                                                 </Col>
                                                 <Col span={12}>
-                                                    <FormItem>
-                                                        <Button type="primary">buy5j</Button>
-                                                        {getFieldDecorator('BindingAccount2', {
-                                                            rules: [{
-                                                                validator: this.bindinghandle
-                                                            }], initialValue: '', validateTrigger: 'onBlur'
-                                                        })(
-                                                            <Input placeholder="输入账号"
-                                                                   style={{'width':'120px','margin':'0px 5px'}}/>
-                                                        )}
-                                                    </FormItem>
+                                                    <Col span={8} style={{paddingRight:'5px'}}>
+                                                        <Button type="primary" style={{width:'100%'}}
+                                                                size="large">buy5j</Button>
+                                                    </Col>
+                                                    <Col span={16}>
+                                                        <FormItem  {...this.formItemLayout2} style={{"width":"100%"}}
+                                                                                             hasFeedback>
+
+                                                            {getFieldDecorator('buy5jUserId', {
+                                                                rules: [{
+                                                                    validator: this.bindinghandle
+                                                                }], initialValue: '', validateTrigger: 'onBlur'
+                                                            })(
+                                                                <Input placeholder="输入账号"
+                                                                       style={{'width':'100%',}}/>
+                                                            )}
+                                                        </FormItem>
+                                                    </Col>
+
                                                 </Col>
                                             </Col>
 
@@ -691,7 +978,7 @@ class UserForm extends Component {
                                                 label="来源"  {...this.formItemLayout} style={{"width":"100%"}}
                                             >
 
-                                                {getFieldDecorator('sourceSelect', {
+                                                {getFieldDecorator('source', {
                                                     rules: [{required: false, message: '请选择来源'}],
                                                 })(
                                                     <Select style={{ width: 240 }} placeholder="请选择来源">
@@ -711,7 +998,7 @@ class UserForm extends Component {
                                             <FormItem
                                                 label="线索级别"  {...this.formItemLayout} style={{"width":"100%"}}
                                             >
-                                                {getFieldDecorator('levelSelect', {
+                                                {getFieldDecorator('clueLevel', {
                                                     rules: [{required: false, message: '请选择'}],
                                                 })(
                                                     <Select style={{ width: 240 }} placeholder="请选择">
@@ -728,7 +1015,7 @@ class UserForm extends Component {
                                                 label="是否新增SKU"  {...this.formItemLayout} style={{"width":"100%"}}
                                             >
 
-                                                {getFieldDecorator('orSku', {
+                                                {getFieldDecorator('isAddSku', {
                                                     rules: [{required: false, message: '请选择'}],
 
                                                 })(
@@ -747,7 +1034,7 @@ class UserForm extends Component {
                                             <FormItem
                                                 label="企业性质"  {...this.formItemLayout} style={{"width":"100%"}}
                                             >
-                                                {getFieldDecorator('propertySelect', {
+                                                {getFieldDecorator('enterpriseType', {
                                                     rules: [{required: false, message: '请选择'}],
                                                 })(
                                                     <Select style={{ width: 240 }} placeholder="请选择">
@@ -763,7 +1050,7 @@ class UserForm extends Component {
                                             <FormItem
                                                 label="企业网址"  {...this.formItemLayout} style={{"width":"100%"}}
                                             >
-                                                {getFieldDecorator('Website', {
+                                                {getFieldDecorator('website', {
                                                     rules: [{required: false, message: '请输入网址'}],
                                                 })(
                                                     <Input placeholder="请输入网址" id="success"/>
@@ -777,7 +1064,7 @@ class UserForm extends Component {
                                             <FormItem
                                                 label="优势产品"  {...this.formItemLayout} style={{"width":"100%"}}
                                             >
-                                                {getFieldDecorator('Advantage', {
+                                                {getFieldDecorator('goods', {
                                                     rules: [{required: false, message: '请填写优势产品'}],
                                                 })(
                                                     <Input placeholder="请填写优势产品"/>
@@ -788,7 +1075,7 @@ class UserForm extends Component {
                                             <FormItem
                                                 label="旺铺地址"  {...this.formItemLayout} style={{"width":"100%"}}
                                             >
-                                                {getFieldDecorator('shopSite', {
+                                                {getFieldDecorator('shopsite', {
                                                     rules: [{required: false, message: '请填写旺铺地址'}],
                                                 })(
                                                     <Input placeholder="请填写旺铺地址"/>
@@ -802,7 +1089,7 @@ class UserForm extends Component {
                                             <FormItem
                                                 label="经营品牌"  {...this.formItemLayout} style={{"width":"100%"}}
                                             >
-                                                {getFieldDecorator('brand', {
+                                                {/*{getFieldDecorator('mainBrand', {
                                                     rules: [{
                                                         required: false, message: '点击选择经营的类目', type: 'array',
                                                     }], initialValue: [],
@@ -816,10 +1103,22 @@ class UserForm extends Component {
                                                     >
                                                         {categorysarr}
                                                     </Select>
+                                                )}*/}
+
+
+                                                {getFieldDecorator('mainBrand')(
+                                                    <Input type='hidden' />
+                                                )}
+                                                {getFieldDecorator('mainBrandNames')(
+                                                    <Input onClick={this.handleOpenChoose} readOnly placeholder="点击选择经营品牌" />
                                                 )}
 
-
                                             </FormItem>
+                                            <BrandSelector onChoosed={this.handleChoosed}
+                                                           visible={this.state.brandSelectorVisible}
+                                                           choosedKeys={choosedKeys}
+                                                           onCancel={this.handleCancel}
+                                            />
 
                                             <FormItem
                                                 label="联系地址"  {...this.formItemLayout}
@@ -828,63 +1127,14 @@ class UserForm extends Component {
 
                                                 {getFieldDecorator('orOut', {
                                                     rules: [{required: false, message: '请选择'}],
-                                                    onChange: this.onChange, initialValue: 2,
                                                 })(
-                                                    <RadioGroup onChange={this.onChange}>
+                                                    <RadioGroup>
                                                         <Radio value={1}>城内</Radio>
                                                         <Radio value={2}>城外</Radio>
                                                     </RadioGroup>
                                                 )}
                                             </FormItem>
-                                            <FormItem
-                                                label=""  {...{
-                                                ...this.formItemLayout, ...{
-                                                    wrapperCol: {
-                                                        span: 19,
-                                                        offset: 5
-                                                    }
-                                                }
-                                            }} style={{"width":"100%",'marginTop':'5px'}} colon={false}
-                                            >
-                                                {getFieldDecorator('province', {
-                                                    rules: [{required: false, message: '请选择省'}],
-                                                })(
-                                                    <Select labelInValue style={{"width":"23%","marginRight":"5px"}}
-                                                            placeholder="请选择省"
-                                                            onChange={this.provincehandle('province','citys')}>
-                                                        {provincesarr}
-                                                    </Select>
-                                                )}
-
-                                                {getFieldDecorator('city', {
-                                                    rules: [{required: false, message: '请选择市'}],
-                                                })(
-                                                    <Select labelInValue style={{"width":"23%","marginRight":"5px"}}
-                                                            placeholder="请选择市"
-                                                            onChange={this.provincehandle('city','countys')}>
-                                                        {citysarr}
-                                                    </Select>
-                                                )}
-
-                                                {getFieldDecorator('county', {
-                                                    rules: [{required: false, message: '请选择镇'}],
-                                                })(
-                                                    <Select labelInValue style={{"width":"23%","marginRight":"5px"}}
-                                                            placeholder="请选择镇"
-                                                            onChange={this.provincehandle('county','towns')}>
-                                                        {countysarr}
-                                                    </Select>
-                                                )}
-
-                                                {getFieldDecorator('town', {
-                                                    rules: [{required: false, message: '请选择县'}],
-                                                })(
-                                                    <Select labelInValue style={{"width":"23%","marginRight":"5px"}}
-                                                            placeholder="请选择县">
-                                                        {townsarr}
-                                                    </Select>
-                                                )}
-                                            </FormItem>
+                                            {ssqx}
                                             <FormItem
                                                 label=""  {...{
                                                 ...this.formItemLayout, ...{
@@ -909,7 +1159,7 @@ class UserForm extends Component {
                                                 label="主营业务"  {...this.formItemLayout} style={{"width":"100%"}}
                                             >
 
-                                                {getFieldDecorator('business', {
+                                                {getFieldDecorator('mainBusiness', {
                                                     rules: [{required: false, message: '请填写主营业务(50个字符)'}],
                                                     onChange: this.companyIntroductionHandle(this.numb1, 50)
                                                 })(
@@ -967,7 +1217,7 @@ class UserForm extends Component {
                                             <FormItem
                                                 label="营业执照注册号"  {...this.formItemLayout} style={{"width":"100%"}}
                                             >
-                                                {getFieldDecorator('registNumber', {
+                                                {getFieldDecorator('creditNumber', {
                                                     rules: [{required: false, message: '请输入营业执照注册号'}],
                                                 })(
                                                     <Input placeholder="营业执照注册号"/>
@@ -981,7 +1231,7 @@ class UserForm extends Component {
                                                 label="营业执照注册地"  {...this.formItemLayout} style={{"width":"100%"}}
                                             >
 
-                                                {getFieldDecorator('registAddressProvince', {
+                                                {getFieldDecorator('province', {
                                                     rules: [{required: false, message: '请选择省'}],
                                                 })(
                                                     <Select labelInValue style={{"width":"45%","marginRight":"5px"}}
@@ -991,7 +1241,7 @@ class UserForm extends Component {
                                                     </Select>
                                                 )}
 
-                                                {getFieldDecorator('registAddressCity', {
+                                                {getFieldDecorator('city', {
                                                     rules: [{required: false, message: '请选择市'}],
                                                 })(
                                                     <Select labelInValue style={{"width":"45%","marginRight":"5px"}}
@@ -1010,7 +1260,7 @@ class UserForm extends Component {
                                                 label="营业执照期限"  {...this.formItemLayout} style={{"width":"100%"}}
                                             >
 
-                                                {getFieldDecorator('range-time', this.rangeConfig)(
+                                                {getFieldDecorator('deadline', this.rangeConfig)(
                                                     <RangePicker style={{"width":"65%"}}/>
                                                 )}
 
@@ -1021,7 +1271,7 @@ class UserForm extends Component {
                                             <FormItem
                                                 label="登记机构"  {...this.formItemLayout} style={{"width":"100%"}}
                                             >
-                                                {getFieldDecorator('RegistAgencies', {
+                                                {getFieldDecorator('organization', {
                                                     rules: [{required: false, message: '请输入登记机构'}],
                                                 })(
                                                     <Input placeholder="登记机构"/>
@@ -1036,13 +1286,13 @@ class UserForm extends Component {
                                                 label="企业法人"  {...{...this.formItemLayout, ...{wrapperCol: {span: 19}}}}
                                                 style={{"width":"100%"}}
                                             >
-                                                {getFieldDecorator('legalPerson', {
+                                                {getFieldDecorator('corporation', {
                                                     rules: [{required: false, message: '请输入企业法人'}],
                                                 })(
                                                     <Input placeholder="企业法人"
                                                            style={{width:'65%','marginRight':'10px'}}/>
                                                 )}
-                                                {getFieldDecorator('orwomen', {
+                                                {getFieldDecorator('corporationGender', {
                                                     rules: [{required: false, message: '请选择'}],
                                                 })(
                                                     <RadioGroup name="orwomen">
@@ -1057,7 +1307,7 @@ class UserForm extends Component {
                                             <FormItem
                                                 label="身份证号"  {...this.formItemLayout} style={{"width":"100%"}}
                                             >
-                                                {getFieldDecorator('IdCard', {
+                                                {getFieldDecorator('idcard', {
                                                     rules: [{required: false, message: '请输入身份证号'}],
                                                 })(
                                                     <Input placeholder="身份证号"/>
@@ -1256,7 +1506,7 @@ class UserForm extends Component {
                                             <FormItem
                                                 label="管理体系认证"  {...this.formItemLayout} style={{"width":"100%"}}
                                             >
-                                                {getFieldDecorator('ManagementSystem', {
+                                                {getFieldDecorator('manage', {
                                                     rules: [{required: false, message: '请选择'}],
 
                                                 })(
@@ -1275,7 +1525,7 @@ class UserForm extends Component {
                                             <FormItem
                                                 label="经营模式"  {...this.formItemLayout} style={{"width":"100%"}}
                                             >
-                                                {getFieldDecorator('BusinessModel', {
+                                                {getFieldDecorator('model', {
                                                     rules: [{required: false, message: '请选择'}],
 
                                                 })(
@@ -1292,7 +1542,7 @@ class UserForm extends Component {
                                             <FormItem
                                                 label="注册资本"  {...this.formItemLayout} style={{"width":"100%"}}
                                             >
-                                                {getFieldDecorator('registeredCapital', {
+                                                {getFieldDecorator('regmoney', {
                                                     rules: [{required: false, message: '请选择'}],
 
                                                 })(
@@ -1311,7 +1561,7 @@ class UserForm extends Component {
                                             <FormItem
                                                 label="员工数量"  {...this.formItemLayout} style={{"width":"100%"}}
                                             >
-                                                {getFieldDecorator('employeesNumber', {
+                                                {getFieldDecorator('employees', {
                                                     rules: [{required: false, message: '请选择'}],
 
                                                 })(
@@ -1328,7 +1578,7 @@ class UserForm extends Component {
                                             <FormItem
                                                 label="年营业额"  {...this.formItemLayout} style={{"width":"100%"}}
                                             >
-                                                {getFieldDecorator('Turnover', {
+                                                {getFieldDecorator('turnover', {
                                                     rules: [{required: false, message: '请选择'}],
 
                                                 })(
@@ -1348,7 +1598,7 @@ class UserForm extends Component {
                                                 label="公司介绍"  {...this.formItemLayout}
                                                 style={{"width":"100%",'marginTop':'0px'}}
                                             >
-                                                {getFieldDecorator('companyIntroduction', {
+                                                {getFieldDecorator('introduce', {
                                                     rules: [{required: false, message: '请填写公司介绍'}],
                                                     onChange: this.companyIntroductionHandle(this.numb3, 100)
                                                 })(
@@ -1386,15 +1636,15 @@ class UserForm extends Component {
     }
 }
 
-export default connect((state) => {
-    return {...state}
-})(Form.create({
-    mapPropsToFields(props) {
-        return props.Infos
-    },
-    onFieldsChange(props, fields) {
-        props.dispatch(baseInfoForm(fields))
 
-    },
-})(UserForm));
+export default connect(state => ({...state}), dispatch => bindActionCreators(actions, dispatch))(
+    Form.create({
+        mapPropsToFields(props) {
+            return props.Infos
+        },
+        onFieldsChange(props, fields) {
+            props.baseInfoForm(fields)
+
+        },
+    })(UserForm));
 

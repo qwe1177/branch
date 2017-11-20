@@ -54,27 +54,25 @@ export default class ListCard extends React.Component {
       limitTime: '3天24小时',
       isOvertime: false
     }
-    // , {
-    //   key: '4',
-    //   message: '可以设置一个提醒，让你不会错过任何任务，管理您的TO DO列表',
-    //   source: '学习的事情',
-    //   priority: '总要通知',
-    //   limitTime: '超时24小时',
-    //   isOvertime: true
-    // }
+    , {
+      key: '4',
+      message: '可以设置一个提醒，让你不会错过任何任务，管理您的TO DO列表',
+      source: '学习的事情',
+      priority: '总要通知',
+      limitTime: '超时24小时',
+      isOvertime: true
+    }
   ];
     this.setState({ listData: dataSource })
     // axios.get(connect_url + '/buyer/allbuyer/query', { params: params }).then((res)=>{
-
     // }).catch((e)=>{
-
     // });
   }
   render() {
     const { listData, pagination, isFetching } = this.state;
     return (
       <div className='list-card-wrap'>
-        <div className="card-title">待办任务(<span className='card-title-number'>22</span>) <a href='#' className='more-link'>more<Icon type="double-right" /></a>  </div>
+        <div className="card-title">待办任务-α(<span className='card-title-number'>22</span>) <a href='#' className='more-link'>more<Icon type="double-right" /></a>  </div>
         <Spin spinning={this.state.isFetching}>
           <div className='alignment-wrap'>
 

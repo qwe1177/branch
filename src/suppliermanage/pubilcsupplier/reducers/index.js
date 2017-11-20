@@ -9,17 +9,21 @@ import {
 // 初始化state数据
 
 const initQueryform = {
-  brand: '',
-  createdate: [],
-  eara: "城内商家",
-  level: "一星",
-  name: "",
-  other: ["上传产品"],
-  prefix: "企业名称",
-  relationship: "战略合作",
-  selltype: "劳保产品",
-  source: "csc86",
-  type: "厂家"
+  isPass:'yes',
+  markToDistinguish:'all',
+  compNameOrAddressOrMobile:'companyName',
+  compNameOrAddressOrMobileValue: '',
+  level:'全部',
+  source:'全部',
+  enterpriseType: "全部",
+  varietyNameId: "",
+  varietyNameNames: "",
+  mainBrand:'',
+  mainBrandNames:'',
+  areaType:'城内商家',
+  partnership:'战略合作',
+  createdate:[],
+  other: []
 }
 
 const defaultStateOne = { queryform: initQueryform };

@@ -5,6 +5,9 @@ export const modalmodelInfo = 'modalmodelInfo'
 export const tablemodelInfo2 = 'tablemodelInfo2'
 export const tablemodelInfo3 = 'tablemodelInfo3'
 
+axios.defaults.timeout = 30000;                        //响应时间
+axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8';           //配置请求头
+
 
 export const baseInfoForm = value=> ({
     type: baseInfo,
@@ -33,20 +36,26 @@ export const tablemodelaction3 = value=> ({
 
 export const fetchPosts = value => (dispatch, getState) => {
     dispatch(baseInfoForm({[value]: []}))
-
-    return axios(`http://localhost:3333/testApi/leimu`)
+    return axios(`//srm.csc86.com/v1/queryCategoryList.do`)
         .then(response => {
+            console.log(response)
             if (response.status == 200) {
                 dispatch(baseInfoForm({[value]: response.data.data,}))
             }
         })
 }
 
-export const fetchcitysPosts = ({name, value, returnName}) => (dispatch, getState) => {
-    return axios(`http://localhost:3333/testApi/citys?${name}=${value}`)
+export const fetchzonesPosts = ({url,name, value, returnName}) => (dispatch, getState) => {
+    return axios(`${url}?${name}=${value}`)
         .then(response => {
             if (response.status == 200) {
                 dispatch(baseInfoForm({[returnName]: response.data.data,}))
             }
         })
 }
+
+
+
+const actions = {baseInfoForm,modalmodelaction,tablemodelaction,tablemodelaction2,tablemodelaction3,fetchPosts,fetchzonesPosts,}
+
+export default actions

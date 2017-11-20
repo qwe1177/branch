@@ -1,34 +1,80 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import './Card.css'
+import { Spin} from 'antd';
+import axios from 'axios';
+
+import { connect_srm } from '../../../util/connectConfig';
+import { getLoginInfo ,getUrlParams} from '../../../util/baseTool';
+
+//联调叶群丽，上线后去掉
+const yequanli_url ='http://10.10.10.121:9503/srm-app/v1';
 
 
+
+const defaultState = {
+  "changeWeekClueMyTotal": 0, 
+  "changeWeekClueTheHighSeasTotal": 0, 
+  "changeWeekClueTotal": 0, 
+  "changeWeekClueUnderlingTotal": 0, 
+  "clueMyTotal": 0, 
+  "clueTheHighSeasTotal": 0, 
+  "clueTotal": 0, 
+  "clueUnderlingTotal": 0, 
+  "weekClueMyTotal": 0, 
+  "weekClueTheHighSeasTotal": 0, 
+  "weekClueTotal": 0, 
+  "weekClueUnderlingTotal": 0
+}
 
 export default class Card1 extends React.Component {
-  static propTypes = {
-    data: PropTypes.object.isRequired
+  componentWillMount() {
+    this.queryData();
   }
+  state={
+      cardData:defaultState,
+      isFetching:false
+  }
+  queryData =()=>{
+    var token = getLoginInfo()['token'];  //获取token　登录用
+    var urlParams = getUrlParams();
+    var moduleId = urlParams['moduleId']?urlParams['moduleId']:'';
+    this.setState({ isFetching: true });
+    var params = {token: token,moduleId:moduleId};
+    axios.get(yequanli_url + '/clue/viewSupplierClueTotal.do', { params: params }).then((res) => {
+      if (res.data.code == '1') {
+        this.setState({ cardData: res.data.data,isFetching: false });
+      } else {
+        this.setState({ isFetching: false });
+      }
+    }).catch((e) => {
+      console.log(e);
+      this.setState({ isFetching: false });
+    });
+}
   render() {
-    const d = this.props.data;
+    const d= this.state.cardData;
     return (
       <div className="briefly-card">
+       <Spin spinning={this.state.isFetching}>
         <h1 className='header'>线索总览</h1>
         <div className='row clearfix'>
           <div className='column-2'><div className='title'>我的线索</div>
-          <div className='count'>{d.wode.count}</div>
-          <div className='modify-info'>本周新增加{d.wode.add}条,转化{d.wode.turn}条</div></div>
+          <div className='count'>{d.clueMyTotal}</div>
+          <div className='modify-info'>本周新增加{d.weekClueMyTotal}条,转化{d.changeWeekClueMyTotal}条</div></div>
           <div className='column-2'><div className='title'>下属线索</div>
-          <div className='count'>{d.xiashu.count}</div>
-          <div className='modify-info'>本周新增加{d.xiashu.add}条,转化{d.xiashu.turn}条</div></div>
+          <div className='count'>{d.clueUnderlingTotal}</div>
+          <div className='modify-info'>本周新增加{d.weekClueUnderlingTotal}条,转化{d.changeWeekClueUnderlingTotal}条</div></div>
         </div>
         <div className='row clearfix'>
           <div className='column-2'><div className='title'>公海线索</div>
-          <div className='count'>{d.gonghai.count}</div>
-          <div className='modify-info'>本周新增加{d.gonghai.add}条,转化{d.gonghai.turn}条</div></div>
+          <div className='count'>{d.clueTheHighSeasTotal}</div>
+          <div className='modify-info'>本周新增加{d.weekClueTheHighSeasTotal}条,转化{d.changeWeekClueTheHighSeasTotal}条</div></div>
           <div className='column-2'><div className='title'>全部线索</div>
-          <div className='count'>{d.quanbu.count}</div>
-          <div className='modify-info'>本周新增加{d.quanbu.add}条,转化{d.quanbu.turn}条</div></div>
+          <div className='count'>{d.clueTotal}</div>
+          <div className='modify-info'>本周新增加{d.weekClueTotal}条,转化{d.changeWeekClueTotal}条</div></div>
         </div>
+        </Spin>
       </div>
     );
   }

@@ -7,7 +7,7 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');//清除编译文件
 // console.log("process.env.NODE_ENV="+process.env.NODE_ENV );
 const NODE_ENV = process.env.NODE_ENV || 'development'
-
+const BUILD_PATH = 'dist';
 
 
 const vendors=[
@@ -22,15 +22,12 @@ const vendors=[
   'antd'
 ];
 
-//var  entries = getEntries('src/**/index.js');  //编译所有页面
-var  entries = getEntries('src/myClue/index.js');  //编译某个页面
+var  entries = getEntries('src/newClue/index.js');  //编译所有页面
 // var  entries = getEntries('src/home/srm/index.js');  //编译某个页面
-
+//var  entries = getEntries('src/suppliermanage/allsupplierdetail/index.js');  //编译某个页面
 entries.push(getEntries('src/home/srm/index.js')[0]);  //编译首页
 entries.push(getEntries('src/suppliermanage/pubilcsupplier/index.js')[0]);  //编译首页
-
 const __DEV__ = NODE_ENV === 'development';
-const __TEST__ = NODE_ENV === 'test';
 const __PROD__ = NODE_ENV === 'production';
 const conftilte = config.title;
 const extractCSS=new ExtractTextPlugin(__PROD__?"statics/css/[name].[chunkhash:6].css":"[name].[chunkhash:6].css");
@@ -42,7 +39,7 @@ const webpackConfig = {
   }, 
   entry: {},
   output:{
-    path:path.resolve(__dirname, './dist/'),
+    path:path.resolve(__dirname, './'+BUILD_PATH+'/'),
     publicPath: '/',
     filename:__PROD__?'statics/js/[name].[chunkhash:6].js':'[name].[chunkhash:6].js'
   },
@@ -72,8 +69,8 @@ const webpackConfig = {
         }]
       },
       {
-        test: /\.(scss|sass|css)$/, 
-        loader: ExtractTextPlugin.extract({fallback: "style-loader", use: "css-loader"})
+        test: /\.css$/, 
+        use: ExtractTextPlugin.extract({fallback: "style-loader", use: "css-loader"})
       },
       {
         test: /\.(png|jpg|jpeg|gif|eot|ttf|woff|woff2|svg|svgz)$/,
@@ -89,20 +86,32 @@ const webpackConfig = {
   plugins: [
     // 提取公共模块
     new webpack.optimize.CommonsChunkPlugin({
-      names: ['vendors', 'manifest'], // 公共模块的名称
+      name: 'vendors', // 公共模块的名称
       //chunks: '',  // chunks是需要提取的模块
-      minChunks: entries.length
+      // minChunks: entries.length
+      minChunks: function (module) {
+        // This prevents stylesheet resources with the .css or .scss extension
+        // from being moved from their original chunk to the vendor chunk
+        if(module.resource && (/^.*\.(css|scss)$/).test(module.resource)) {
+          return false;
+        }
+        return module.context && module.context.indexOf("node_modules") !== -1;
+      }
+    }),
+    new webpack.optimize.CommonsChunkPlugin({
+      name: "manifest",
+      minChunks: Infinity
     }),
     //提取样式
     extractCSS
   ],
 };
  
-webpackConfig.entry['vendors'] = vendors; //公共文件分包为vendor
+
 //生产环境
 if (__PROD__) {
   webpackConfig.plugins = webpackConfig.plugins.concat([
-    new CleanWebpackPlugin(['dist'],　 
+    new CleanWebpackPlugin([BUILD_PATH],　 
     {
       root: __dirname,    　　　　　　　　　　
       verbose: true,    　　　　　　　　　　
@@ -144,6 +153,8 @@ function getEntries(globPath) {
   const reg =/(reducers|actions|sagas)/; //过滤掉redux结构目录中的index.js
   return files.filter((i)=>!reg.test(i))
 }
+
+webpackConfig.entry['vendors'] = vendors; //公共文件单独注册一个vendors的入口文件
 
 entries.forEach(function(name) {
   const path =  name.replace(/^src\/(.*\/).*$/g, '$1');

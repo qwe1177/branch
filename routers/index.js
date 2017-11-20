@@ -167,6 +167,108 @@ router.get('/chooseperson', (req,res) => {
   res.json({code:'ok',data:data,total:2});
 })
 
+
+router.get('/choosebrand', (req,res) => {
+  var data = [{
+    key: 1,
+    brandName: '奥迪',
+    brandNameEn: 'englishbranName',
+    logo: 'http://cdn-img.easylogo.cn/gif/53/53780.gif'
+  }, {
+    key: 2,
+    brandName: '阿迪达斯',
+    brandNameEn: 'englishbranName',
+    logo: 'http://cdn-img.easylogo.cn/gif/53/53780.gif'
+  }, {
+    key: 3,
+    brandName: '安利',
+    brandNameEn: 'englishbranName',
+    logo: 'http://cdn-img.easylogo.cn/gif/53/53780.gif'
+  }, {
+    key: 4,
+    brandName: '阿尔卑斯',
+    brandNameEn: 'englishbranName',
+    logo: 'http://cdn-img.easylogo.cn/gif/53/53780.gif'
+  }, {
+    key: 5,
+    brandName: '本田',
+    brandNameEn: 'englishbranName',
+    logo: 'http://cdn-img.easylogo.cn/gif/53/53780.gif'
+  }];
+
+  res.json({code:'ok',data:data,total:2});
+})
+
+
+
+router.get('/choosecategory', (req,res) => {
+  var data = [{
+    key: 1,
+    categoryName: '劳保产品奥迪'
+  }, {
+    key: 2,
+    categoryName: '五金产品奥迪'
+  }, {
+    key: 3,
+    categoryName: '内衣裤袜奥迪'
+  }, {
+    key: 4,
+    categoryName: '服饰配件奥迪'
+  }, {
+    key: 5,
+    categoryName: '腕表眼镜奥迪'
+  }, {
+    key: 6,
+    categoryName: '箱包奥迪'
+  }, {
+    key: 7,
+    categoryName: '男鞋奥迪'
+  }, {
+    key: 8,
+    categoryName: '女鞋'
+  }, {
+    key: 9,
+    categoryName: '男装'
+  }, {
+    key: 10,
+    categoryName: '女装奥迪'
+  }, {
+    key: 11,
+    categoryName: '家居建材奥迪'
+  }, {
+    key: 12,
+    categoryName: '全屋定制'
+  }, {
+    key: 13,
+    categoryName: '书籍杂志'
+  }, {
+    key: 14,
+    categoryName: '珠宝黄金'
+  }, {
+    key: 15,
+    categoryName: '洗护纸品'
+  }, {
+    key: 16,
+    categoryName: '美妆工具'
+  }, {
+    key: 17,
+    categoryName: '母婴玩具'
+  }, {
+    key: 18,
+    categoryName: '食品饮料奥迪'
+  }, {
+    key: 19,
+    categoryName: '3C数码配件'
+  }, {
+    key: 20,
+    categoryName: '鲜花园艺'
+  }];
+
+  res.json({code:'ok',data:data});
+})
+
+
+
 /**模拟提交成功 */
 router.get('/mockeffectSuccess', (req,res) => {
   res.json({code:'ok',result:true});

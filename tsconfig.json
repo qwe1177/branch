@@ -2,6 +2,7 @@
     "compilerOptions": {
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
+        "allowJs": true,
         "module": "amd",
         "target": "ES6" 
     },

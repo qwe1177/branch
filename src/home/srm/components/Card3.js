@@ -17,7 +17,7 @@ export default class Card3 extends React.Component {
   render() {
     return (
       <div className="briefly-card">
-        <h1 className='header'>询报价总览</h1>
+        <h1 className='header'>询报价总览-α</h1>
         <div className='row clearfix'>
           <div className='column-2'><div className='title'>我的询价</div><div className='count'>24111935</div><div className='modify-info'>本周新增加5条,转化4条</div></div>
           <div className='column-2'><div className='title'>下属的询价</div><div className='count'>24111935</div><div className='modify-info'>本周新增加5条,转化4条</div></div>

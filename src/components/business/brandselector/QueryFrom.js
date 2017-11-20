@@ -14,6 +14,23 @@ class QueryFrom extends React.Component {
 			}
 		});
 	}
+	componentWillMount(){
+        // this.doInit(this.props);
+    }
+    componentWillReceiveProps(nextProps){
+        // this.doInit(nextProps);
+	}
+	componentDidMount(){
+		/**保存查询条件 */
+		var form = this.props.query;
+		let data ={};
+		for(let key in form){  //过滤空字符串
+			if(form[key]　&& form[key]!=''){
+				data[key] = form[key];
+			}
+		}
+		this.props.form.setFieldsValue(data);
+	}
 	render() {
 		const { getFieldDecorator } = this.props.form;
 		const formItemLayout = {  //form中的label和内容各自占用多少
@@ -24,12 +41,9 @@ class QueryFrom extends React.Component {
 			<Form layout="horizontal" onSubmit={this.handleSubmit}>
 				<Row gutter={16}>
 					<Col span={20}>
-						<FormItem
-							{...formItemLayout}
-							label="部门"
-						>
-							{getFieldDecorator('deptName', )(
-								<Input placeholder="请输入部门" />
+						<FormItem>
+							{getFieldDecorator('brandName', )(
+								<Input placeholder="品牌名称" />
 							)}
 						</FormItem>
 					</Col>

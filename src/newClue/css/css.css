@@ -10,6 +10,7 @@
 .newClue .ant-table-thead  tr  th{ text-align: center}
 
 
+.newClue .ant-form-inline .has-feedback{ width: 100%}
 .avatar-uploader,
 .avatar-uploader-trigger,
 .avatar {

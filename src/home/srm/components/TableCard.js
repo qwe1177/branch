@@ -1,111 +1,82 @@
 import React from 'react';
 import PropTypes from 'prop-types'
-import { Table,Icon } from 'antd';
-
+import { Table, Icon } from 'antd';
+import axios from 'axios';
 
 import './List.css';
 
-import { connect_url } from '../../../util/connectConfig';
+import { connect_cas } from '../../../util/connectConfig';
+import { getLoginInfo,getUrlParams } from '../../../util/baseTool';
 
 
+//联调陈勇，上线后去掉
+const chengyong_url = 'http://10.10.10.29:9407/v1';
 
+const mock = [
+  {
+    "id": 12,
+    "planNextContactTime": '2017/11/23',
+    "planNextContent": "计划下次跟进内容666",
+    "supplierName": "广东省深圳市华南城网科技有限"
+  }
+];
 
 class MainTable extends React.Component {
-//   static propTypes = {
-//     tableData: PropTypes.array, //查询结果(表格数据)
-//     isFetching: PropTypes.bool, //是否正在查询中
-//     pagination:PropTypes.object //表格中的分页
-//   }
-  state={
-    pagination:{
-        total: 2,
-        current: 1,
-        pageSize: 6
+  state = {
+    pagination: {
+      total: 1,
+      current: 1,
+      pageSize: 6
     },
-    tableData:[],
-    isFetching:false
+    tableData: mock,
+    isFetching: false
   }
-  componentWillMount(){
-    // this.props.initSupplierTable();  
+  componentWillMount() {
     this.queryData();
   }
   handleTableChange = (pagination, filters, sorter) => {  //点击分页控件调用  比如换页或者换pageSize
-    let {queryform} =  this.props.mainQueryData;
-    let paginationObj =  this.props.mainTableData.pagination;
-    paginationObj.current = pagination.current;
-    paginationObj.pageSize = pagination.pageSize;
-    // this.props.queryTableData({queryform:queryform,pagination:paginationObj});
+    
   }
-  queryData=()=>{
-    const dataSource = [{
-        key: '1',
-        name: '深圳华南城网科技有限公司',
-        content: '跟进报价内容，上一笔10万的单价，无法提取',
-        restTime: '3天24小时'
-      }, {
-        key: '2',
-        name: '深圳华南城网科技有限公司',
-        content: '跟进报价内容，上一笔10万的单价，无法提取',
-        restTime: '2天22小时'
-      }, {
-        key: '3',
-        name: '深圳华南城网科技有限公司',
-        content: '跟进报价内容，上一笔10万的单价，无法提取',
-        restTime: '2天22小时'
-      }, {
-        key: '4',
-        name: '深圳华南城网科技有限公司',
-        content: '跟进报价内容，上一笔10万的单价，无法提取',
-        restTime: '2天22小时'
-      }, {
-        key: '5',
-        name: '深圳华南城网科技有限公司',
-        content: '跟进报价内容，上一笔10万的单价，无法提取',
-        restTime: '1天22小时'
-      }, {
-        key: '6',
-        name: '深圳华南城网科技有限公司',
-        content: '跟进报价内容，上一笔10万的单价，无法提取',
-        restTime: '2天22小时'
-      }, {
-        key: '7',
-        name: '深圳华南城网科技有限公司',
-        content: '跟进报价内容，上一笔10万的单价，无法提取',
-        restTime: '2天22小时'
-      }, {
-        key: '8',
-        name: '深圳华南城网科技有限公司',
-        content: '跟进报价内容，上一笔10万的单价，无法提取',
-        restTime: '9天22小时'
-      }];
-      this.setState({tableData:dataSource})
-    // axios.get(connect_url + '/buyer/allbuyer/query', { params: params }).then((res)=>{
-
-    // }).catch((e)=>{
-
-    // });
+  queryData = () => {
+    var token = getLoginInfo()['token'];  //获取token　登录用
+    var moduleId = getUrlParams()['moduleId']?getUrlParams()['moduleId']:''; //获取moduleId;　权限用
+    this.setState({ isFetching: true });
+    var { pagination } = this.state;
+    // var params = {token:token,moduleId:moduleId,pageSize:pagination.pageSize,current:pagination.current}
+    var params = { token: token, pageSize: pagination.pageSize }
+    axios.get(chengyong_url + '/supplier/queryFollowupList.do', { params: params }).then((res) => {
+      if (res.data.code == '1') {
+        var newPagination = { ...pagination, total: res.data.data.rowCount };
+        this.setState({ tableData: res.data.data.supplierFollowupPlanList, pagination: newPagination, isFetching: false });
+      } else {
+        this.setState({ isFetching: false });
+      }
+    }).catch((e) => {
+      console.log(e);
+      this.setState({ isFetching: false });
+    });
   }
   render() {
     const columns = [{
       title: '客户名称',
-      dataIndex: 'name',
-      key:'name'
+      dataIndex: 'supplierName',
+      key: 'supplierName'
     }, {
       title: '计划内容',
-      dataIndex: 'content',
-      key:'content'
+      dataIndex: 'planNextContent',
+      key: 'planNextContent'
     }, {
       title: '剩余完成时间',
-      dataIndex: 'restTime',
-      key:'restTime'
+      dataIndex: 'planNextContactTime',
+      key: 'planNextContactTime'
     }];
 
-    const {tableData,pagination,isFetching} =this.state; 
+    const { tableData, pagination, isFetching } = this.state;
     return (
-      <div  className='table-card-wrap'>
-        <div className="card-title">跟进计划(<span className='card-title-number'>22</span>) <a href='#' className='more-link'>more<Icon type="double-right" /></a>  </div>
+      <div className='table-card-wrap'>
+        <div className="card-title">跟进计划(<span className='card-title-number'>{pagination.total}</span>) <a href='/clientFollowUp/toFollowUp/' className='more-link'>more<Icon type="double-right" /></a>  </div>
         <Table bordered columns={columns}
-          rowKey={record => record.key}  //数据中已key为唯一标识
+          rowKey={record => record.id}  //数据中已key为唯一标识
           dataSource={tableData}
           pagination={pagination}
           loading={isFetching}

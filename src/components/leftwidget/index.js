@@ -164,12 +164,13 @@ class LeftWidget extends React.Component {
   }
   render() {
     return (
-      <div className="crmleftall">
+      <div className="leftwidget">
         <div className="leftlogo">
           <span className="sp1"><img src={require('./img/logo.png')} /></span>
           <span className="sp2">CRM</span>
         </div>
-        <div className="leftuser">
+        <div className="switch">
+        <div className='system'>奇智SRM系统</div><div className='switch-wrap'><a href='http://crm.csc86.com' className='switch-icon'>CRM</a></div>
         </div>
         <div>
           <Sider data={this.props.data}/>

@@ -24,22 +24,15 @@ import { bindActionCreators } from 'redux';
 	// dispatch => bindActionCreators({ doInit, doChangeExtend, doReceiveData }, dispatch)
 )
 
-class App extends PlatformComponent {
+class App extends Component {
 	constructor(props, context) {
 		super(props, context);
-		var extendState = {
+		this.state = {
 			isBtnExpand: false,  //按钮组默认收缩
 			allbtns: [{ link: 'a', label: '跟进供应商' }, { link: 'a', label: '编辑供应商' },
 			{ link: 'a', label: '分配负责人' }, { link: 'a', label: '加入我的客户' }, { link: 'a', label: '并入客户' }, { link: 'a', label: '移入公海' },
 			{ link: 'a', label: '修改客户评分' }, { link: 'a', label: '新建客户' }]
 		}
-		//如果要附加其他的state使用这个,附加选择人的组件的显示状态
-		this.state = Object.assign(this.state, extendState);
-		this.setLoginInfo();
-
-	}
-	componentWillMount() {
-		this.getMenuData();
 	}
 	showMoreBtn = () => {
 		this.setState({ isBtnExpand: true });

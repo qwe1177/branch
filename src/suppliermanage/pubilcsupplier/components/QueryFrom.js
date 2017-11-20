@@ -11,8 +11,8 @@ const { MonthPicker, RangePicker } = DatePicker;
 const CheckboxGroup = Checkbox.Group;
 
 import BrandSelector from '../../../components/business/brandselector';
+import CategorySelector from '../../../components/business/categoryselector';
 
-const checkListFirst = ['上传产品', '有跟进记录', '询价单', '能开专票'];
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { initQueryFrom, setQueryFrom, resetQueryFrom, requestSupplier, queryTableData } from '../actions';
@@ -24,26 +24,25 @@ import { initQueryFrom, setQueryFrom, resetQueryFrom, requestSupplier, queryTabl
 )
 
 class QueryFrom extends React.Component {
-	static propTypes = {
-		queryform: PropTypes.object  //查询条件
-	}
 	state = {
-		checkListFirst: checkListFirst,
-		brandSelectorVisible:false
+		brandSelectorVisible: false,
+		categorySelectorVisible: false
 	}
 	componentWillMount() {
 		this.props.initQueryFrom();
 	}
 	componentDidMount() {
 		//setFieldsValue方法必须在getFieldDecorator之后，getFieldDecorator在render生命周期中定义id来进行表单双向绑定
-		let form= this.props.mainQueryData.queryform;
-		let data ={};
-		for(let key in form){  //过滤空字符串
-			if(form[key]　&& form[key]!=''){
+		let form = this.props.mainQueryData.queryform;
+		let data = {};
+		for (let key in form) {  //过滤空字符串
+			if (form[key] 　&& form[key] != '') {
 				data[key] = form[key];
 			}
 		}
 		this.props.form.setFieldsValue(data);
+		document.getElementById('varietyNameNames').setAttribute('readonly', true);
+		document.getElementById('mainBrandNames').setAttribute('readonly', true);
 	}
 	handleSubmit = (e) => {
 		e.preventDefault();
@@ -87,20 +86,31 @@ class QueryFrom extends React.Component {
 	handleOpenChoose = () => {
 		this.setState({ brandSelectorVisible: true });
 	}
-	handleChoosed = (checkedList) => {
-		var brandNames = checkedList.map((o)=>{
-			return o.brandName;
-		});
-		var brandIds = checkedList.map((o)=>{
-			return o.key;
-		});
-		if(brandIds.length>0){
-			this.props.form.setFieldsValue({brandNames:brandNames.toString(),brandIds:brandIds.toString()});
-		}
+	handleOpenChooseForCategory = () => {
+		this.setState({ categorySelectorVisible: true });
+	}
+	handleChoosed = (ids, labels) => {
+		this.props.form.setFieldsValue({ brandNames: labels, brandIds: ids });
 		this.setState({ brandSelectorVisible: false });
 	}
-	disabledInput=(e)=>{
-		e.preventDefault();
+	handleCancel = () => {
+		this.setState({ brandSelectorVisible: false });
+	}
+	handleChoosedForCategory = (ids, labels) => {
+		this.props.form.setFieldsValue({ selltypeNames: labels, selltypeIds: ids });
+		this.setState({ categorySelectorVisible: false });
+	}
+	handleCancelForCategory = () => {
+		this.setState({ categorySelectorVisible: false });
+	}
+	getLastSelectBrand = () => {
+		var labelstr = this.props.form.getFieldValue('mainBrandNames');
+		var idstr = this.props.form.getFieldValue('mainBrand');
+		return { labelstr, idstr }
+	}
+	getLastSelectCategory = () => {
+		var idstr = this.props.form.getFieldValue('varietyNameId');
+		return idstr;
 	}
 	render() {
 		const { getFieldDecorator } = this.props.form;
@@ -108,43 +118,51 @@ class QueryFrom extends React.Component {
 			labelCol: { span: 9 },
 			wrapperCol: { span: 15 },
 		};
-		const formItemLayout2 = {  //form中的label和内容各自占用多少
-			labelCol: { span: 10 },
-			wrapperCol: { span: 14 },
-		};
 		const checkItemLayoutFirst = {
 			labelCol: { span: 2 },
 			wrapperCol: { span: 22 },
 		};
 
+		const options = [
+			{ label: '有跟进记录', value: 'followupRecords' },
+			{ label: '有上传产品', value: 'hasUpload' },
+			{ label: '有询价单', value: 'hasSheet' },
+			{ label: '能开专票', value: 'hasTicket' }
+		  ];
+		const choosedKeys = this.getLastSelectBrand();
+		const choosedKeys1 = this.getLastSelectCategory();
 		return (
 			<Form layout="horizontal" onSubmit={this.handleSubmit}>
 				<Row gutter={16}>
 					<Col span={3}>
+						{getFieldDecorator('isPass', { initialValue: 'yes' })(
+							<Input type='hidden' />
+						)}
+						{getFieldDecorator('markToDistinguish', { initialValue: 'all' })(
+							<Input type='hidden' />
+						)}
 						<FormItem >
-							{getFieldDecorator('prefix', { initialValue: '企业名称' })(
+							{getFieldDecorator('compNameOrAddressOrMobile', { initialValue: 'companyName' })(
 								<Select style={{ width: '100%' }}  >
-									<Option value="企业名称">企业名称</Option>
-									<Option value="企业地址">企业地址</Option>
-									<Option value="手机">手机</Option>
+									<Option value="companyName">企业名称</Option>
+									<Option value="address">企业地址</Option>
+									<Option value="mobile">手机</Option>
 								</Select>
 							)}
 						</FormItem>
 					</Col>
 					<Col span={2}>
 						<FormItem >
-							{getFieldDecorator('name', {
+							{getFieldDecorator('compNameOrAddressOrMobileValue', {
 								rules: [{
 									required: true, message: '请输入内容!',
-								}
-									// ,{validator: this.checkName}
-								],
+								}],
 							})(
 								<Input style={{ width: '100%' }} />
 								)}
 						</FormItem>
 					</Col>
-					<Col span={5}>
+					<Col span={4}>
 						<FormItem {...formItemLayout} label="客户级别">
 							{getFieldDecorator('level', { initialValue: '全部' })(
 								<Select style={{ width: '100%' }}  >
@@ -158,7 +176,7 @@ class QueryFrom extends React.Component {
 							)}
 						</FormItem>
 					</Col>
-					<Col span={5}>
+					<Col span={4}>
 						<FormItem {...formItemLayout} label="客户来源" >
 							{getFieldDecorator('source', { initialValue: '全部' })(
 								<Select style={{ width: '100%' }}  >
@@ -174,8 +192,8 @@ class QueryFrom extends React.Component {
 						</FormItem>
 					</Col>
 					<Col span={5}>
-						<FormItem {...formItemLayout2} label="客户类型" >
-							{getFieldDecorator('type', { initialValue: '全部' })(
+						<FormItem {...formItemLayout} label="客户类型" >
+							{getFieldDecorator('enterpriseType', { initialValue: '全部' })(
 								<Select style={{ width: '100%' }} >
 									<Option value="全部">全部</Option>
 									<Option value="一级代理商">一级代理商</Option>
@@ -185,63 +203,31 @@ class QueryFrom extends React.Component {
 							)}
 						</FormItem>
 					</Col>
-				</Row>
-				<Row gutter={16}>
-					<Col span={24}>
-						<FormItem {...checkItemLayoutFirst} label="主营类目"  >
-							{getFieldDecorator('selltype', { initialValue: '劳保产品' })(
-								<Select mode='multiple' style={{ width: '100%' }}  >
-									<Option value="劳保产品">劳保产品</Option>
-									<Option value="五金产品">五金产品</Option>
-									<Option value="内衣裤袜">内衣裤袜</Option>
-									<Option value="服饰配件">服饰配件</Option>
-									<Option value="腕表眼镜">腕表眼镜</Option>
-									<Option value="箱包">箱包</Option>
-									<Option value="男鞋">男鞋</Option>
-									<Option value="女鞋">女鞋</Option>
-									<Option value="男装">男装</Option>
-									<Option value="女装">女装</Option>
-									<Option value="全屋定制">全屋定制</Option>
-									<Option value="家居建材">家居建材</Option>
-									<Option value="住宅家具">住宅家具</Option>
-									<Option value="家居饰品">家居饰品</Option>
-									<Option value="布艺家饰">布艺家饰</Option>
-									<Option value="床上用品">床上用品</Option>
-									<Option value="乐器/吉他/钢琴/配件">乐器/吉他/钢琴/配件</Option>
-									<Option value="书籍杂志">书籍杂志</Option>
-									<Option value="鲜花园艺">鲜花园艺</Option>
-									<Option value="成人用品">成人用品</Option>
-									<Option value="珠宝黄金">珠宝黄金</Option>
-									<Option value="宠物用品">宠物用品</Option>
-									<Option value="收纳整理">收纳整理</Option>
-									<Option value="居家日用">居家日用</Option>
-									<Option value="洗护纸品">洗护纸品</Option>
-									<Option value="家庭清洁">家庭清洁</Option>
-									<Option value="厨房用品">厨房用品</Option>
-									<Option value="彩妆/香水/美妆工具">彩妆/香水/美妆工具</Option>
-									<Option value="美容护肤/精油">美容护肤/精油</Option>
-									<Option value="母婴玩具">母婴玩具</Option>
-									<Option value="食品饮料">食品饮料</Option>
-									<Option value="3C数码配件">3C数码配件</Option>
-								</Select>
+					<Col span={6}>
+						{getFieldDecorator('varietyNameId')(
+							<Input type='hidden' />
+						)}
+						<FormItem {...formItemLayout} label="主营类目"  >
+							{getFieldDecorator('varietyNameNames')(
+								<Input onClick={this.handleOpenChooseForCategory} />
 							)}
 						</FormItem>
 					</Col>
 				</Row>
 				<Row gutter={16}>
 					<Col span={5}>
-						{getFieldDecorator('brandIds')(
-								<Input type='hidden' />
-							)}
-						<FormItem {...formItemLayout2} label="主营品牌"  >
-							{getFieldDecorator('brandNames')(
-								<Input onClick={this.handleOpenChoose} onKeyDown={this.disabledInput}  onKeyPress={this.disabledInput} onKeyUp={this.disabledInput} />
+						{getFieldDecorator('mainBrand')(
+							<Input type='hidden' />
+						)}
+						<FormItem {...formItemLayout} label="主营品牌"  >
+							{getFieldDecorator('mainBrandNames')(
+								<Input onClick={this.handleOpenChoose} />
 							)}
 						</FormItem>
 					</Col>
 					<Col span={5}>
 						<FormItem {...formItemLayout} label="客户区域">
-							{getFieldDecorator('eara', { initialValue: '城内商家' })(
+							{getFieldDecorator('areaType', { initialValue: '城内商家' })(
 								<Select style={{ width: 120 }}  >
 									<Option value="全部">全部</Option>
 									<Option value="城内商户">城内商户</Option>
@@ -252,7 +238,7 @@ class QueryFrom extends React.Component {
 					</Col>
 					<Col span={5}>
 						<FormItem {...formItemLayout} label="合作关系" >
-							{getFieldDecorator('relationship', { initialValue: '战略合作' })(
+							{getFieldDecorator('partnership', { initialValue: '战略合作' })(
 								<Select style={{ width: 120 }} >
 									<Option value="战略合作">战略合作</Option>
 									<Option value="战略合作">战略合作</Option>
@@ -280,7 +266,7 @@ class QueryFrom extends React.Component {
 					<Col span={16} style={{ textAlign: 'left' }}>
 						<FormItem {...checkItemLayoutFirst} label="其他条件">
 							{getFieldDecorator('other')(
-								<CheckboxGroup options={this.state.checkListFirst} />
+								<CheckboxGroup options={options} />
 							)}
 						</FormItem>
 					</Col>
@@ -289,7 +275,16 @@ class QueryFrom extends React.Component {
 						<Button type="ghost" className="resetButton" onClick={this.handleReset}>重置</Button>
 					</Col>
 				</Row>
-				<BrandSelector onChoosed={this.handleChoosed} title={'分配负责人'} visible={this.state.brandSelectorVisible} />
+				<BrandSelector onChoosed={this.handleChoosed.bind(this)}
+					visible={this.state.brandSelectorVisible}
+					choosedKeys={choosedKeys}
+					onCancel={this.handleCancel.bind(this)}
+				/>
+				<CategorySelector onChoosed={this.handleChoosedForCategory.bind(this)}
+					choosedKeys={choosedKeys1}
+					visible={this.state.categorySelectorVisible}
+					onCancel={this.handleCancelForCategory.bind(this)}
+				/>
 			</Form>
 		);
 	}

@@ -179,50 +179,15 @@ const data =[
     {
         "systemId": "3a8b7f8f953ac5f24c411b5bec418219",
         "name": "采购",
-        "url": "http://localhost:8181/home/srm/index.html",
+        "url": null,
         "className": "purchase",
-        "moduleId": "3fa15e6d1bcd5efd3a3724023dd00f68",
-        "son": [
-            {
-                "systemId": "3a8b7f8f953ac5f24c411b5bec418219",
-                "moduleId": "3fa15e6d1bcd5efd3a3724023dd00f68",
-                "name": "产品报价管理",
-                "blank": 0,
-                "url": "http://localhost:8181/home/srm/index.html",
-                "className": "",
-                "son": [
-                    {
-                        "systemId": "3a8b7f8f953ac5f24c411b5bec418219",
-                        "moduleId": "51bff8342e1d2a9a40c8d87fefdbcbb3",
-                        "name": "上传产品报价",
-                        "blank": 0,
-                        "url": "http://localhost:8181/home/srm/index.html",
-                        "className": ""
-                    },
-                    {
-                        "systemId": "3a8b7f8f953ac5f24c411b5bec418219",
-                        "moduleId": "735c468d3f20bdd356c9090594cdab89",
-                        "name": "全部产品报价",
-                        "blank": 0,
-                        "url": "http://localhost:8181/home/srm/index.html",
-                        "className": ""
-                    },
-                    {
-                        "systemId": "3a8b7f8f953ac5f24c411b5bec418219",
-                        "moduleId": "7c0b01fa0d5482574bd6a03ea3c3e5e9",
-                        "name": "产品报价查询",
-                        "blank": 0,
-                        "url": "http://localhost:8181/home/srm/index.html",
-                        "className": ""
-                    }
-                ]
-            }
-        ]
+        "moduleId": null,
+        "son": []
     },
     {
         "systemId": "5ce930a5b57e2991f1b43379cf10631f",
         "name": "日常",
-        "url": "http://localhost:8181/home/srm/index.html",
+        "url": "http://localhost:8181/clientFollowUp/toFollowUp",
         "className": "daily",
         "moduleId": "2466de7a4486027a7f445176e6a288ac",
         "son": [
@@ -237,9 +202,9 @@ const data =[
                     {
                         "systemId": "5ce930a5b57e2991f1b43379cf10631f",
                         "moduleId": "2466de7a4486027a7f445176e6a288ac",
-                        "name": "待跟进",
+                        "name": "跟进计划",
                         "blank": 0,
-                        "url": "http://localhost:8181/home/srm/index.html",
+                        "url": "http://localhost:8181/clientFollowUp/toFollowUp",
                         "className": ""
                     },
                     {

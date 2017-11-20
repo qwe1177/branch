@@ -34,6 +34,9 @@ export const getRef = (componentName, index) => {
 
 
 export const getUrlParams = (url) => {
+    if(!url){
+        url = location.href;
+    }
     var queryArr = url.split('?');
     var querys = queryArr.length > 1 ? querystring.parse(queryArr[1]) : {};
     return querys;
