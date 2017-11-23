@@ -6,7 +6,9 @@ import './MainTable.css';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import {queryTableData,initSupplierTable,setQueryFrom,doChangeMainCheck} from '../actions';
-
+import { connect_srm,connect_cas  } from '../../../util/connectConfig';
+import { getUrlParams} from '../../../util/baseTool';
+import axios from 'axios';
 
 @connect(
   state =>  ({mainQueryData: state.mainQueryData,mainTableData:state.mainTableData}),
@@ -44,31 +46,40 @@ class MainTable extends React.Component {
     let {pagination,isFetching} = this.props.mainTableData;
     let {queryform} =  this.props.mainQueryData;
     if(!isFetching){
-      pagination.current = 1;  //刷新重置为查询第1页
+      // pagination.current = 1;  //刷新重置为查询第1页
       this.props.queryTableData({queryform:queryform,pagination:pagination});
     }
   }
   handleOpenChoose = ()=>{
-    // let {selectedList} = this.props.mainTableData;
     this.props.onChoose(true);
   }
   handleRowClick =(record, index, event)=>{
-    console.log(event.target);
     var className = event.target.getAttribute("class");
     if(className.indexOf('js-addus')==-1){
         return;
     }
     console.log('加入我的操作');
-    console.log(record);
-    //发送异步请求加入我的请求，之后重新发送请求数据，序列数据
+    var params ={};
+    params['supplierId'] = record.supplierId;
+    axios.get(connect_srm + '/clue/addtoUs.do', { params: params }).then((res) => {
+      this.handleRefresh();
+    }).catch((e) => {
+      console.log(e);
+      this.handleRefresh();
+    });
   }
   render() {
+    var urlParams = getUrlParams();
+    var moduleId = urlParams['moduleId']?urlParams['moduleId']:'';
+    var systemId = urlParams['systemId']?urlParams['systemId']:'';
+    var detailUrl ='/suppliermanage/allsupplierdetail/?systemId'+systemId+'&moduleId='+moduleId;
+
     const columns = [{
       title: '企业名称',
       dataIndex: 'companyName',
       key:'companyName',
       render: (text, record) => (
-        <a href={record.link}>{text}</a>
+        <a href={detailUrl+'&supplierId='+record.supplierId}>{text}</a>
       )
     }, {
       title: '来源',
@@ -76,42 +87,34 @@ class MainTable extends React.Component {
       key:'source'
     }, {
       title: '级别',
-      dataIndex: 'level',
-      key:'level'
+      dataIndex: 'clueLevel',
+      key:'clueLevel'
     }, {
       title: '企业性质',
-      dataIndex: 'type',
-      key:'type'
+      dataIndex: 'enterpriseType',
+      key:'enterpriseType'
     }, {
       title: '主营类目',
-      dataIndex: 'industry',
-      key:'industry'
+      dataIndex: 'varietyName',
+      key:'varietyName'
     }, {
       title: '主营品牌',
-      dataIndex: 'brand',
-      key:'brand'
+      dataIndex: 'mainBrand',
+      key:'mainBrand'
     }, {
       title: '联系人信息',
-      dataIndex: 'contacts',
-      key:'contacts'
-    }, {
-      title: '成交采纳次数',
-      dataIndex: 'numbers',
-      key:'numbers'
-    }, {
-      title: '成交金额',
-      dataIndex: 'amount',
-      key:'amount'
-    }, {
+      dataIndex: 'fullname',
+      key:'fullname'
+    },{
       title: '创建时间',
-      dataIndex: 'createDate',
-      key:'createDate'
+      dataIndex: 'reateTime1',
+      key:'reateTime1'
     }, {
       title: '负责人/操作',
       dataIndex: 'option',
       render: (text, record) => {
-        if( record.toperson){  //如已经选择人的直接显示人的名称
-          return record.toperson;
+        if( record.option){  //如已经选择人的直接显示人的名称
+          return record.option;
         }else{
           return <a href='javascript:;' className='js-addus'>加入我的</a>  //数据中有checked表示选中
         }
@@ -124,7 +127,7 @@ class MainTable extends React.Component {
       <div>
         <div className="tabel-extend-option"><span onClick={this.handleRefresh}>刷新</span>  <span onClick={this.handleOpenChoose}>分配联系人</span>  </div>
         <Table bordered columns={columns}
-          rowKey={record => record.key}  //数据中已key为唯一标识
+          rowKey={record => record.supplierId}  
           dataSource={tableData}
           pagination={pagination}
           loading={isFetching}

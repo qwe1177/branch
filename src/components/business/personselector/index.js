@@ -5,8 +5,10 @@ import QueryFrom from './QueryFrom';
 import './layout.css';
 import { Modal, Table,Form,Button,Tag  } from 'antd';
 
-import { connect_url } from '../../../util/connectConfig';
+import { connect_cas } from '../../../util/connectConfig';
+import { getLoginInfo} from '../../../util/baseTool';
 import axios from 'axios';
+import _ from 'lodash';
 
 ///chooseperson
 class PersonSelector extends React.Component {
@@ -20,14 +22,14 @@ class PersonSelector extends React.Component {
         this.state = {
             visible: false,
             dataSource: [],
-            checkedList: [], //形式为{key:1,label:xx}
+            checkedList: [], //形式为{userId:1,realName:xx}
             isFetching:false,
             pagination:{
                 showQuickJumper: true,
                 showSizeChanger: true,
                 total: 1,
                 current: 1,
-                pageSize: 10,
+                pageSize: 5,
                 showTotal: total => `共 ${total} 条`
             },
             query:{} //查询条件
@@ -38,6 +40,7 @@ class PersonSelector extends React.Component {
     }
     setVisible =(visible)=>{
         this.setState({visible:visible});
+        this.fetch();
     }
     componentWillMount(){
         this.setVisible(this.props.visible?true:false);
@@ -54,34 +57,55 @@ class PersonSelector extends React.Component {
         this.restDefault();
     }
     handleTableChange = (pagination, filters, sorter) => {  //点击分页控件调用  比如换页或者换pageSize
-        var oldpagination = this.state.pagination;
-        this.setState({pagination: {...oldpagination,...pagination}});
-        this.fetch();
+        // var oldpagination = this.state.pagination;
+        // this.setState({pagination: {...oldpagination,...pagination}});
+        this.fetch({pagination});
     }
     onQuery =(query)=>{  //查询的时候调用
-        this.setState({query: query});
-        this.fetch();
+        // this.setState({query: query});
+        var currentquery = {...this.state.query,...query};
+
+        this.fetch({'query':currentquery});
     }
-    fetch =()=>{
+    fetch =(paramsObj)=>{
+        var token = getLoginInfo()['token'];  //获取token　登录用
+        var {pagination,checkedList} =this.state;
+        var params = {token:token,page:pagination.current,pageSize:pagination.pageSize};
+        if(paramsObj){
+            if(paramsObj.query){
+                params = {...params,...paramsObj.query};
+            }
+            if(paramsObj.pagination){
+                params = {...params,'page':paramsObj.pagination.current,'pageSize':paramsObj.pagination.pageSize};
+            }
+        }
+        params = _.omitBy(params, _.isUndefined); //删除undefined参数
         this.setState({ isFetching: true});
-        var {query,pagination,checkedList} =this.state;
-        var params = {...query,total:pagination.total,pageSize:pagination.pageSize};
-        axios.get(connect_url + '/chooseperson', { params: params }).then((res)=>{
-            var original = res.data.data;
-            var data = this.formateDataWithChecked(checkedList,original);
-            this.setState({ dataSource: data,pagination: {...pagination,total:res.data.total},isFetching: false});
+        axios.get(connect_cas + '/api/user/searchUserList', { params: params }).then((res)=>{
+            if(res.data.code=='0'){
+                var original = res.data.data.rows;
+                var data = this.formateDataWithChecked(checkedList,original);
+                var op = { dataSource: data,pagination: {...pagination,total:parseInt(res.data.data.total)} ,isFetching: false}
+                if(paramsObj && paramsObj.query){
+                    op['query'] =paramsObj.query;
+                }
+                this.setState(op);
+            }else{
+                this.setState({ isFetching: false});
+            }
         }).catch((e)=>{
             this.setState({ isFetching: false});
             console.log('data error');
         });
     }
+    
     formateDataWithChecked =(checkedList,data)=>{
         const s = new Set();
         checkedList.forEach((d)=>{
-            s.add(d.key);
+            s.add(d.userId);
         })
         return data.map((d)=>{
-            d.isChecked = s.has(d.key);
+            d.isChecked = s.has(d.userId);
             return d;
         });
     }
@@ -94,13 +118,13 @@ class PersonSelector extends React.Component {
 
         var {checkedList,dataSource} = this.state;
         var i = checkedList.findIndex((d)=>{
-            if(d.key ==record.key){
+            if(d.userId ==record.userId){
                 return d;
             }
         });
         var isChecked = record.isChecked;
         if(i==-1){ //不存在
-            checkedList.push({key:record.key,label:record.name});
+            checkedList.push({userId:record.userId,realName:record.realName});
         }else{
             checkedList.splice(i,1);
         }
@@ -108,33 +132,43 @@ class PersonSelector extends React.Component {
         this.setState({checkedList: checkedList, dataSource: dataSource});
     }
     handleClose =(tag)=>{
-        var key = tag.key;
+        var userId = tag.userId;
         var {checkedList,dataSource} = this.state;
         var i = checkedList.findIndex((d)=>{
-            if(d.key ==key){
+            if(d.userId ==userId){
                 return d;
             }
         });
         checkedList.splice(i,1);
         for(let i= 0,len=dataSource.length;i<len;i++){
-            if(dataSource[i].key==key){
+            if(dataSource[i].userId==userId){
                 dataSource[i].isChecked = false;
                 break;
             }
         }
         this.setState({checkedList: checkedList, dataSource: dataSource});
     }
+    // mapPropsToFields =(props)=>{
+    //     console.log('mapPropsToFields');
+    // }
+    // onFieldsChange = (props,fields)=>{
+    //     // console.log('onFieldsChange');
+    //     // console.log(fields);
+    //     var query = this.state.query
+    //     query = {...query, ...fields};
+    //     this.setState({'query':query});
+    // }
     render() {
         var { dataSource, checkedList, visible,pagination,isFetching} = this.state;
         var { addOrRemoveCheckList} = this.state;
         const columns = [{
             title: '姓名',
-            dataIndex: 'name',
-            key: 'name'
+            dataIndex: 'realName',
+            key: 'realName'
         }, {
             title: '部门',
-            dataIndex: 'dept',
-            key: 'dept',
+            dataIndex: 'departmentName',
+            key: 'departmentName',
         }, {
             title: '邮箱',
             dataIndex: 'email',
@@ -166,8 +200,8 @@ class PersonSelector extends React.Component {
                     </Tag>)
                 })}
                 </div>
-                <WrappedQueryFrom  onQuery={this.onQuery} />
-                <Table bordered className='person-selector-tablewrap' columns={columns} dataSource={dataSource} rowKey={record => record.key}  //数据中已key为唯一标识
+                <WrappedQueryFrom  onQuery={this.onQuery.bind(this)} query={this.state.query}  />
+                <Table bordered className='person-selector-tablewrap' columns={columns} dataSource={dataSource} rowKey={record => record.userId}  //数据中已key为唯一标识
                     pagination={pagination}
                     loading={isFetching}
                     onChange={this.handleTableChange}

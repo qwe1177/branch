@@ -7,8 +7,7 @@ import axios from 'axios';
 import { connect_srm } from '../../../util/connectConfig';
 import { getLoginInfo ,getUrlParams} from '../../../util/baseTool';
 
-//联调叶群丽，上线后去掉
-const yequanli_url ='http://10.10.10.121:9503/srm-app/v1';
+
 
 
 
@@ -41,7 +40,7 @@ export default class Card1 extends React.Component {
     var moduleId = urlParams['moduleId']?urlParams['moduleId']:'';
     this.setState({ isFetching: true });
     var params = {token: token,moduleId:moduleId};
-    axios.get(yequanli_url + '/clue/viewSupplierClueTotal.do', { params: params }).then((res) => {
+    axios.get(connect_srm + '/clue/viewSupplierClueTotal.do', { params: params }).then((res) => {
       if (res.data.code == '1') {
         this.setState({ cardData: res.data.data,isFetching: false });
       } else {

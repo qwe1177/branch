@@ -1,5 +1,6 @@
 import React from 'react';
 import axios from 'axios';
+import { connect_srm } from '../../../util/connectConfig.js';
 import PropTypes from 'prop-types'
 import { Table,Button,Modal } from 'antd';
 import './MainTable.css';
@@ -29,22 +30,25 @@ class MainTable extends React.Component {
   showModal=(key)=>{
     this.setState({visible:true,key:key});
   } 
-  handleOk=()=>{
+  handleOk=(selectedRowKeys)=>{
     let {key} = this.state;
+    let _this = this;
     console.log(key)
-    axios.get('http://10.10.10.29:9407'+ '/v1/supplier/deleteSupplierFollowupRecords.do',{
+    axios.get(connect_srm+ '/v1/supplier/deleteSupplierFollowupRecords.do',{
       params: {
-        ids: key
-      }
+        ids:  key.length > 0  ?  key.join(',') : key 
+      } 
     })
     .then(function (response) {
-      console.log(response);
-      this.setState({visible:false});
+      _this.setState({visible:false});
+      let {pagination,isFetching} = _this.props.mainTableData;
+      let {queryform} =  _this.props.mainQueryData;
+      _this.props.queryTableData({queryform:queryform,pagination:pagination})
     })
     .catch(function (error) {
       console.log(error);
     });
-    
+    this.props.doChangeMainCheck({selectedList:selectedRowKeys});
   }
   handleCancel=()=>{
     this.setState({visible:false});
@@ -81,10 +85,10 @@ class MainTable extends React.Component {
   
     const columns = [{
       title: '企业名称',
-      dataIndex: 'companyName',
-      key:'companyName',
+      dataIndex: 'supplierName',
+      key:'supplierName',
       render: (text, record) => (
-        <a href={'http://10.10.10.114:8080/srm-app/v1/management/selectSupplierDetails.do?supplierId='+record.supplierId}>{text}</a>
+        <a href={'http://10.10.10.114:8080/srm-app/v1/management/viewSupplierDetails.do?supplierId='+record.supplierId}>{text}</a>
       )
     } , {
       title: '计划内容',
@@ -100,7 +104,7 @@ class MainTable extends React.Component {
       key:'option',
       render: (text, record) => (
         <div className="tabel-extend-option">
-            <a href={'http://10.10.10.114:8080/srm-app/v1/management/selectSupplierDetails.do?supplierId='+record.supplierId}>去跟进</a>
+            <a href={'http://10.10.10.114:8080/srm-app/v1/management/viewSupplierDetails.do?supplierId='+record.supplierId}>去跟进</a>
             <span onClick={(key) => this.showModal(record.id)}>移出</span>
         </div>
       )

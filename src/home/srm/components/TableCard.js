@@ -5,12 +5,9 @@ import axios from 'axios';
 
 import './List.css';
 
-import { connect_cas } from '../../../util/connectConfig';
+import { connect_cas,connect_srm} from '../../../util/connectConfig';
 import { getLoginInfo,getUrlParams } from '../../../util/baseTool';
 
-
-//联调陈勇，上线后去掉
-const chengyong_url = 'http://10.10.10.29:9407/v1';
 
 const mock = [
   {
@@ -44,7 +41,7 @@ class MainTable extends React.Component {
     var { pagination } = this.state;
     // var params = {token:token,moduleId:moduleId,pageSize:pagination.pageSize,current:pagination.current}
     var params = { token: token, pageSize: pagination.pageSize }
-    axios.get(chengyong_url + '/supplier/queryFollowupList.do', { params: params }).then((res) => {
+    axios.get(connect_srm + '/supplier/queryFollowupList.do', { params: params }).then((res) => {
       if (res.data.code == '1') {
         var newPagination = { ...pagination, total: res.data.data.rowCount };
         this.setState({ tableData: res.data.data.supplierFollowupPlanList, pagination: newPagination, isFetching: false });

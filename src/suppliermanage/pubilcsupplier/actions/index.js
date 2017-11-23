@@ -99,7 +99,7 @@ export const queryTableData = (data) => async (dispatch, getState) => {
             queryform.startTime = queryform.createdate[0].format("YYYY-MM-DD");
             queryform.endTime = queryform.createdate[1].format("YYYY-MM-DD");
         }
-        if(queryform.other.length>0){
+        if(queryform.other && queryform.other.length>0){
             var otherKeys = queryform.other;
             for (let o of otherKeys){
                 queryform[o] ='yes';
@@ -108,8 +108,9 @@ export const queryTableData = (data) => async (dispatch, getState) => {
         queryform = _.omit(queryform, ['varietyNameNames', 'mainBrandNames','createdate','other']);
         queryform = _.omitBy(queryform, _.isUndefined); //删除undefined参数
         var params = { ...queryform, ...paramPagination,token, moduleId}; //查询条件和分页条件传入
-        let res = await axios.get(xiaowenwu_url + '/management/viewSupplierList.do', { params: params });
-        return await dispatch(receiveSupplier({ tableData: res.data.data, pagination: { total: res.data.total } }));
+        params = {isPass:'yes',markToDistinguish:'all',  token, moduleId}; //测试用
+        let res = await axios.get(xiaowenwu_url + '/management/viewSupplierList.do', { params: params,timeout: 10000 });
+        return await dispatch(receiveSupplier({ tableData: res.data.data.data, pagination: { total: res.data.data.rowCount } }));
     } catch (error) {
         console.log('error: ', error)
         return await dispatch(receiveSupplierFail());

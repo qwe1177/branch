@@ -1,6 +1,7 @@
+import { getLoginInfo ,getUrlParams} from '../../../util/baseTool';
 import axios from 'axios';
-
-import { connect_srm } from '../../../util/connectConfig';
+import moment from 'moment'
+import {connect_srm} from '../../../util/connectConfig.js';
 import _ from 'lodash';
 
 export const INIT_QUERY = 'INIT_QUERY' //初始化查询条件 重置查询条件的时候也用这个
@@ -12,7 +13,7 @@ export const REQUEST_SUPPLIER = 'REQUEST_SUPPLIER' //发送查询请求 为了�
 export const RECEIVE_SUPPLIER = 'RECEIVE_SUPPLIER' //查询供应商得到结果数据
 export const RECEIVE_SUPPLIER_FAIL = 'RECEIVE_SUPPLIER_FAIL' //查询供应商失败
 
-export const CHANGE_MAIN_CHECK = 'CHANGE_MAIN_CHECK' //修改默认的选择复杂人
+export const CHANGE_MAIN_CHECK = 'CHANGE_MAIN_CHECK' //修改默认的选择
 
 
 export const initQuery = data => ({
@@ -78,7 +79,7 @@ export const setQueryFrom = data => (dispatch, getState) => {
 
 
 //使用async/await方式
-export const queryTableData = (data) => async (dispatch, getState) => {
+export const queryTableData = (data) => async(dispatch, getState) => {
     try {
         await dispatch(requestSupplier(data));
         var queryform = data.queryform;
@@ -90,37 +91,25 @@ export const queryTableData = (data) => async (dispatch, getState) => {
         params.finishData = undefined
         params = _.omitBy(params, _.isUndefined); //删除undefined参数
         // console.log(params)
-        let res = await axios.get('http://10.10.10.29:9407'+ '/v1/supplier/queryFollowupList.do', 
-                            { params: params ,
-                             headers:{'Content-Type': 'application/json;charset=UTF-8'}});
-        return await dispatch(receiveSupplier({ tableData: res.data.data.supplierFollowupPlanList,
-                                                pagination:{ total: res.data.data.rowCount,
-                                                        current: res.data.data.pageCount, 
-                                                        pageSize: res.data.data.pageSize,} }));
+        let res = await axios.get(connect_srm + '/v1/supplier/queryFollowupList.do', {
+            params: params,
+            headers: {
+                'Content-Type': 'application/json;charset=UTF-8'
+            }
+        });
+        return await dispatch(receiveSupplier({
+            tableData: res.data.data.supplierFollowupPlanList,
+            pagination: {
+                total: res.data.data.rowCount,
+                current: res.data.data.pageCount,
+                pageSize: res.data.data.pageSize,
+            }
+        }));
     } catch (error) {
         console.log('error: ', error)
         return await dispatch(receiveSupplierFail());
     }
 }
-// export const queryTableData = (data) => async (dispatch, getState) => {
-//     try {
-//         await dispatch(requestSupplier(data));
-//         var queryform = data.queryform;
-//         var pagination = data.pagination;
-//         var paramPagination = _.pick(pagination, ['current', 'pageSize']);  //从分页数据中拿出第几页，每页多少条
-//         var params = { ...queryform, ...paramPagination }; //查询条件和分页条件传入
-//         if (params.finishData && params.finishData.length > 0) {
-//             params.finishData[0] = params.finishData[0].format("YYYY-MM-DD");
-//             params.finishData[1] = params.finishData[1].format("YYYY-MM-DD");
-//         }
-//         params = _.omitBy(params, _.isUndefined); //删除undefined参数
-//         let res = await axios.get(connect_srm + 'v1/supplier/queryFollowupList.do', { params: params });
-//         return await dispatch(receiveSupplier({ tableData: res.data.data, pagination: { total: res.data.total } }));
-//     } catch (error) {
-//         console.log('error: ', error)
-//         return await dispatch(receiveSupplierFail());
-//     }
-// }
 
 export const initSupplierTable = data => (dispatch, getState) => {
     return dispatch(initSupplier(data))

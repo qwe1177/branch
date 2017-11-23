@@ -4,6 +4,8 @@ import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux';
 import actions from '../actions'
 import Modalmodel  from '../components/Modalmodel'
+import * as config  from '../../util/connectConfig'
+
 
 import {
     Form,
@@ -20,7 +22,7 @@ import {
     Popconfirm,
     Modal,
     DatePicker,
-    message
+    message,
 } from 'antd'
 import 'antd/dist/antd.css'
 import '../css/css.css'
@@ -37,7 +39,6 @@ import CategorySelector from '../../components/business/categoryselector';
 import BrandSelector from '../../components/business/brandselector';
 
 
-
 class UserForm extends Component {
 
     constructor(props) {
@@ -47,59 +48,67 @@ class UserForm extends Component {
             title: (<div><em style={{color:'#ff0000',marginRight:'5px'}}>*</em>姓名</div>),
             dataIndex: 'fullname',
             render: this.addinputdata,
-            width: 80,
+            width: 115,
         }, {
             title: '性别',
             className: 'column-money',
             dataIndex: 'gender',
             render: this.addselectdata,
-            width: 60,
+            width: 115,
         }, {
             title: (<div><em style={{color:'#ff0000',marginRight:'5px'}}>*</em>手机</div>),
             dataIndex: 'mobile',
             render: this.addinputdata,
-            width: 105,
+            width: 115,
         },
             {
                 title: '固话',
                 dataIndex: 'telephone',
                 render: this.addinputdata,
+                width: 125,
             },
             {
                 title: '职位',
                 dataIndex: 'position',
                 render: this.addinputdata,
+                width: 115,
             },
             {
                 title: '生日',
                 dataIndex: 'birthday',
-                render: this.addinputdata,
+                render: this.addbirthday,
+                width: 115,
 
             },
             {
                 title: '邮箱',
                 dataIndex: 'email',
                 render: this.addinputdata,
+                width: 115,
             },
             {
                 title: '传真',
                 dataIndex: 'fax',
                 render: this.addinputdata,
+                width: 125,
             },
             {
                 title: '旺旺',
                 dataIndex: 'wangwang',
                 render: this.addinputdata,
+                width: 125,
             },
             {
                 title: 'QQ',
                 dataIndex: 'qq',
                 render: this.addinputdata,
+                width: 115,
             },
             {
                 title: '微信',
                 dataIndex: 'weixin',
                 render: this.addinputdata,
+                width: 115,
             },
             {
                 title: '备注',
@@ -128,37 +137,37 @@ class UserForm extends Component {
         }, {
             title: '品牌名称',
             className: 'column-money',
-            dataIndex: 'BrandName',
+            dataIndex: 'brankName',
             width: 160,
             render: this.addinputdata,
         }, {
             title: '品牌类型',
-            dataIndex: 'BrandType',
+            dataIndex: 'brankType',
             render: this.addinputdata,
             width: 160,
         },
             {
                 title: '授权书',
-                dataIndex: 'powerofAttorney',
+                dataIndex: 'authorizations',
                 render: this.adduploaddata,
                 width: 160,
             },
             {
                 title: '注册证',
-                dataIndex: 'registCard',
+                dataIndex: 'registrations',
                 render: this.adduploaddata,
                 width: 160,
             },
             {
                 title: '认证报告',
-                dataIndex: 'AuditReports',
+                dataIndex: 'certifications',
                 render: this.adduploaddata,
                 width: 160,
 
             },
             {
                 title: '其他资料',
-                dataIndex: 'OtherInformation',
+                dataIndex: 'otherAptitudes',
                 render: this.adduploaddata,
                 width: 160,
             },
@@ -178,49 +187,49 @@ class UserForm extends Component {
 
         this.cttextcolumns = [{
             title: '名称',
-            dataIndex: 'name',
+            dataIndex: 'companyName',
         }, {
             title: '类型',
-            dataIndex: 'type',
+            dataIndex: 'conflictType',
         }, {
             title: '冲突内容',
-            dataIndex: 'content',
+            dataIndex: 'conflict',
         }, {
             title: '操作',
             dataIndex: 'Operation',
+            render: v=>'查看',
         }];
 
 
     }
 
     handleOpenChoose = () => {
-        this.setState({ brandSelectorVisible: true });
+        this.setState({brandSelectorVisible: true});
     }
     handleOpenChooseForCategory = () => {
-        this.setState({ categorySelectorVisible: true });
+        this.setState({categorySelectorVisible: true});
     }
     handleChoosed = (ids, labels) => {
-        this.props.form.setFieldsValue({ mainBrandNames: labels, mainBrand: ids });
-        this.setState({ brandSelectorVisible: false });
+        this.props.form.setFieldsValue({mainBrand: labels, mainBrandId: ids});
+        this.setState({brandSelectorVisible: false});
     }
     handleCancel = () => {
-        this.setState({ brandSelectorVisible: false });
+        this.setState({brandSelectorVisible: false});
     }
     handleChoosedForCategory = (ids, labels) => {
-        this.props.form.setFieldsValue({ varietyNameNames: labels, varietyNameId: ids });
-        this.setState({ categorySelectorVisible: false });
+        this.props.form.setFieldsValue({varietyName: labels, varietyId: ids});
+        this.setState({categorySelectorVisible: false});
     }
     handleCancelForCategory = () => {
-        this.setState({ categorySelectorVisible: false });
+        this.setState({categorySelectorVisible: false});
     }
     getLastSelectBrand = () => {
-        var labelstr = this.props.form.getFieldValue('mainBrandNames');
-        var idstr = this.props.form.getFieldValue('mainBrand');
-        console.log({ labelstr, idstr })
-        return { labelstr, idstr }
+        var labelstr = this.props.form.getFieldValue('mainBrand');
+        var idstr = this.props.form.getFieldValue('mainBrandId');
+        return {labelstr, idstr}
     }
     getLastSelectCategory = () => {
-        var idstr = this.props.form.getFieldValue('varietyNameId');
+        var idstr = this.props.form.getFieldValue('varietyId');
         return idstr;
     }
 
@@ -250,6 +259,15 @@ class UserForm extends Component {
         return isimgtype && isLt4M;
     }
 
+    telphonevalid = (rule, value, callback)=> {
+        const reg = /^1\d{10}$/;
+        if (!reg.test(value)) {
+            callback('请输入正确的手机号码')
+        } else {
+            callback()
+        }
+    }
+
 
     uploadhandleChange = (name)=>(info) => {
         if (info.file.status === 'uploading') {
@@ -265,37 +283,80 @@ class UserForm extends Component {
     hasErrors = (fieldsError)=>Object.keys(fieldsError).some(field => fieldsError[field]);
 
 
-    addinputdata = ({name, message, placeholder = '', required = false, type = 'string'}) => (<FormItem>
+    addinputdata = ({name, message, placeholder = '', required = false, type = 'string',}) => (
+        <FormItem style={{width:'100%'}} {...{
+            ...this.formItemLayout, ...{
+                wrapperCol: {
+                    span: 24,
+                }
+            }
+        }}>
+            {this.props.form.getFieldDecorator(name, {
+                rules: [{required: required, message: message, type: type}, {
+                    validator: name == 'mobile1' ? this.telphonevalid : null,
+                }],
+            })(
+                <Input placeholder={placeholder} style={{width:'100%'}}/>
+            )}
+        </FormItem>)
+
+    addbirthday = ({name, message, placeholder = '',}) => (<FormItem style={{width:'100%'}} {...{
+        ...this.formItemLayout, ...{
+            wrapperCol: {
+                span: 24,
+            }
+        }
+    }}>
         {this.props.form.getFieldDecorator(name, {
-            rules: [{required: required, message: message, type: type}],
+            rules: [{required: false, message: message,}],
         })(
-            <Input placeholder={placeholder} style={{width:'100%'}}/>
+            <DatePicker placeholder={placeholder} style={{width:'100%'}}/>
         )}
     </FormItem>)
 
-    addselectdata = ({name, message, placeholder = ''}) => (<FormItem>
+
+    addselectdata = ({name, message, placeholder = ''}) => (<FormItem style={{width:'100%'}} {...{
+        ...this.formItemLayout, ...{
+            wrapperCol: {
+                span: 24,
+            }
+        }
+    }}>
         {this.props.form.getFieldDecorator(name, {
             rules: [{required: false, message: message}],
         })(
-            <Select style={{ width: 50 }} placeholder="请选择">
+            <Select style={{ width: '100%'}} placeholder="请选择">
                 <Option value="男">男</Option>
                 <Option value="女">女</Option>
             </Select>
         )}
     </FormItem>)
 
-    adduploaddata = ({name, message, placeholder = '', num = 1}) => (<FormItem>
-        {this.props.form.getFieldDecorator(name, {
-            rules: [{required: false, message: message}],
-            onChange: this.uploadonChange,
-            valuePropName: 'fileList',
-            getValueFromEvent: this.normFile,
-        })(
-            <Upload {...this.uploadsprops2} beforeUpload={this.beforeUpload}>
-                {this.uploadicon(name, num)}
-            </Upload>
-        )}
-    </FormItem>)
+    adduploaddata = ({name, message, placeholder = '', num = 1}) => {
+        const newname = name.replace(/(.*?)s(\d+)$/g, '$1$2')
+        return (<FormItem style={{width:'100%'}} {...{
+            ...this.formItemLayout, ...{
+                wrapperCol: {
+                    span: 24,
+                }
+            }
+        }}>
+            {this.props.form.getFieldDecorator(name, {
+                rules: [{required: false, message: message}],
+                onChange: this.uploadonChange(newname),
+                valuePropName: 'fileList',
+                getValueFromEvent: this.normFile,
+            })(
+                <Upload {...this.uploadsprops2} beforeUpload={this.beforeUpload}>
+                    {this.uploadicon(name, num)}
+                </Upload>
+            )}
+            {this.props.form.getFieldDecorator(newname)(
+                <Input type='hidden'/>
+            )}
+
+        </FormItem>)
+    }
 
 
     handleAdd = () => {
@@ -325,12 +386,12 @@ class UserForm extends Component {
         const newData = {
             key: count + '',
             No: count + '',
-            BrandName: {name: 'BrandName' + count, message: '请输入品牌名称', placeholder: '品牌名称',},
-            BrandType: {name: 'BrandType' + count, message: '请输入品牌类型', placeholder: '品牌类型',},
-            powerofAttorney: {name: 'powerofAttorney' + count, message: '请上传授权书', placeholder: '授权书',},
-            registCard: {name: 'registCard' + count, message: '请上传注册证', placeholder: '注册证',},
-            AuditReports: {name: 'AuditReports' + count, message: '请上传认证报告', placeholder: '认证报告',},
-            OtherInformation: {name: 'OtherInformation' + count, message: '请上传其他资料', placeholder: '其他资料',},
+            brankName: {name: 'brankName' + count, message: '请输入品牌名称', placeholder: '品牌名称',},
+            brankType: {name: 'brankType' + count, message: '请输入品牌类型', placeholder: '品牌类型',},
+            authorizations: {name: 'authorizations' + count, message: '请上传授权书', placeholder: '授权书',},
+            registrations: {name: 'registrations' + count, message: '请上传注册证', placeholder: '注册证',},
+            certifications: {name: 'certifications' + count, message: '请上传认证报告', placeholder: '认证报告',},
+            otherAptitudes: {name: 'otherAptitudes' + count, message: '请上传其他资料', placeholder: '其他资料',},
             Operation: '删除',
         };
 
@@ -386,7 +447,7 @@ class UserForm extends Component {
         this.props.baseInfoForm({name: {name: name, value: value}})
     }
 
-    handleChange =(value) => {
+    handleChange = (value) => {
         //this.props.baseInfoForm({[name]: {name: name, value: value}})
         console.log(value)
     }
@@ -407,13 +468,13 @@ class UserForm extends Component {
 
         //this.props.fetchPosts('categoryChild')
         this.props.fetchzonesPosts({
-            url: '//srm.csc86.com/v1/clue/getZone.do',
+            url: `${config.connect_srm}/clue/getZone.do`,
             name: 'id',
             value: '',
             returnName: 'provinces'
         })
         this.props.fetchzonesPosts({
-            url: '//srm.csc86.com/v1/clue/getArea.do',
+            url: `${config.connect_srm}/clue/getArea.do`,
             name: 'id',
             value: '',
             returnName: 'Hareas'
@@ -457,18 +518,18 @@ class UserForm extends Component {
     }
 
     handleSubmit = (e) => {
-        e.preventDefault();
-
+        typeof e=='object'&&e.preventDefault();
+        console.log(e)
         this.props.form.validateFieldsAndScroll((err, values) => {
+
             if (!err) {
 
                 const params = {}
-
+                console.log(values)
                 const newarrobj = this.objToarrsort(values)
                 const newarrobjlen = newarrobj.length
 
                 for (let i = 0; i < newarrobjlen; i++) {
-
 
                     const re = /\d+$/g;
                     const arr0 = newarrobj[i][0]
@@ -493,7 +554,17 @@ class UserForm extends Component {
                 for (let o in params) {
                     if (typeof params[o] === 'object') {
                         if (params[o].constructor === Array) {
-                            newparams[o] = params[o].join(',')
+                            if (o == 'deadline') {
+                                newparams[o] = params[o].map(v=>v?v.format("YYYY-MM-DD"):'').join(',')
+                            }
+                            if (o == 'birthday') {
+                                newparams[o] = params[o].map(v=>v?v.format("YYYY-MM-DD"):'').join(',')
+                            }
+                            if (typeof params[o][0] != 'object') {
+                                newparams[o] = params[o].join(',')
+                            }
+                        } else {
+                            newparams[o] = params[o].label
                         }
                     } else {
                         if (params[o]) {
@@ -501,11 +572,22 @@ class UserForm extends Component {
                         }
                     }
                 }
-
+                typeof e=='string'&&(()=>newparams[e]='ok')()
                 const data = this.objTodata(newparams)
-
-                axios.post('http://srm.csc86.com/v1/clue/addSupplierClue.do', data)
-                    .then(function (response) {
+                axios.post(`${config.connect_srm}/clue/addSupplierClue.do`, data)
+                    .then(response=>{
+                        const code= response.data.code
+                        if(code==2){
+                            this.props.modalmodelaction({submitVisible: true,})
+                            this.props.tablemodelaction4({
+                                data4: response.data.data,
+                                count: response.data.data.length
+                            })
+                        }else if(code==0){
+                            message.error(`${response.data.msg}`);
+                        }else if(code==1){
+                            message.success(`${response.data.msg}`);
+                        }
                         console.log(response);
                     })
                     .catch(function (error) {
@@ -531,13 +613,9 @@ class UserForm extends Component {
     }
 
 
-    timechange = (time, timeString)=> {
-        this.props.baseInfoForm({'rangeTime': timeString});
-
-    }
-
     CompanyNamehandle = (rule, value, callback) => {
         const userNameres1 = /^[^\s]+$/g, userNameres2 = /.{20,}/g;
+        this.isajaxpost = true;
         if (!userNameres1.test(value)) {
             this.ajaxpost = false;
             callback('请输入企业名称')
@@ -546,14 +624,14 @@ class UserForm extends Component {
             callback('企业名称不能超过20个字符')
         } else if (this.ajaxpost) {
             this.props.baseInfoForm({jsbutton: true})
-            axios.get(`//srm.csc86.com/v1/clue/checkCompanyName.do`, {
+            axios.get(`${config.connect_srm}/clue/checkCompanyName.do`, {
                 params: {
                     companyName: value
                 }
             }).then(response => {
                 if (response.status == 200) {
                     this.isajaxpost = false
-                    if (response.data.code == 0) {
+                    if (response.data.code == 2) {
 
                         this.props.modalmodelaction({jsbuttionVisible: true,})
                         this.props.tablemodelaction3({
@@ -561,6 +639,8 @@ class UserForm extends Component {
                             count: response.data.data.length
                         })
                         callback()
+                    } else if (response.data.code == 0) {
+                        callback(response.data.msg)
                     } else {
                         callback()
                     }
@@ -579,12 +659,12 @@ class UserForm extends Component {
     }
 
 
-    bindinghandle = (rule, value, callback) => {
+    bindinghandle = (name) => (rule, value, callback) => {
         const reg = /^\s*$/g;
         if (!reg.test(value)) {
-            axios.get('http://srm.csc86.com/v1/clue/getAccountBycompanyName.do', {
+            axios.get(`${config.connect_srm}/clue/checkAccount.do`, {
                 params: {
-                    companyName: value
+                    [name]: value
                 }
             }).then(response => {
                 if (response.status == 200) {
@@ -613,10 +693,6 @@ class UserForm extends Component {
     }
 
 
-    rangeConfig = {
-        rules: [{type: 'array', required: false, message: '请选择'}], onChange: this.timechange,
-    }
-
     handlePreview = (file) => {
 
         this.props.modalmodelaction({
@@ -627,27 +703,39 @@ class UserForm extends Component {
     }
 
 
-    handleCancel2 = () => this.props.modalmodelaction({previewVisible: false,})
+    handleCancel2 = (visible) =>() => this.props.modalmodelaction({[visible]: false,})
 
-    handleCancel3 = () => this.props.modalmodelaction({jsbuttionVisible: false,})
+    handleOk2 = (visible) =>() => {
+        console.log(visible)
+        this.props.modalmodelaction({[visible]: false,});
+        this.handleSubmit('submitOk')
+    }
 
 
     uploadsprops2 = {
-        name: 'file',
+        name: 'Filedata',
         listType: 'picture',
         className: 'upload-list-inline',
         onPreview: this.handlePreview,
         multiple: true,
         accept: 'image/*',
-        action: '//img.csc86.com/upload?type=approve',
+        action: `${config.connect_img}/upload?type=approveLicensePic`,
     }
 
 
-    uploadonChange(info) {
+    uploadonChange = (name)=>(info)=> {
         const status = info.file.status;
+        const response = info.file.response;
         if (status !== 'uploading') {
         }
         if (status === 'done') {
+            const key = this.props.form.getFieldValue([name])
+            if (key) {
+                this.props.form.setFieldsValue({[name]: key + '@' + response.key});
+            } else {
+                this.props.form.setFieldsValue({[name]: response.key});
+            }
+
             message.success(`${info.file.name} 图片上传成功.`);
         } else if (status === 'error') {
             message.error(`${info.file.name} 图片上传失败.`);
@@ -655,7 +743,8 @@ class UserForm extends Component {
     }
 
     provincehandle = (name, returnName)=>(value)=> {
-        const url = this.props.Infos.orOut.value == 2 ? '//srm.csc86.com/v1/clue/getZone.do' : '//srm.csc86.com/v1/clue/getArea.do'
+        console.log(value)
+        const url = this.props.Infos.orOut.value == 2 ? `${config.connect_srm}/clue/getZone.do` : `${config.connect_srm}/clue/getArea.do`
         this.props.fetchzonesPosts({url, name, value: value['key'], returnName})
     }
 
@@ -684,7 +773,6 @@ class UserForm extends Component {
     render() {
 
 
-
         const {getFieldDecorator, getFieldsError, getFieldError, isFieldTouched} = this.props.form;
 
 
@@ -694,7 +782,7 @@ class UserForm extends Component {
         const columns2 = this.columns2;
 
         const {
-            categoryChild, jsbutton, province, provinces, city, citys, county, countys, town, towns, Harea, Hareas, Hvenue, Hvenues, Hfloor, Hfloors, Hdistrict, Hdistricts, registAddressCitys
+            categoryChild, jsbutton, provincebase, provinces, citybase, citys, countybase, countys, townbase, towns, Harea, Hareas, Hvenue, Hvenues, Hfloor, Hfloors, Hdistrict, Hdistricts, registAddressCitys
         } = this.props.Infos;
         const categorysarr = categoryChild ? categoryChild.map((v, i, a)=>(
             <Option key={v['cid']}>{v['c_name']}</Option>)) : []
@@ -709,11 +797,11 @@ class UserForm extends Component {
         const Hdistrictsarr = Hdistricts ? Hdistricts.map((v, i, a)=>(<Option key={v['id']}>{v['name']}</Option>)) : []
 
         const registAddressCitysarr = registAddressCitys ? registAddressCitys.map((v, i, a)=>(
-            <Option key={v['value']}>{v['name']}</Option>)) : []
-        const provinceText = province ? province.value ? province.value.label + ' ' : '' : '';
-        const cityText = city ? city.value ? city.value.label + ' ' : '' : '';
-        const countyText = county ? county.value ? county.value.label + ' ' : '' : '';
-        const townText = town ? town.value ? town.value.label + ' ' : '' : '';
+            <Option key={v['id']}>{v['name']}</Option>)) : []
+        const provinceText = provincebase ? provincebase.value ? provincebase.value.label + ' ' : '' : '';
+        const cityText = citybase ? citybase.value ? citybase.value.label + ' ' : '' : '';
+        const countyText = countybase ? countybase.value ? countybase.value.label + ' ' : '' : '';
+        const townText = townbase ? townbase.value ? townbase.value.label + ' ' : '' : '';
 
         const HareaText = Harea ? Harea.value ? Harea.value.label + ' ' : '' : '';
         const HvenueText = Hvenue ? Hvenue.value ? Hvenue.value.label + ' ' : '' : '';
@@ -740,7 +828,7 @@ class UserForm extends Component {
             }
         }} style={{"width":"100%",'marginTop':'5px'}} colon={false}
         >
-            {getFieldDecorator('province', {
+            {getFieldDecorator('provincebase', {
                 rules: [{required: false, message: '请选择省'}],
             })(
                 <Select labelInValue style={{"width":"23%","marginRight":"5px"}}
@@ -750,7 +838,7 @@ class UserForm extends Component {
                 </Select>
             )}
 
-            {getFieldDecorator('city', {
+            {getFieldDecorator('citybase', {
                 rules: [{required: false, message: '请选择市'}],
             })(
                 <Select labelInValue style={{"width":"23%","marginRight":"5px"}}
@@ -760,7 +848,7 @@ class UserForm extends Component {
                 </Select>
             )}
 
-            {getFieldDecorator('county', {
+            {getFieldDecorator('countybase', {
                 rules: [{required: false, message: '请选择镇'}],
             })(
                 <Select labelInValue style={{"width":"23%","marginRight":"5px"}}
@@ -770,7 +858,7 @@ class UserForm extends Component {
                 </Select>
             )}
 
-            {getFieldDecorator('town', {
+            {getFieldDecorator('townbase', {
                 rules: [{required: false, message: '请选择县'}],
             })(
                 <Select labelInValue style={{"width":"23%","marginRight":"5px"}}
@@ -837,8 +925,21 @@ class UserForm extends Component {
                 dataSource={this.props.tablemodel3.data3}
                 bordered
             />
-            <p><Button type="primary" style={{marginTop:'20px'}} onClick={this.handleCancel3}>确认添加</Button></p>
+            <p><Button type="primary" style={{marginTop:'20px'}} onClick={this.handleCancel2('jsbuttionVisible')}>确认添加</Button></p>
         </div>
+
+        const ct2text = <div>
+            <p style={{textAlign:'left',padding:'10px 0px'}}>
+                您添加的线索可能与以下{this.props.tablemodel4.count}个企业的资料冲突,请确认是否继续添加</p>
+            <Table
+                columns={this.cttextcolumns}
+                pagination={false}
+                dataSource={this.props.tablemodel4.data4}
+                bordered
+            />
+
+        </div>
+
         return (
             <div className="newClue">
                 <h2>新建供应商线索</h2>
@@ -888,7 +989,7 @@ class UserForm extends Component {
                                                         width: '650px',
                                                         style: {'maxWidth': '100%'},
                                                     }}
-                                                        ModalText={cttext} footer={null} onCancel={this.handleCancel3}/>
+                                                        ModalText={cttext} footer={null} onCancel={this.handleCancel2('jsbuttionVisible')}/>
                                                 </Col>
 
                                             </Col>
@@ -902,12 +1003,13 @@ class UserForm extends Component {
                                                 label="经营品类"  {...this.formItemLayout} style={{"width":"100%"}}
                                             >
 
-                                                {getFieldDecorator('varietyNameNames')(
-                                                    <Input onClick={this.handleOpenChooseForCategory} readOnly placeholder="点击选择经营类目"/>
+                                                {getFieldDecorator('varietyName')(
+                                                    <Input onClick={this.handleOpenChooseForCategory} readOnly
+                                                           placeholder="点击选择经营类目"/>
                                                 )}
 
-                                                {getFieldDecorator('varietyNameId')(
-                                                    <Input type='hidden' />
+                                                {getFieldDecorator('varietyId')(
+                                                    <Input type='hidden'/>
                                                 )}
 
                                             </FormItem>
@@ -939,7 +1041,7 @@ class UserForm extends Component {
 
                                                             {getFieldDecorator('cscAccount', {
                                                                 rules: [{
-                                                                    validator: this.bindinghandle
+                                                                    validator: this.bindinghandle('cscAccount')
                                                                 }], initialValue: '', validateTrigger: 'onBlur'
                                                             })(
                                                                 <Input placeholder="输入账号"
@@ -960,7 +1062,7 @@ class UserForm extends Component {
 
                                                             {getFieldDecorator('buy5jUserId', {
                                                                 rules: [{
-                                                                    validator: this.bindinghandle
+                                                                    validator: this.bindinghandle('jdAccount')
                                                                 }], initialValue: '', validateTrigger: 'onBlur'
                                                             })(
                                                                 <Input placeholder="输入账号"
@@ -1090,27 +1192,27 @@ class UserForm extends Component {
                                                 label="经营品牌"  {...this.formItemLayout} style={{"width":"100%"}}
                                             >
                                                 {/*{getFieldDecorator('mainBrand', {
-                                                    rules: [{
-                                                        required: false, message: '点击选择经营的类目', type: 'array',
-                                                    }], initialValue: [],
-                                                })(
-                                                    <Select
-                                                        mode="multiple"
+                                                 rules: [{
+                                                 required: false, message: '点击选择经营的类目', type: 'array',
+                                                 }], initialValue: [],
+                                                 })(
+                                                 <Select
+                                                 mode="multiple"
 
-                                                        placeholder="点击选择经营的类目"
-                                                        onChange={this.handleChange}
-                                                        style={{ width: '100%' }}
-                                                    >
-                                                        {categorysarr}
-                                                    </Select>
-                                                )}*/}
+                                                 placeholder="点击选择经营的类目"
+                                                 onChange={this.handleChange}
+                                                 style={{ width: '100%' }}
+                                                 >
+                                                 {categorysarr}
+                                                 </Select>
+                                                 )}*/}
 
-
-                                                {getFieldDecorator('mainBrand')(
-                                                    <Input type='hidden' />
+                                                {getFieldDecorator('mainBrandId')(
+                                                    <Input type='hidden'/>
                                                 )}
-                                                {getFieldDecorator('mainBrandNames')(
-                                                    <Input onClick={this.handleOpenChoose} readOnly placeholder="点击选择经营品牌" />
+                                                {getFieldDecorator('mainBrand')(
+                                                    <Input onClick={this.handleOpenChoose} readOnly
+                                                           placeholder="点击选择经营品牌"/>
                                                 )}
 
                                             </FormItem>
@@ -1176,7 +1278,7 @@ class UserForm extends Component {
                                                 label="备注"  {...this.formItemLayout}
                                                 style={{"width":"100%",'marginTop':'15px'}}
                                             >
-                                                {getFieldDecorator('remark', {
+                                                {getFieldDecorator('remarkbase', {
                                                     rules: [{required: false, message: '请填写备注(50个字符)'}],
                                                     onChange: this.companyIntroductionHandle(this.numb2, 50)
                                                 })(
@@ -1236,7 +1338,7 @@ class UserForm extends Component {
                                                 })(
                                                     <Select labelInValue style={{"width":"45%","marginRight":"5px"}}
                                                             placeholder="请选择省"
-                                                            onChange={this.provincehandle('province','registAddressCitys')}>
+                                                            onChange={this.provincehandle('id','registAddressCitys')}>
                                                         {provincesarr}
                                                     </Select>
                                                 )}
@@ -1260,7 +1362,9 @@ class UserForm extends Component {
                                                 label="营业执照期限"  {...this.formItemLayout} style={{"width":"100%"}}
                                             >
 
-                                                {getFieldDecorator('deadline', this.rangeConfig)(
+                                                {getFieldDecorator('deadline', {
+                                                    rules: [{type: 'array', required: false, message: '请选择'}],
+                                                })(
                                                     <RangePicker style={{"width":"65%"}}/>
                                                 )}
 
@@ -1324,12 +1428,16 @@ class UserForm extends Component {
 
                                                 {getFieldDecorator('registIdCard', {
                                                     rules: [{required: false, message: '请上传法人身份证'}],
-                                                    onChange: this.uploadonChange,
+                                                    onChange: this.uploadonChange('idcards'),
+                                                    valuePropName: 'fileList',
+                                                    getValueFromEvent: this.normFile,
                                                 })(
                                                     <Upload {...this.uploadsprops2} beforeUpload={this.beforeUpload}>
-                                                        <Icon type="plus" className="avatar-uploader-trigger"
-                                                              style={{border: '1px dashed #d9d9d9',cursor: 'pointer','borderRadius': '6px'}}/>
+                                                        {this.uploadicon('registIdCard', 2)}
                                                     </Upload>
+                                                )}
+                                                {getFieldDecorator('idcards')(
+                                                    <Input type='hidden'/>
                                                 )}
 
                                             </FormItem>
@@ -1341,13 +1449,16 @@ class UserForm extends Component {
 
                                                 {getFieldDecorator('BusinessLicense', {
                                                     rules: [{required: false, message: '请上传'}],
-                                                    onChange: this.uploadonChange,
+                                                    onChange: this.uploadonChange('license'),
                                                     valuePropName: 'fileList',
                                                     getValueFromEvent: this.normFile,
                                                 })(
                                                     <Upload {...this.uploadsprops2} beforeUpload={this.beforeUpload}>
                                                         {this.uploadicon('BusinessLicense', 1)}
                                                     </Upload>
+                                                )}
+                                                {getFieldDecorator('license')(
+                                                    <Input type='hidden'/>
                                                 )}
                                             </FormItem>
                                         </Col>
@@ -1361,13 +1472,16 @@ class UserForm extends Component {
 
                                                 {getFieldDecorator('payAptitudes', {
                                                     rules: [{required: false, message: '请上传'}],
-                                                    onChange: this.uploadonChange,
+                                                    onChange: this.uploadonChange('qualification'),
                                                     valuePropName: 'fileList',
                                                     getValueFromEvent: this.normFile,
                                                 })(
                                                     <Upload {...this.uploadsprops2} beforeUpload={this.beforeUpload}>
                                                         {this.uploadicon('payAptitudes', 1)}
                                                     </Upload>
+                                                )}
+                                                {getFieldDecorator('qualification')(
+                                                    <Input type='hidden'/>
                                                 )}
                                             </FormItem>
                                         </Col>
@@ -1378,13 +1492,16 @@ class UserForm extends Component {
 
                                                 {getFieldDecorator('powerAttorney', {
                                                     rules: [{required: false, message: '请上传'}],
-                                                    onChange: this.uploadonChange,
+                                                    onChange: this.uploadonChange('authorizationBus'),
                                                     valuePropName: 'fileList',
                                                     getValueFromEvent: this.normFile,
                                                 })(
                                                     <Upload {...this.uploadsprops2} beforeUpload={this.beforeUpload}>
                                                         {this.uploadicon('powerAttorney', 1)}
                                                     </Upload>
+                                                )}
+                                                {getFieldDecorator('authorizationBus')(
+                                                    <Input type='hidden'/>
                                                 )}
                                             </FormItem>
                                         </Col>
@@ -1398,13 +1515,16 @@ class UserForm extends Component {
 
                                                 {getFieldDecorator('Undertaking', {
                                                     rules: [{required: false, message: '请上传'}],
-                                                    onChange: this.uploadonChange,
+                                                    onChange: this.uploadonChange('undertaking'),
                                                     valuePropName: 'fileList',
                                                     getValueFromEvent: this.normFile,
                                                 })(
                                                     <Upload {...this.uploadsprops2} beforeUpload={this.beforeUpload}>
                                                         {this.uploadicon('Undertaking', 1)}
                                                     </Upload>
+                                                )}
+                                                {getFieldDecorator('undertaking')(
+                                                    <Input type='hidden'/>
                                                 )}
                                             </FormItem>
                                         </Col>
@@ -1415,7 +1535,7 @@ class UserForm extends Component {
 
                                                 {getFieldDecorator('Office', {
                                                     rules: [{required: false, message: '请上传'}],
-                                                    onChange: this.uploadonChange,
+                                                    onChange: this.uploadonChange('officespace'),
                                                     valuePropName: 'fileList',
                                                     getValueFromEvent: this.normFile,
                                                 })(
@@ -1423,7 +1543,9 @@ class UserForm extends Component {
                                                         {this.uploadicon('Office', 3)}
                                                     </Upload>
                                                 )}
-
+                                                {getFieldDecorator('officespace')(
+                                                    <Input type='hidden'/>
+                                                )}
                                             </FormItem>
                                         </Col>
                                     </Row>
@@ -1433,16 +1555,19 @@ class UserForm extends Component {
                                             <FormItem
                                                 label="生产车间/仓库"  {...this.formItemLayout} style={{"width":"100%"}}
                                             >
-                                                {getFieldDecorator('Workshop', {
+                                                {getFieldDecorator('Workshops', {
                                                     rules: [{required: false, message: '请上传'}],
-                                                    onChange: this.uploadonChange,
+                                                    onChange: this.uploadonChange('workshop'),
                                                     valuePropName: 'fileList',
                                                     getValueFromEvent: this.normFile,
                                                 })(
                                                     <Upload {...this.uploadsprops2} beforeUpload={this.beforeUpload}
                                                                                     multiple={true}>
-                                                        {this.uploadicon('Workshop', 3)}
+                                                        {this.uploadicon('Workshops', 3)}
                                                     </Upload>
+                                                )}
+                                                {getFieldDecorator('workshop')(
+                                                    <Input type='hidden'/>
                                                 )}
 
                                                 <Modalmodel  {...{
@@ -1451,7 +1576,7 @@ class UserForm extends Component {
                                                     title: '',
                                                     width: '650px',
                                                     style: {'maxWidth': '100%'}
-                                                }} footer={null} onCancel={this.handleCancel2}
+                                                }} footer={null} onCancel={this.handleCancel2('previewVisible')}
                                                    ModalText={(<img alt='example' style={{ 'maxWidth': '100%' }} src={this.props.modalmodel.previewImage} />)}/>
                                             </FormItem>
                                         </Col>
@@ -1490,7 +1615,7 @@ class UserForm extends Component {
                                                 label="支持来料加工"  {...this.formItemLayout} style={{"width":"100%"}}
                                             >
 
-                                                {getFieldDecorator('processing', {
+                                                {getFieldDecorator('oem', {
                                                     rules: [{required: false, message: '请选择'}],
                                                     onChange: this.onChange,
                                                 })(
@@ -1626,6 +1751,14 @@ class UserForm extends Component {
                                     >
                                         提交
                                     </Button>
+                                    <Modalmodel  {...{
+                                        ...this.props.modalmodel,
+                                        visible: this.props.modalmodel.submitVisible,
+                                        title: '冲突提示',
+                                        width: '650px',
+                                        style: {'maxWidth': '100%'},
+                                    }}
+                                        ModalText={ct2text}  onCancel={this.handleCancel2('submitVisible')} onOk={this.handleOk2('submitVisible')} okText='确认提交'/>
                                 </FormItem>
                             </Row>
                         </div>

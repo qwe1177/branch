@@ -41,8 +41,6 @@ class QueryFrom extends React.Component {
 			}
 		}
 		this.props.form.setFieldsValue(data);
-		document.getElementById('varietyNameNames').setAttribute('readonly', true);
-		document.getElementById('mainBrandNames').setAttribute('readonly', true);
 	}
 	handleSubmit = (e) => {
 		e.preventDefault();
@@ -209,7 +207,7 @@ class QueryFrom extends React.Component {
 						)}
 						<FormItem {...formItemLayout} label="主营类目"  >
 							{getFieldDecorator('varietyNameNames')(
-								<Input onClick={this.handleOpenChooseForCategory} />
+								<Input onClick={this.handleOpenChooseForCategory}  readOnly />
 							)}
 						</FormItem>
 					</Col>
@@ -221,7 +219,7 @@ class QueryFrom extends React.Component {
 						)}
 						<FormItem {...formItemLayout} label="主营品牌"  >
 							{getFieldDecorator('mainBrandNames')(
-								<Input onClick={this.handleOpenChoose} />
+								<Input onClick={this.handleOpenChoose} readOnly />
 							)}
 						</FormItem>
 					</Col>

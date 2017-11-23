@@ -4,6 +4,8 @@ export const tablemodelInfo = 'tablemodelInfo'
 export const modalmodelInfo = 'modalmodelInfo'
 export const tablemodelInfo2 = 'tablemodelInfo2'
 export const tablemodelInfo3 = 'tablemodelInfo3'
+export const tablemodelInfo4 = 'tablemodelInfo4'
+import * as config  from '../../util/connectConfig'
 
 axios.defaults.timeout = 30000;                        //响应时间
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8';           //配置请求头
@@ -34,9 +36,14 @@ export const tablemodelaction3 = value=> ({
     payload: value
 })
 
+export const tablemodelaction4 = value=> ({
+    type: tablemodelInfo4,
+    payload: value
+})
+
 export const fetchPosts = value => (dispatch, getState) => {
     dispatch(baseInfoForm({[value]: []}))
-    return axios(`//srm.csc86.com/v1/queryCategoryList.do`)
+    return axios(`${config.connect_srm}/queryCategoryList.do`)
         .then(response => {
             console.log(response)
             if (response.status == 200) {
@@ -45,7 +52,7 @@ export const fetchPosts = value => (dispatch, getState) => {
         })
 }
 
-export const fetchzonesPosts = ({url,name, value, returnName}) => (dispatch, getState) => {
+export const fetchzonesPosts = ({url, name, value, returnName}) => (dispatch, getState) => {
     return axios(`${url}?${name}=${value}`)
         .then(response => {
             if (response.status == 200) {
@@ -55,7 +62,15 @@ export const fetchzonesPosts = ({url,name, value, returnName}) => (dispatch, get
 }
 
 
-
-const actions = {baseInfoForm,modalmodelaction,tablemodelaction,tablemodelaction2,tablemodelaction3,fetchPosts,fetchzonesPosts,}
+const actions = {
+    baseInfoForm,
+    modalmodelaction,
+    tablemodelaction,
+    tablemodelaction2,
+    tablemodelaction3,
+    tablemodelaction4,
+    fetchPosts,
+    fetchzonesPosts,
+}
 
 export default actions

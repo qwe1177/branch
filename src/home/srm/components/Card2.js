@@ -4,13 +4,11 @@ import './Card.css'
 import { Spin} from 'antd';
 import axios from 'axios';
 
-import { connect_cas } from '../../../util/connectConfig';
+import { connect_srm } from '../../../util/connectConfig';
 import { getLoginInfo ,getUrlParams} from '../../../util/baseTool';
 
 
-//联调肖文武，上线后去掉
-const xiaowenwu_url = 'http://10.10.10.114:8080/srm-app/v1';
-const lihuan_url ='http://10.10.10.214:8080/srm-app/v1'
+
 
 const defaultState = {
     "all": {
@@ -56,7 +54,7 @@ export default class Card2 extends React.Component {
         var moduleId = urlParams['moduleId']?urlParams['moduleId']:'';
         this.setState({ isFetching: true });
         var params = {token: token,moduleId:moduleId,sign:'viewSupplierTotal'};
-        axios.get(xiaowenwu_url + '/management/viewSupplierTotal.do', { params: params }).then((res) => {
+        axios.get(connect_srm + '/management/viewSupplierTotal.do', { params: params }).then((res) => {
           if (res.data.code == '1') {
             this.setState({ cardData: res.data.data,isFetching: false });
           } else {

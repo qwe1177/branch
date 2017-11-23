@@ -33,9 +33,10 @@ const initTableData = {
   pagination:{
     showQuickJumper: true,
     showSizeChanger: true,
-    total: '',
-    current: '',
-    pageSize: '',
+    total: 1,
+    current: 1,
+    pageSize: 10,
+    // defaultPageSize: '',
     showTotal: total => `共 ${total} 条`
   }
 }

@@ -46,7 +46,7 @@ class QueryFrom extends React.Component {
 		}
     checkName = (rule, value, callback) => {
 			const form = this.props.form;
-			var name  = form.getFieldValue('companyName');
+			var name  = form.getFieldValue('supplierName');
       if (!name || ''== name) {
         callback('企业名称必须填写!');
       } else {
@@ -64,7 +64,7 @@ class QueryFrom extends React.Component {
 						<Row >
 							<Col span={6}>
 							<FormItem {...formItemLayout} label="企业名称">
-                  {getFieldDecorator('companyName', {
+                  {getFieldDecorator('supplierName', {
                     rules: [{validator: this.checkName}],
                   })(
                     <Input  style={{ width: '100%' }}  onBlur={this.handleConfirmBlur} />
@@ -84,7 +84,6 @@ class QueryFrom extends React.Component {
 								<Button size="large" type="primary" style={{ width: 100,marginRight: 30 }} htmlType="submit">查询</Button>
 								<Button size="large" type="danger" style={{ width: 100 }} onClick={this.handleReset}>重置</Button>
 							</Col>
-						
 						</Row>
 					</Form>
       );
