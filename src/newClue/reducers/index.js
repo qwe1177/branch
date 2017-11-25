@@ -1,11 +1,19 @@
 import {combineReducers} from 'redux'
 import commonReducer from '../../common/reducers/commonreducer'
 import {
-    SELECT_REDDIT, INVALIDATE_REDDIT,
-    REQUEST_POSTS, RECEIVE_POSTS, baseInfo, modalmodelInfo, tablemodelInfo, tablemodelInfo2, tablemodelInfo3,tablemodelInfo4
+    SELECT_REDDIT,
+    INVALIDATE_REDDIT,
+    REQUEST_POSTS,
+    RECEIVE_POSTS,
+    baseInfo,
+    modalmodelInfo,
+    tablemodelInfo,
+    tablemodelInfo2,
+    tablemodelInfo3,
+    tablemodelInfo4
 } from '../actions'
 
-function Infos(state = {orOut:{name:'orOut',value:2}}, action) {
+function Infos(state = {orOut: {name: 'orOut', value: '2'}}, action) {
     switch (action.type) {
         case baseInfo:
             return {
@@ -19,7 +27,7 @@ function Infos(state = {orOut:{name:'orOut',value:2}}, action) {
 
 function modalmodel(state = {
     title: "提示", ModalText: '内容',
-    visible: false, previewVisible: false, visible2: false, jsbuttionVisible: false,submitVisible: false,
+    visible: false, previewVisible: false, visible2: false, jsbuttionVisible: false, submitVisible: false,
 }
     , action) {
     switch (action.type) {
@@ -70,10 +78,10 @@ function tablemodel2(state = {
         No: '1',
         brankName: {name: 'brankName1', message: '请输入品牌名称', placeholder: '品牌名称',},
         brankType: {name: 'brankType1', message: '请输入品牌类型', placeholder: '品牌类型',},
-        authorizations: {name: 'authorizations1', message: '请上传授权书', placeholder: '授权书',num:2,},
-        registrations: {name: 'registrations1', message: '请输入注册证', placeholder: '注册证',},
-        certifications: {name: 'certifications1', message: '请输入认证报告', placeholder: '认证报告',},
-        otherAptitudes: {name: 'otherAptitudes1', message: '请输入其他资料', placeholder: '其他资料',},
+        authorization: {name: 'authorization1', message: '请上传授权书', placeholder: '授权书', num: 2,},
+        registration: {name: 'registration1', message: '请输入注册证', placeholder: '注册证',},
+        certification: {name: 'certification1', message: '请输入认证报告', placeholder: '认证报告',},
+        otherAptitude: {name: 'otherAptitude1', message: '请输入其他资料', placeholder: '其他资料',},
         Operation: '删除',
     }],
     count: 2,
@@ -125,7 +133,7 @@ function tablemodel4(state = {
 
 
 const rootReducer = combineReducers({
-    ...commonReducer,Infos, modalmodel, tablemodel, tablemodel2, tablemodel3,tablemodel4
+    ...commonReducer, Infos, modalmodel, tablemodel, tablemodel2, tablemodel3, tablemodel4
 })
 
 export default rootReducer

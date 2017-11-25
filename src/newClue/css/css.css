@@ -9,7 +9,7 @@
 
 .newClue .ant-table-thead  tr  th{ text-align: center}
 
-
+.ant-upload-list-picture .ant-upload-list-item-name{max-width: 150px ;}
 .newClue .ant-form-inline .has-feedback{ width: 100%}
 .avatar-uploader,
 .avatar-uploader-trigger,
