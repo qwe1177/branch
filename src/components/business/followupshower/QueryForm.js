@@ -10,8 +10,17 @@ const Option = Select.Option;
 const { MonthPicker, RangePicker } = DatePicker;
 const CheckboxGroup = Checkbox.Group;
 
-const checkedList = ['日常联系', '寄送样品', '询报价', '合同', '配送交货', '售后服务', '开具发票', '货到付款'];
 
+const options = [
+	{ label: '日常联系', value: '日常联系' },
+	{ label: '寄送样品', value: '寄送样品' },
+	{ label: '询报价', value: '合同' },
+	{ label: '配送交货', value: '配送交货' },
+	{ label: '售后服务', value: '售后服务' },
+	{ label: '开具发票', value: '开具发票' },
+	{ label: '货到付款', value: '货到付款' }
+  ];
+import { getOneUrlParams} from '../../../util/baseTool';
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -71,6 +80,9 @@ class QueryFrom extends React.Component {
 			<Form layout="horizontal" onSubmit={this.handleSubmit}>
 				<Row gutter={16} >
 					<Col span={6}>
+						{getFieldDecorator('followUpNodeOrFlag', { initialValue: 'flag' })(
+							<Input type='hidden'  />
+						)}
 						<FormItem {...formItemLayout} label="跟进方式">
 							{getFieldDecorator('followUpWay', { initialValue: '全部' })(
 								<Select style={{ width: '100%' }}  >
@@ -83,10 +95,11 @@ class QueryFrom extends React.Component {
 					</Col>
 					<Col span={5}>
 						<FormItem {...formItemLayout2} label="是否有批注">
-							{getFieldDecorator('hasComment', { initialValue: '是' })(
+							{getFieldDecorator('isPostil', { initialValue: 'all' })(
 								<Select style={{ width: '100%' }}  >
-									<Option value="是">是</Option>
-									<Option value="否">否</Option>
+									<Option value="all">全部</Option>
+									<Option value="yes">是</Option>
+									<Option value="no">否</Option>
 								</Select>
 							)}
 						</FormItem>
@@ -105,8 +118,8 @@ class QueryFrom extends React.Component {
 				<Row gutter={16} className="followType">
 					<Col span={24} >
 						<FormItem {...checkItemLayoutFirst} label="跟进节点" style={{ textAlign: 'left' }}>
-							{getFieldDecorator('followUpNode')(
-								<CheckboxGroup options={checkedList} />
+							{getFieldDecorator('followUpNodeOrFlagValues')(
+								<CheckboxGroup options={options} />
 							)}
 						</FormItem>
 					</Col>

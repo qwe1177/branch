@@ -3,6 +3,7 @@
 import axios from 'axios';
 
 import { connect_cas } from '../../../util/connectConfig';
+import { getLoginInfo ,getUrlParams} from '../../../util/baseTool';
 
 const RECEIVE_OPERATE_DATA = 'POWER/RECEIVE_OPERATE_DATA'; //获取用户操作权限
 const RECEIVE_CURRENT_DATA = 'POWER/RECEIVE_CURRENT_DATA'; //获取用户数据权限
@@ -28,32 +29,55 @@ const receiveFieldData = (data,namespace) => ({
   namespace
 })
 
+const getPowerPublicParams = ()=>{
+  var token = getLoginInfo()['token'];  //获取token　登录用
+  var urlParams = getUrlParams();
+  var moduleId = urlParams['moduleId']?urlParams['moduleId']:'';
+  var moduleUrl = urlParams['moduleUrl']?urlParams['moduleUrl']:'';
+  return {token,moduleUrl,moduleId};
+}
 
 
-export const getOperateData = (token,moduleId) => async (dispatch, getState) => {
+export const getOperateData = () => async (dispatch, getState) => {
   try {
-    let res = await axios.get(connect_cas + '/api/right/getOperateData', { params: {token:token,moduleId:moduleId} });
-    return dispatch(receiveOperateData(res.data.data,'operate'));
+    var {token,moduleUrl,moduleId} = getPowerPublicParams();
+    var params = moduleUrl==''?{token,moduleId}:{token,moduleUrl} //优先使用moduleUrl获取权限
+    let res = await axios.get(connect_cas + '/api/right/getOperateData', { params: params,timeout:20000 });
+    if(res.data.code=='0'){
+      var d ={};
+      res.data.data.forEach((o)=>{
+        d[encodeURI(o['name'])]= o['sign'];
+      })
+      return dispatch(receiveOperateData(d,'operate'));
+    }
   } catch (error) {
     console.log('error: ', error)
   }
 }
 
 
-export const getCurrentData = (token,moduleId) => async (dispatch, getState) => {
+export const getCurrentData = () => async (dispatch, getState) => {
   try {
-    let res = await axios.get(connect_cas + '/api/right/getRightData', { params: {token:token,moduleId:moduleId} });
-    return dispatch(receiveCurrentData(res.data.data,'data'));
+    var {token,moduleUrl,moduleId} = getPowerPublicParams();
+    var params = moduleUrl==''?{token,moduleId}:{token,moduleUrl} //优先使用moduleUrl获取权限
+    let res = await axios.get(connect_cas + '/api/right/getRightData', { params: params,timeout:20000 } );
+    if(res.data.code=='0'){
+      return dispatch(receiveCurrentData(res.data.data,'data'));
+    }
   } catch (error) {
     console.log('error: ', error)
   }
 }
 
 
-export const getFieldData = (token,moduleId) => async (dispatch, getState) => {
+export const getFieldData = () => async (dispatch, getState) => {
   try {
-    let res = await axios.get(connect_cas + '/api/right/getFieldData', { params: {token:token,moduleId:moduleId} });
-    return dispatch(receiveFieldData(res.data.data,'field'));
+    var {token,moduleUrl,moduleId} = getPowerPublicParams();
+    var params = moduleUrl==''?{token,moduleId}:{token,moduleUrl} //优先使用moduleUrl获取权限
+    let res = await axios.get(connect_cas + '/api/right/getFieldData',{ params: params,timeout:20000 });
+    if(res.data.code=='0'){
+      return dispatch(receiveFieldData(res.data.data,'field'));
+    }
   } catch (error) {
     console.log('error: ', error)
   }
@@ -61,8 +85,7 @@ export const getFieldData = (token,moduleId) => async (dispatch, getState) => {
 
 
 
-
-const defaultState = {operate:[],data:[],field:[]};
+const defaultState = {operate:{},data:[],field:[]};
 
 const power = function (state = defaultState, action = {}) {
   switch (action.type) {

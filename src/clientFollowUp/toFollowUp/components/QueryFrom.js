@@ -27,15 +27,11 @@ class QueryFrom extends React.Component {
     handleSubmit = (e) => {
 			e.preventDefault();
 			let {queryform} = this.props.mainQueryData;
-			let {pagination,isFetching} = this.props.mainTableData;
       this.props.form.validateFieldsAndScroll((err, values) => {
         if (!err) {
-					if(!isFetching){
 						console.log('Received values of form: ', values);
-						var newPagination = {current:1,...pagination}; //点击按钮重新查询时候重置查询第一页
 						this.props.setQueryFrom({queryform:values}); 
-						this.props.queryTableData({queryform:values,pagination:newPagination});
-					}
+						this.props.queryTableData({queryform:values,pagination:this.props.mainTableData.pagination});
         }
       });
 		}
@@ -44,27 +40,28 @@ class QueryFrom extends React.Component {
 			const {queryform,pagination } = this.props.mainQueryData;  
 			this.props.resetQueryFrom();  
 		}
-    checkName = (rule, value, callback) => {
-			const form = this.props.form;
-			var name  = form.getFieldValue('supplierName');
-      if (!name || ''== name) {
-        callback('企业名称必须填写!');
-      } else {
-        callback();
-      }
-		}
+    // checkName = (rule, value, callback) => {
+		// 	const form = this.props.form;
+		// 	var name  = form.getFieldValue('companyName');
+    //   if (!name || ''== name) {
+    //     callback('企业名称必须填写!');
+    //   } else {
+    //     callback();
+    //   }
+		// }
     render() {
       const { getFieldDecorator } = this.props.form;
       const formItemLayout = {  //form中的label和内容各自占用多少
         labelCol: { span: 8 },
         wrapperCol: { span: 16 },
 			};
+			let {pagination,isFetching} = this.props.mainTableData;
       return (
         <Form layout="horizontal" onSubmit={this.handleSubmit}>
 						<Row >
 							<Col span={6}>
 							<FormItem {...formItemLayout} label="企业名称">
-                  {getFieldDecorator('supplierName', {
+                  {getFieldDecorator('companyName', {
                     rules: [{validator: this.checkName}],
                   })(
                     <Input  style={{ width: '100%' }}  onBlur={this.handleConfirmBlur} />

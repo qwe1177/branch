@@ -1,0 +1,34 @@
+.merge-suppliers .ant-tag{
+    margin-bottom: 4px;
+}
+
+.step1 .step1-wrap{
+    display: block;
+}
+
+.step1 .step2-wrap{
+    display: none;
+}
+
+.step2 .step1-wrap{
+    display: none;
+}
+
+.step2 .step2-wrap{
+    display: block;
+}
+
+.merge-suppliers .bottom-wrap{
+    text-align: left;
+}
+
+.merge-suppliers .bottom-wrap button{
+    margin-right: 8px;
+}
+.step2 .step2-wrap .step2-label{
+    min-height: 81px;
+}
+
+.step2 .step2-wrap .step2-label span {
+   margin: 0 4px;
+}

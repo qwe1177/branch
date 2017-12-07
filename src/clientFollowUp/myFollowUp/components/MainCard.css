@@ -14,6 +14,9 @@
     line-height: 41px;
     background-color: #ededed;
 }
+.card-date {
+    margin-left: 20px;
+}
 /* 标签的颜色 */
 .ant-tag {
     background-color: #fff;

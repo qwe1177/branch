@@ -1,14 +1,19 @@
+import { connect_srm } from '../../../util/connectConfig';
+import { getLoginInfo ,getUrlParams,getOneUrlParams} from '../../../util/baseTool';
 import axios from 'axios';
-// import { combineReducers } from 'redux';
-
-import { connect_url } from '../../../util/connectConfig';
 import _ from 'lodash';
+import qs from 'qs';
+// const xiaowenwu_url = 'http://10.10.10.114:8080/v1';
+
+// import querystring  from 'querystring';
 
 import moment from 'moment';
 
-// const PERSONLISTSHOWER_REQUEST_LIST = 'PERSONLISTSHOWER/REQUEST_LIST'; //获取list
+const PERSONLISTSHOWER_REQUEST_LIST = 'PERSONLISTSHOWER/REQUEST_LIST'; //获取list
 const PERSONLISTSHOWER_RECEIVE_LIST = 'PERSONLISTSHOWER/RECEIVE_LIST'; //获取接收list
-// const PERSONLISTSHOWER_RECEIVE_LIST_FAIL = 'PERSONLISTSHOWER/RECEIVE_LIST_FAIL'; //获取接收list失败
+const PERSONLISTSHOWER_RECEIVE_LIST_FAIL = 'PERSONLISTSHOWER/RECEIVE_LIST_FAIL'; //获取接收list失败
+
+
 const PERSONLISTSHOWER_PRE_ADD = 'PERSONLISTSHOWER/PRE_ADD'; //初始化|添加的默认值
 const PERSONLISTSHOWER_PRE_EDIT = 'PERSONLISTSHOWER/PRE_EDIT'; //初始化修改|添加的默认值
 
@@ -19,12 +24,19 @@ const PERSONLISTSHOWER_REQUEST_EFFECT_ITEM = 'PERSONLISTSHOWER/REQUEST_EFFECT_IT
 const PERSONLISTSHOWER_RECEIVE_EFFECT_ITEM_SUCCESS = 'PERSONLISTSHOWER/RECEIVE_EFFECT_ITEM_SUCCESS'; //接收提交内容结果
 const PERSONLISTSHOWER_RECEIVE_EFFECT_ITEM_FAIL = 'PERSONLISTSHOWER/RECEIVE_EFFECT_ITEM_FAIL'; //接收提交内容结果
 
-
+const requestList = () => ({
+  type: PERSONLISTSHOWER_REQUEST_LIST
+})
 
 const receiveList = data => ({
   type: PERSONLISTSHOWER_RECEIVE_LIST,
   data
 })
+
+const receiveListFail =() => ({
+  type: PERSONLISTSHOWER_RECEIVE_LIST_FAIL
+})
+
 
 const preAdd = data => ({
   type: PERSONLISTSHOWER_PRE_ADD,
@@ -45,9 +57,8 @@ const setForm = data => ({
   type: PERSONLISTSHOWER_SET_FORM,
   data
 })
-const requestEffectItem = data => ({
-  type: PERSONLISTSHOWER_REQUEST_EFFECT_ITEM,
-  data
+const requestEffectItem = () => ({
+  type: PERSONLISTSHOWER_REQUEST_EFFECT_ITEM
 })
 
 const receiveEffectItemSuccess = data => ({
@@ -55,33 +66,30 @@ const receiveEffectItemSuccess = data => ({
   data
 })
 
-const receiveEffectItemFail = data => ({
-  type: PERSONLISTSHOWER_RECEIVE_EFFECT_ITEM_FAIL,
-  data
+const receiveEffectItemFail = () => ({
+  type: PERSONLISTSHOWER_RECEIVE_EFFECT_ITEM_FAIL
 })
 
 
-/**
- * 获取列表数据
- * @param {*} data 
- */
-export const doReceiveList = data => (dispatch, getState) => {
-
-  //此处以后改为从后台取数据  
-  // let res = await axios.get(connect_url + '/buyer/allbuyer/query', { params: params });
-  // return await dispatch(receiveList({ tableData: res.data.data, pagination: { total: res.data.total } }));
-  var mockData = [{ 'key': 1, 'name': '张三', phone: '12324523123' },
-  { 'key': 2, 'name': '张三1', phone: '12324523123' },
-  { 'key': 3, 'name': '张三2', phone: '12324523123' },
-  { 'key': 4, 'name': '张三3', phone: '12324523123' },
-  { 'key': 5, 'name': '张三4', phone: '12324523123' },
-  { 'key': 6, 'name': '张三6', phone: '12324523123' },
-  { 'key': 7, 'name': '张三5', phone: '12324523123' },
-  { 'key': 8, 'name': '张三7', phone: '12324523123' },
-  { 'key': 9, 'name': '张三8', phone: '12324523123' },
-  { 'key': 10, 'name': '张三9', phone: '12324523123' }];
-  return dispatch(receiveList(mockData));
+export const fetchListData = (supplierId) => async (dispatch, getState) => {
+  try {
+    var token = getLoginInfo()['token'];  //获取token　登录用
+    var urlParams = getUrlParams();
+    var moduleUrl = urlParams['moduleUrl'] ? urlParams['moduleUrl'] : ''; //使用moduleUrl验证权限
+    await dispatch(requestList());
+    let res = await axios.get(connect_srm + '/supplier/viewContactList.do', { params: {supplierId,token,moduleUrl}});
+    if(res.data.code =='1'){
+      return dispatch(receiveList(res.data.data.contactsList));
+    }else{
+      return dispatch(receiveListFail());
+    }
+  } catch (error) {
+    console.log('error: ', error)
+    return dispatch(receiveListFail());
+  }
 }
+
+
 
 /**
  * 添加的时候初始化form
@@ -100,75 +108,86 @@ export const doCancelForm = data => (dispatch, getState) => {
  * 添加的时候初始化form
  * @param {*} data 
  */
-export const doPreEdit = data => (dispatch, getState) => {
-  //此处以后改为从后台取数据  
-  //axios.get(connect_url + '/buyer/allbuyer/query', { params: params }).then().catch();
-  var mockData = {
-    key: '1',
-    gender: 'men',
-    birthday: moment(),
-    email: 'sfe@132.com',
-    fax: '12312312',
-    job: 'fa',
-    name: '测试',
-    qq: '123123',
-    remarks: '首发得分',
-    telephone: '123123',
-    wangwang: '323',
-    wechart: '2312312'
-  };
+export const doPreEdit = contactId =>async (dispatch, getState) => {
 
-  return dispatch(preEdit(mockData));
+  var token = getLoginInfo()['token'];  //获取token　登录用
+  var urlParams = getUrlParams();
+  var moduleUrl = urlParams['moduleUrl'] ? urlParams['moduleUrl'] : ''; //使用moduleUrl验证权限
+  let res = await axios.get(connect_srm + '/supplier/viewContactInfo.do', { params: {contactId,token,moduleUrl}});
+  if(res.data.code =='1'){
+    /**提取form中需要的数据 */
+    var data = _.pick(res.data.data.contact,['id','fullname','gender','birthday','position','mobile','email','wangwang','fax','weixin','qq','remark','telephone']);
+    if(data.birthday && data.birthday!=''){ //如果日期存在，转化为moment对象初始化日期对象
+       data.birthday= moment(data.birthday);
+    }
+    return dispatch(preEdit(data));
+  }
 }
 
 
-export const doEffectFlow = data => async (dispatch, getState) => {
+export const doEffectFlow = (prams) => async (dispatch, getState) => {
   try {
-    var params = _.omitBy(data, _.isUndefined); //删除undefined参数
-    let res = await axios.get(connect_url + '/mockeffectSuccess', { params: params }); //提交请求
-    if (res.data.result) { //提交成功
-      await dispatch(setForm(data));
-      await dispatch(receiveEffectItemSuccess());
-      await doReceiveList();
-      return res;
-    } else {
-      return await dispatch(receiveEffectItemSuccess());
-      return res;
+    var token = getLoginInfo()['token'];  //获取token　登录用
+    var urlParams = getUrlParams();
+    var moduleUrl = urlParams['moduleUrl'] ? urlParams['moduleUrl'] : ''; //使用moduleUrl验证权限
+    var supplierId = urlParams['supplierId']?urlParams['supplierId']:'';
+    
+    var data = _.omitBy(prams, _.isUndefined); //删除undefined参数
+    data = {...data,token,moduleUrl,supplierId};
+
+    var effectUrl = data.id?'/supplier/editContact.do':'/supplier/addContact.do';
+    if(data.birthday && data.birthday!='' ){
+      data.birthday = data.birthday.format("YYYY-MM-DD");
+    }else if(data.birthday==null){ //设置为null时候置空生日
+      data.birthday='';
     }
+    var resParams = qs.stringify(data);
+    var res = await axios.post(connect_srm + effectUrl, resParams,{headers: {'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'},timeout:10000}); //提交请求
+    if(res.data.code=='1'){
+      await dispatch(setForm(prams));
+      await dispatch(receiveEffectItemSuccess());
+    } else {
+      await dispatch(receiveEffectItemFail());
+    }
+    return res;
   } catch (error) {
-    console.log('error: ', error)
-    return await dispatch(receiveEffectItemFail(false));
-    return false;
+    await dispatch(receiveEffectItemFail());
+    return error;
   }
 }
 
 const initForm = {
-  key: '',
-  gender: 'men',
-  birthday: '',
+  id: '',
+  fullname:'',
+  gender: '男',
+  birthday: null,
+  position:'',
+  mobile:'',
   email: '',
-  fax: '',
-  job: '',
-  name: '',
-  qq: '',
-  remarks: '',
-  telephone: '',
+  telephone:'',
   wangwang: '',
-  wechart: ''
+  fax: '',
+  weixin:'',
+  qq: '',
+  remarks: ''
 }
 
 const defaultState={
-  personList:[],
-  visible:false,
-  isFetching:false,
-  pform:initForm,
-  effectResult:true
+  personList:[], //返回的联系人列表数据
+  visible:false, 
+  islistFetching:false, //用户列表请求中
+  isFetching:false, //更新联系人请求中
+  pform:initForm //更新的表单数据
 }
 
 const personListShower = function (state = defaultState, action = {}) {
   switch (action.type) {
+    case PERSONLISTSHOWER_REQUEST_LIST:
+    return { ...state, islistFetching: true }
     case PERSONLISTSHOWER_RECEIVE_LIST:
-      return { ...state, personList: action.data }
+      return { ...state, personList: action.data , islistFetching: false}
+    case PERSONLISTSHOWER_RECEIVE_LIST_FAIL:
+      return { ...state, islistFetching: false }
     case PERSONLISTSHOWER_PRE_ADD:
       return {
         ...state,
@@ -185,7 +204,7 @@ const personListShower = function (state = defaultState, action = {}) {
     case PERSONLISTSHOWER_RECEIVE_EFFECT_ITEM_SUCCESS:
       return { ...state, isFetching: false,visible: false };
     case PERSONLISTSHOWER_RECEIVE_EFFECT_ITEM_FAIL:
-      return { ...state, isFetching: false };
+      return { ...state, isFetching: false,visible: false };
 
     default:
       return state

@@ -1,8 +1,8 @@
+import { connect_srm } from '../../../util/connectConfig';
+import { getLoginInfo ,getUrlParams} from '../../../util/baseTool';
 import axios from 'axios';
-// import { combineReducers } from 'redux';
-
-import { connect_url } from '../../../util/connectConfig';
 import _ from 'lodash';
+// const xiaowenwu_url = 'http://10.10.10.114:8080/v1';
 
 
 
@@ -18,18 +18,16 @@ const COMPANYSHOWER_DELETE_FOLLOW_MESSAGE = 'COMPANYSHOWER/DELETE_FOLLOW_MESSAGE
 const COMPANYSHOWER_MODIFIY_FOLLOW_INFO = 'COMPANYSHOWER/MODIFIY_FOLLOW_INFO'; //修改跟进记录
 
 
-const requestData = data => ({
-    type: FOLLOWUPSHOWER_REQUEST_DATA,
-    data
+const requestData = () => ({
+    type: FOLLOWUPSHOWER_REQUEST_DATA
 })
 const receiveData = data => ({
     type: FOLLOWUPSHOWER_RECEIVE_DATA,
     data
 })
 
-const receiveDataFail = data => ({
-    type: FOLLOWUPSHOWER_RECEIVE_DATA_FAIL,
-    data
+const receiveDataFail = () => ({
+    type: FOLLOWUPSHOWER_RECEIVE_DATA_FAIL
 })
 
 const changeQuery = data => ({
@@ -48,85 +46,6 @@ const modifiyFollowInfo = data => ({
 })
 
 
-const mockData = {
-    list: [{
-        key: '1',
-        mainName: '深圳市华南城网科技有限公司',
-        createDate: '2017/8/12',
-        tags: [{ link: 'www.baidu.com', label: '售后服务' }, { link: 'www.baidu.com', label: '询报价' }, { link: 'www.baidu.com', label: '开具发票' }],
-        doContact: '欧阳文杰',
-        contactPerson: '李小姐',
-        followType: '上门拜访',
-        negotiationContent: '洽谈内容',
-        planNext: '下周完成报价',
-        followInfo: '2017/8/12跟进',
-        message: [
-            {
-                key: '1',
-                author: '欧阳文杰',
-                message: '在数据发生变化的时候，React从概念上讲与点击了F5一样，实际上它仅仅是更新了变化的一部分而已。React是关于构造可重用组件的，实际上，使用React你做的仅仅是构建组建。通过封装，使得组件代码复用、测试以及关注点分离更加容易。',
-                date: '2017/8/12 14:32'
-            },
-            {
-                key: '2',
-                author: '欧阳文杰',
-                message: '传统的web应用，操作DOM一般是直接更新操作的，但是我们知道DOM更新通常是比较昂贵的。而React为了尽可能减少对DOM的操作，提供了一种不同的而又强大的方式来更新DOM，代替直接的DOM操作。就是Virtual DOM,一个轻量级的虚拟的DOM，就是React抽象出来的一个对象，描述dom应该什么样子的，应该如何呈现。通过这个Virtual DOM去更新真实的DOM，由这个Virtual DOM管理真实DOM的更新。',
-                date: '2017/8/12 14:32'
-            }
-        ]
-    },
-    {
-        key: '2',
-        mainName: '深圳市华南城网科技有限公司2',
-        createDate: '2017/8/12',
-        tags: [{ link: 'www.baidu.com', label: '售后服务' }, { link: 'www.baidu.com', label: '询报价' }, { link: 'www.baidu.com', label: '开具发票' }],
-        doContact: '欧阳文杰',
-        contactPerson: '李小姐',
-        followType: '上门拜访',
-        negotiationContent: '洽谈内容',
-        planNext: '下周完成报价',
-        followInfo: '2017/8/12跟进',
-        message: [
-            {
-                key: '1',
-                author: '欧阳文杰',
-                message: '在数据发生变化的时候，React从概念上讲与点击了F5一样，实际上它仅仅是更新了变化的一部分而已。React是关于构造可重用组件的，实际上，使用React你做的仅仅是构建组建。通过封装，使得组件代码复用、测试以及关注点分离更加容易。',
-                date: '2017/8/12 14:32'
-            }
-        ]
-    },
-    {
-        key: '3',
-        mainName: '深圳市华南城网科技有限公司3',
-        createDate: '2017/8/12',
-        tags: [{ link: 'www.baidu.com', label: '售后服务' }, { link: 'www.baidu.com', label: '询报价' }, { link: 'www.baidu.com', label: '开具发票' }],
-        doContact: '欧阳文杰',
-        contactPerson: '李小姐',
-        followType: '上门拜访',
-        negotiationContent: '洽谈内容',
-        planNext: '下周完成报价',
-        followInfo: '2017/8/12跟进',
-        message: []
-    }
-    ],
-    pagination: {
-        total: 25,
-        current: 1
-    }
-};
-
-/**
- * 获取列表数据
- * @param {*} data 
- */
-export const doReceiveData = data => (dispatch, getState) => {
-
-    //此处以后改为从后台取数据  
-    // let res = await axios.get(connect_url + '/buyer/allbuyer/query', { params: params });
-    // return await dispatch(receiveList({ tableData: res.data.data, pagination: { total: res.data.total } }));
-    var data1 = mockData;
-    return dispatch(receiveData(data1));
-}
 
 
 
@@ -143,21 +62,75 @@ export const doModifiyFollowInfo = data => (dispatch, getState) => {
  * 点击查询或者分页进行查询
  * @param {*} data 
  */
-export const doQueryFollow = (data) => async (dispatch, getState) => {
+export const doQueryFollow = (queryParams) => async (dispatch, getState) => {
     try {
-        await dispatch(changeQuery(data));
-        await dispatch(requestData(data));
-        return await dispatch(receiveData(mockData));
+        await dispatch(changeQuery(queryParams));
+        var token = getLoginInfo()['token'];  //获取token　登录用
+        var urlParams = getUrlParams();
+        var url = urlParams['url']?urlParams['url']:'';
+        var moduleUrl = urlParams['moduleUrl'] ? urlParams['moduleUrl'] : '';
+        var supplierId = urlParams['supplierId']?urlParams['supplierId']:'';
+
+        /**直接修改prop中的值，会导致修改redux值，拷贝一份 */
+        var {query, pagination} = _.cloneDeep(queryParams);
+
+        if(query.followUpDate && query.followUpDate.length>0){ //时间段存在，拆分时间段参数
+            query.followUpStartTime = query.followUpDate[0].format("YYYY-MM-DD");
+            query.followUpEndTime  = query.followUpDate[1].format("YYYY-MM-DD");
+        }
+        delete query.followUpDate;
+        if(query.followUpNodeOrFlagValues && query.followUpNodeOrFlagValues.length>0){
+            query.followUpNodeOrFlagValues =query.followUpNodeOrFlagValues.toString();
+        }
+        
+
+        var params ={...query,pageSize:pagination.pageSize,offset:pagination.current,supplierId,token,moduleUrl,url}
+        await dispatch(requestData());
+        var res = await axios.get(connect_srm + '/management/viewSupplierDetailsFollowupList.do', { params: params});
+        if(res.data.code =='1'){
+            var list = res.data.data.data;
+            pagination.total = res.data.data.rowCount;
+            return await dispatch(receiveData({list,pagination}));
+        }else{
+            return await dispatch(receiveDataFail());
+        }
     } catch (error) {
         console.log('error: ', error)
         return await dispatch(receiveDataFail());
     }
 }
 
-export const doFirstQueryFollow = (data) => async (dispatch, getState) => {
+
+// * @param supplierId 供应商id
+// * @param contactWay 跟进方式
+// * @param isPostil 是否有批注：all/yes/no
+// * @param followupType 跟进类型： 1 线索跟进， 2 供应商跟进（非必参数）
+// * @param followUpStartTime 跟进开始时间
+// * @param followUpEndTime 跟进结束时间
+// * @param followUpNodeOrFlag 跟进节点/标签：node 节点，flag 标签
+// * @param followUpNodeOrFlagValues 跟进节点/标签的值，多个值以,隔开
+// * @param pageSize 页码数
+// * @param offset 当前显示条数
+export const doFirstQueryFollow = (queryParams) => async (dispatch, getState) => {
     try {
-        await dispatch(requestData(data));
-        return await dispatch(receiveData(mockData));
+
+        var token = getLoginInfo()['token'];  //获取token　登录用
+        var urlParams = getUrlParams();
+        var url = urlParams['url']?urlParams['url']:'';
+        var moduleUrl = urlParams['moduleUrl'] ? urlParams['moduleUrl'] : '';
+        var supplierId = urlParams['supplierId']?urlParams['supplierId']:'';
+
+        var {query, pagination} = queryParams
+        var params ={...query,pageSize:pagination.pageSize,offset:pagination.current,supplierId,token,moduleUrl,url}
+        await dispatch(requestData());
+        var res = await axios.get(connect_srm + '/management/viewSupplierDetailsFollowupList.do', { params: params});
+        if(res.data.code =='1'){
+            var list = res.data.data.data;
+            pagination.total = res.data.data.rowCount;
+            return await dispatch(receiveData({list,pagination}));
+        }else{
+            return await dispatch(receiveDataFail());
+        }
     } catch (error) {
         console.log('error: ', error)
         return await dispatch(receiveDataFail());
@@ -172,9 +145,10 @@ const defaultState = {
     visible: true,
     query: {
         followUpWay: '全部',
-        hasComment: '是',
+        isPostil :'all',
         followUpDate: [],
-        followUpNode: [],
+        followUpNodeOrFlag:'flag',
+        followUpNodeOrFlagValues : [],
     },
     pagination: {
         showQuickJumper: true,

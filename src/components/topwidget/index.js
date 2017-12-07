@@ -10,25 +10,25 @@ import EffectFrom from './EffectFrom';
 class TopWidget extends React.Component {
   constructor(props, context) {
     super(props, context);
-    setLoginInfo();
+    // setLoginInfo();
   }
   state = {
-    userInfo: {
-      realName: 'SRM默认用户',
-      userPhoto: require('./img/an13.jpg')
-    },
+    // userInfo: {
+    //   realName: 'SRM默认用户',
+    //   userPhoto: require('./img/an13.jpg')
+    // },
     visible: false
   }
   // 从sass系统api中用户信息
   componentWillMount() {
-    var loginInfo = getLoginInfo(); //从localstorage得到platformId,token 如果没有使用mock
-    var platformId = loginInfo.platformId == '' ? '757a6c1798f39e8c02ebe249f4bea326' : loginInfo.platformId;//srm默认的platformId
-    var token = loginInfo.token == '' ? '47a7e78d3446cc69212c93b201a727ab272dd04a379d17fc4d686f2e5bce989a' : loginInfo.token; //用户和权限记录
-    axios.get(connect_cas + '/api/login/chack', { params: { token: token } }).then((res) => {
-      if (res.data.code == '0') {
-        this.setState({ userInfo: Object.assign(this.state.userInfo, { realName: res.data.data.realName }) });
-      }
-    });
+    // var loginInfo = getLoginInfo(); //从localstorage得到platformId,token 如果没有使用mock
+    // var platformId = loginInfo.platformId == '' ? '757a6c1798f39e8c02ebe249f4bea326' : loginInfo.platformId;//srm默认的platformId
+    // var token = loginInfo.token == '' ? '47a7e78d3446cc69212c93b201a727ab272dd04a379d17fc4d686f2e5bce989a' : loginInfo.token; //用户和权限记录
+    // axios.get(connect_cas + '/api/login/chack', { params: { token: token } }).then((res) => {
+    //   if (res.data.code == '0') {
+    //     this.setState({ userInfo: Object.assign(this.state.userInfo, { realName: res.data.data.realName }) });
+    //   }
+    // });
   }
   handleCancel = () => {
     this.setState({ visible: false });
@@ -53,7 +53,9 @@ class TopWidget extends React.Component {
     );
     const WrappedEffectFrom = Form.create()(EffectFrom);
     const { visible } = this.state;
-
+    const loginAcct = this.props.data;
+    const realName = loginAcct.realName?loginAcct.realName:'默认用户';
+    
     return (
       <div className="topwidget">
         <div className="toplf">
@@ -68,13 +70,13 @@ class TopWidget extends React.Component {
           <div className="crm-flrt pd-r20 top_user">
             <Dropdown overlay={menu}>
               <a className="ant-dropdown-link" href="#">
-                {this.state.userInfo.realName} <Icon type="down" />
+                {realName} <Icon type="down" />
               </a>
             </Dropdown>
           </div>
 
           <div className="crm-flrt pd-r20 top_user">
-            <img src={this.state.userInfo.userPhoto} height="40" width="40" />
+            <img src={require('./img/an13.jpg')} height="40" width="40" />
           </div>
           <section className="code-box-demo crm-wh300 crm-flrt pd-r20">
             <span className="ant-input-search ant-input-affix-wrapper ">

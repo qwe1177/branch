@@ -9,9 +9,8 @@ import { getLoginInfo ,getUrlParams} from '../../../util/baseTool';
 import axios from 'axios';
 
 //联调叶群丽，上线后去掉
-const yequanli_url ='http://10.10.10.121:9503/srm-app/v1';
 
-export default class BrandSelector extends React.Component {
+export default class CategorySelector extends React.Component {
     static propTypes = { //声明prop中属性变量
         onChoosed: PropTypes.func.isRequired, //选择之后提交的回调
         onCancel:PropTypes.func.isRequired, //取消之后提交的回调
@@ -82,7 +81,8 @@ export default class BrandSelector extends React.Component {
     }
     fetch =()=>{
         this.setState({ isFetching: true});
-        axios.get(yequanli_url + '/queryCategoryList.do').then((res)=>{
+        var token = getLoginInfo()['token'];  //获取token　登录用
+        axios.get(connect_srm + '/queryCategoryList.do', {params:{token}}).then((res)=>{
             if(res.data.status){
                 var original = res.data.data;
                 this.setState({selectedRowKeys:this.state.selectedRowKeys, dataSource: original,isFetching: false});

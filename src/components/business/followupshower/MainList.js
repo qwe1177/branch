@@ -39,7 +39,7 @@ class MainTable extends React.Component {
       <div>
         <div className='card-wrap'>
         {list.map((o)=>{
-            return <MainCard data={o} key={o.key} />
+            return <MainCard data={o} key={o.id} />
         })}
         
         </div>

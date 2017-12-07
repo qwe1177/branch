@@ -6,7 +6,7 @@ const Option = Select.Option;
 import _ from 'lodash';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { doModifiyRelation } from './redux';
+import {fetchUpdatePartnership} from  '../../../components/common/supplierdetails/redux';
 
 /**
  * 
@@ -16,8 +16,8 @@ import { doModifiyRelation } from './redux';
  * 
  */
 @connect(
-    state => ({ companyBaseShower: state.companyBaseShower }),
-    dispatch => bindActionCreators({doModifiyRelation}, dispatch)
+    state => ({ supplierDetailMain: state.supplierDetailMain }),
+    dispatch => bindActionCreators({fetchUpdatePartnership}, dispatch)
 )
 
 class EffectFrom extends React.Component {
@@ -27,14 +27,17 @@ class EffectFrom extends React.Component {
 			if (!err) {
 				console.log('Received values of form: ', values);
 				// this.props.onQuery(values); //回调父方法
-				this.props.doModifiyRelation(values);
+				var supplierId = this.props.supplierDetailMain.data.supplierId;
+				
+				var relation = values.relation?values.relation:'';
+				this.props.fetchUpdatePartnership(supplierId,relation);
 			}
 		});
 	}
 	componentDidMount() {
 		//setFieldsValue方法必须在getFieldDecorator之后，getFieldDecorator在render生命周期中定义id来进行表单双向绑定
-		var data = this.props.companyBaseShower.data;
-		this.props.form.setFieldsValue({relation:data.relation});
+		var data = this.props.supplierDetailMain.data;
+		this.props.form.setFieldsValue({relation:data.partnership});
 	}
 	render() {
 		const { getFieldDecorator } = this.props.form;
@@ -46,11 +49,12 @@ class EffectFrom extends React.Component {
 			<Form layout="horizontal" onSubmit={this.handleSubmit} ref="test">
 				<Row gutter={16}>
 					<FormItem {...formItemLayout} label="合作关系" style={{textAlign:'center'}}>
-						{getFieldDecorator('relation')(
+						{getFieldDecorator('relation',{ initialValue: '等待合作' })(
 							<Select  style={{ width: '80%' }}>
 								<Option value="战略合作">战略合作</Option>
-								<Option value="战略合作1">战略合作1</Option>
-								<Option value="战略合作2">战略合作2</Option>
+								<Option value="友好合作">友好合作</Option>
+								<Option value="普通合作">普通合作</Option>
+								<Option value="等待合作">等待合作</Option>
 							</Select>
 						)}
 					</FormItem>

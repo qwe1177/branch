@@ -1,15 +1,11 @@
-import axios from 'axios'
 export const baseInfo = 'baseInfo'
 export const tablemodelInfo = 'tablemodelInfo'
 export const modalmodelInfo = 'modalmodelInfo'
 export const tablemodelInfo2 = 'tablemodelInfo2'
 export const tablemodelInfo3 = 'tablemodelInfo3'
 export const tablemodelInfo4 = 'tablemodelInfo4'
+import axios from '../../util/axios'
 import * as config  from '../../util/connectConfig'
-
-axios.defaults.timeout = 30000;                        //响应时间
-axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8';           //配置请求头
-
 
 export const baseInfoForm = value=> ({
     type: baseInfo,
@@ -49,6 +45,8 @@ export const fetchPosts = value => (dispatch, getState) => {
             if (response.status == 200) {
                 dispatch(baseInfoForm({[value]: response.data.data,}))
             }
+        }).catch(e=> {
+            console.log(e);
         })
 }
 
@@ -58,6 +56,8 @@ export const fetchzonesPosts = ({url, name, value, returnName}) => (dispatch, ge
             if (response.status == 200) {
                 dispatch(baseInfoForm({[returnName]: response.data.data,}))
             }
+        }).catch(e=> {
+            console.log(e);
         })
 }
 

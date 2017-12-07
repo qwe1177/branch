@@ -9,6 +9,7 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    cursor: pointer;
 }
 
 .company-base-shower .title-2{
@@ -37,5 +38,5 @@
     color: #fff;
     border-radius: 4px;
     font-weight: lighter;
-    cursor: pointer
+    cursor: pointer;
 }

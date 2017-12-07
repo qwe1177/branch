@@ -59,10 +59,7 @@ class MainTable extends React.Component {
   }
   handleTableChange = (pagination, filters, sorter) => {  //点击分页控件调用  比如换页或者换pageSize
     let {queryform} =  this.props.mainQueryData;
-    let paginationObj =  this.props.mainTableData.pagination;
-    paginationObj.current = pagination.current;
-    paginationObj.pageSize = pagination.pageSize;
-    this.props.queryTableData({queryform:queryform,pagination:paginationObj});
+    this.props.queryTableData({queryform:queryform,pagination:pagination});
   }
   rowSelection = {  //table中的checkbox调用
     onChange: (selectedRowKeys, selectedRows) => {
@@ -85,8 +82,8 @@ class MainTable extends React.Component {
   
     const columns = [{
       title: '企业名称',
-      dataIndex: 'supplierName',
-      key:'supplierName',
+      dataIndex: 'companyName',
+      key:'companyName',
       render: (text, record) => (
         <a href={'http://10.10.10.114:8080/srm-app/v1/management/viewSupplierDetails.do?supplierId='+record.supplierId}>{text}</a>
       )

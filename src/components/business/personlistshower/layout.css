@@ -14,7 +14,6 @@
 }
 
 .personlist-shower .content-wrap{
-    overflow-y: scroll;
     width: 100%;
     height: 100%;
     overflow-x: hidden;
@@ -79,4 +78,8 @@
 
 .personlist-shower-modal .ant-modal-body{
     padding-right: 26px;
+}
+
+.personlist-shower .hasScroll{
+    overflow-y: scroll;
 }

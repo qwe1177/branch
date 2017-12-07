@@ -1,3 +1,4 @@
+
 .editModal .ant-form-item {
     margin-top: 15px;
     font-size: 14px;
@@ -21,6 +22,7 @@
 .editModal .marginStyle .echo {
     display: flex;
     align-items: center;
+    padding: 5px 0;
 }
 .editModal .tagsWrap {
     display: flex;
@@ -29,5 +31,50 @@
 .editModal button {
     float: right;
 }
- 
+/* 跟进节点的样式 */
+.followup-node .ant-radio-group-large .ant-radio-button-wrapper {
+    height: 28px;
+    line-height: 25px;
+    padding: 0 6px;
+    font-size: 12px;
+    margin-right: 8px;
+}
+.followup-node .ant-radio-button-wrapper:first-child,.ant-radio-button-wrapper:last-child {
+    border-radius: 0px;
+}
+.followup-node .ant-radio-button-wrapper-checked {
+    background-color: #6393bf;
+    color: #fff;
+    border-color: #6393bf;
+    box-shadow: -1px 0 0 0 #6393bf;
+}
+.followup-node .ant-radio-button-wrapper.ant-radio-button-wrapper-checked:hover {
+    color: #fff;
+}
+/* 跟进标签的样式 */
+.followup-flag .ant-tag-checkable:active, .ant-tag-checkable-checked {
+    background-color: #6393bf;
+}
+.followup-flag .ant-tag {
+    padding: 0 6px;
+    border-radius: 0px;
+    border: 1px solid #e9e9e9;
+    height: 28px;
+    line-height: 24px;
+}
 
+.followup-node{
+    display: none;
+}
+.followup-flag{
+
+    display: block;
+}
+
+.xiansuo .followup-node{
+    display: block;
+}
+
+.xiansuo .followup-flag{
+        display: none;
+    }

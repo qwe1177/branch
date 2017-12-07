@@ -5,18 +5,9 @@ import './App.css';
 import vueAxios from 'axios';
 import QueryFrom from '../components/QueryFrom';
 import MainTable from '../components/MainTable';
-import PersonSelector from '../../../components/business/personselector';
 import { Form,Button } from 'antd';
 
 class App extends Component {
-	state = { personSelectorVisible: false }
-	handleOpenChoose = () => {
-		this.setState({ personSelectorVisible: true });
-	}
-	handleChoosed = (checkedList) => {
-		console.log('选择的人');
-		console.log(checkedList);
-	}
 	render() {
 		const WrappedQueryFrom = Form.create()(QueryFrom);
 		return (
@@ -37,8 +28,6 @@ class App extends Component {
 						</div>
 					</div>  
 				</div>
-				<PersonSelector onChoosed={this.handleChoosed} title={'分配负责人'} visible={this.state.personSelectorVisible} />
-				
 			</div>
 		);
 	}

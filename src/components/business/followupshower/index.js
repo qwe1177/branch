@@ -7,7 +7,8 @@ import { connect_url } from '../../../util/connectConfig';
 import axios from 'axios';
 import QueryForm from './QueryForm';
 import MainList from './MainList';
-import { Form } from 'antd';
+import { Form ,Spin} from 'antd';
+import _ from 'lodash';
 
 
 import { connect } from 'react-redux';
@@ -37,12 +38,15 @@ class FollowUpShower extends React.Component {
 
     }
     componentWillMount() {
-        this.props.doFirstQueryFollow();
+        var queryParams =  this.props.followupShower;
+        queryParams = _.pick(queryParams,['query','pagination']);
+        this.props.doFirstQueryFollow(queryParams);
     }
 
     render() {
         const WrappedQueryForm = Form.create()(QueryForm);
         return (
+            <Spin spinning={this.props.followupShower.isFetching} >
             <div className='followup-shower'>
                 <div className="query-wrap">
                     <WrappedQueryForm />
@@ -51,6 +55,7 @@ class FollowUpShower extends React.Component {
                     <MainList />
                 </div>
             </div>
+            </Spin>
         );
     }
 }

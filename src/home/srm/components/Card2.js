@@ -53,8 +53,8 @@ export default class Card2 extends React.Component {
         var urlParams = getUrlParams();
         var moduleId = urlParams['moduleId']?urlParams['moduleId']:'';
         this.setState({ isFetching: true });
-        var params = {token: token,moduleId:moduleId,sign:'viewSupplierTotal'};
-        axios.get(connect_srm + '/management/viewSupplierTotal.do', { params: params }).then((res) => {
+        var params = {token: token,moduleId:moduleId};
+        axios.get(connect_srm + '/management/viewSupplierTotal.do', { params: params ,timeout:20000}).then((res) => {
           if (res.data.code == '1') {
             this.setState({ cardData: res.data.data,isFetching: false });
           } else {

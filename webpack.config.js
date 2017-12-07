@@ -22,11 +22,14 @@ const vendors=[
   'antd'
 ];
 
-var  entries = getEntries('src/newClue/index.js');  //编译所有页面
-// var  entries = getEntries('src/home/srm/index.js');  //编译某个页面
-//var  entries = getEntries('src/suppliermanage/allsupplierdetail/index.js');  //编译某个页面
-entries.push(getEntries('src/home/srm/index.js')[0]);  //编译首页
-entries.push(getEntries('src/suppliermanage/pubilcsupplier/index.js')[0]);  //编译首页
+//var  entries = getEntries('src/**/index.js');  //编译所有页面
+//var  entries = getEntries('src/suppliermanage/pubilcsupplier/index.js');  //编译某个页面
+var  entries = getEntries('src/allClue/index.js'); 
+entries.push(getEntries('src/myClue/index.js')[0]); 
+entries.push(getEntries('src/publicClue/index.js')[0]); 
+entries.push(getEntries('src/underlingClue/index.js')[0]); 
+entries.push(getEntries('src/newClue/index.js')[0]); 
+entries.push(getEntries('src/home/srm/index.js')[0]); 
 const __DEV__ = NODE_ENV === 'development';
 const __PROD__ = NODE_ENV === 'production';
 const conftilte = config.title;

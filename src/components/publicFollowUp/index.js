@@ -1,11 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types'
-import { Modal, Table, Form, Button, Icon ,message } from 'antd';
+import { Modal, Form } from 'antd';
 import './layout.css';
 import ModalForm from './modalForm'
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
-import {doFormEdit,doEffectFlow,doCancelForm} from './redux';
+import {doFormAdd,doFormEdit,doEffectFlow,doCancelForm} from './redux';
 
 /**
  * store中的数据
@@ -17,40 +17,28 @@ import {doFormEdit,doEffectFlow,doCancelForm} from './redux';
  */
 @connect(
   state =>  ({EditModal: state.EditModal}),
-  dispatch => bindActionCreators({doFormEdit,doEffectFlow,doCancelForm}, dispatch)
+  dispatch => bindActionCreators({doEffectFlow,doCancelForm}, dispatch),
 )
 
-class EditModal extends React.Component {
-    // static propTypes = { //声明prop中属性变量
-    //   requestId: PropTypes.string.isRequired //供应商,采购商id等，用于查选联系人
-    // }
-    
-    // showModal = () => {
-    //   this.props.doFormEdit();//模态框显示
-    // }
-    handleOk = () => {
-      this.props.doEffectFlow();
-    }
+class PublicModal extends React.Component {
     handleCancel = () => {
       this.props.doCancelForm();
     }
-    
     render() {
       const ModalFormWrapped = Form.create()(ModalForm);
-      const {visible} = this.props.EditModal;
-      const {title} = this.props.EditModal.pform;
+      const {visible,isFetching} = this.props.EditModal;
+      var type = this.props.type;
+      var modalType = this.props.modalType; 
+      var title = modalType != '2' ? '添加跟进' : '编辑跟进';
+      var url = modalType != '2' ? 'http://10.10.10.29:9407/v1/supplier/saveSupplierFollowupRecords.do' : 'http://10.10.10.29:9407/v1/supplier/updateSupplierFollowupById.do';
       return (
         <div>
-          {/* <Icon  type="edit" onClick={this.showModal} className="editStyle"></Icon>
-          <span  onClick={this.showModal} className="addStyle ">
-            添加跟进
-          </span> */}
-            <Modal visible={visible} title={title} onOk={this.handleOk} onCancel={this.handleCancel} footer={null}>
-                <ModalFormWrapped/>
+            <Modal visible={visible} title={title} loading={isFetching} onOk={this.handleOk} onCancel={this.handleCancel} width = {'650px'} footer={null}>
+                <ModalFormWrapped modalType = {modalType} type = {type} url = {url} />
             </Modal>
         </div>
       );
     }
 }
 
-export default EditModal;
+export default PublicModal;

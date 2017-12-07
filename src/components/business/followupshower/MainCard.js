@@ -32,49 +32,51 @@ class MainCard extends React.Component {
     }
     render() {
         const data = this.props.data;
-        const title = <div><span>{data.mainName}</span><span className='card-date'>{data.createDate}</span></div>;
-        const tags = <div>{data.tags.map((o,index) => { return <Tag key={index} >{o.label}</Tag> })}</div>
+        const title = <div><span>{data.contactPersonnel}</span><span className='card-date'>{data.thisContactTime}</span></div>;
+        var followUpFlag  = data.followUpFlag;
+        followUpFlag = (followUpFlag ==null || !followUpFlag)?[]:followUpFlag.split(",");
+        const tags = <div>{followUpFlag.map((o,index) => { return <Tag key={index} >{o}</Tag> })}</div>
         // const title =this.props.mainName;
         return (
             <Card className='followup-card' title={title} noHovering extra={tags}>
                 <Row>
                     <Col span={8}>
                         <span className='label'>主动联络方:</span>
-                        <span className='value'>{data.doContact}</span>
+                        <span className='value'>{data.activeContact}</span>
                     </Col>
                     <Col span={8}>
                         <span className='label'>联系人:</span>
-                        <span className='value'>{data.contactPerson}</span>
+                        <span className='value'>{data.contactPersonnel}</span>
                     </Col>
                     <Col span={8}>
                         <span className='label'>跟进方式:</span>
-                        <span className='value'>{data.followType}</span>
+                        <span className='value'>{data.contactWay}</span>
                     </Col>
                 </Row>
                 <Row className="marginStyle">
                     <Col>
                         <span className='label'>洽谈内容:</span>
-                        <span className='value'>{data.negotiationContent}</span>
+                        <span className='value'>{data.followUpTheContent}</span>
                     </Col>
                 </Row>
                 <Row>
                     <Col span={6}>
                         <span className='label'>下次跟进计划:</span>
-                        <span className='value'>{data.planNext}</span>
+                        <span className='value'>{data.planNextContent}</span>
                     </Col>
                     <Col span={6}>
-                        <span>{data.followInfo}</span>
+                        <span>{data.planNextContactTime}</span>
                     </Col>
                 </Row>
-                {data.message.map((o) => {
-                    return <Row key={o.key} className="region-tool" type="flex" justify="space-between">
-                        <Col span={20}>
-                            <span className='label'>{o.author}:</span>
-                            <span className='value'>{o.message}</span>
+                {data.supplierFollowupPostilDTOs.map((o) => {
+                    return <Row key={o.id} className="region-tool" type="flex" justify="space-between">
+                        <Col span={18}>
+                            {/* <span className='label'>{o.author}:</span> */}
+                            <span className='value'>{o.postilContent}</span>
                         </Col>
-                        <Col span={4} className='card-option'>
-                            <div>{o.date}</div>
-                            <div className='remove-btn'  onClick={() => this.removeOneMess(data.key,o.key)}>删除</div>
+                        <Col span={6} className='card-option'>
+                            <div>{o.updateTime}</div>
+                            <div className='remove-btn'  onClick={() => this.removeOneMess(data.id,o.id)}>删除</div>
                         </Col>
                     </Row>
                 })}

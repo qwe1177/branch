@@ -1,0 +1,23 @@
+
+#root{
+  height: 100%;
+}
+
+
+.page-title{
+  color:#666666;
+  font-size: 20px;
+  line-height: 60px;
+}
+
+.query-wrap{
+  padding: 20px 30px;
+  background: #fff;
+}
+
+.tabel-wrap{
+  margin-top:20px; 
+  background: #fff;
+  padding: 0 20px;
+}
+

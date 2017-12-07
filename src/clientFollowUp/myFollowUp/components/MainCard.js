@@ -1,16 +1,17 @@
 import React from 'react';
 import PropTypes from 'prop-types'
 import { Card,Tag,Row,Col,Button,Icon } from 'antd';
+import moment from 'moment';
 import './MainCard.css';
-import EditModal from '../../../components/publicFollowUp'
+import PublicModal from '../../../components/publicFollowUp'
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import {  doFirstQueryFollow, doQueryFollow ,doEditFollowInfo} from '../actions/index.js';
+import {  doQueryFollow ,doEditFollowInfo} from '../actions/index.js';
 import {doFormEdit} from '../../../components/publicFollowUp/redux';
 
 @connect(
     state => ({ MyFollowUP: state.MyFollowUP,EditModal: state.EditModal }),
-    dispatch => bindActionCreators({  doFirstQueryFollow, doQueryFollow,doEditFollowInfo,doFormEdit }, dispatch)
+    dispatch => bindActionCreators({ doQueryFollow,doEditFollowInfo,doFormEdit }, dispatch)
 )
 
 class MainCard extends React.Component{
@@ -18,8 +19,8 @@ class MainCard extends React.Component{
         super(props); 
     }
     static propTypes = {
-        // tableData: PropTypes.array, //查询结果(表格数据)
-        // isFetching: PropTypes.bool, //是否正在查询中
+        cardData: PropTypes.array, //查询结果(表格数据)
+        isFetching: PropTypes.bool, //是否正在查询中
         // selectedList:PropTypes.array, //表格中选择多选状态
          pagination:PropTypes.object //表格中的分页
     }
@@ -27,65 +28,66 @@ class MainCard extends React.Component{
         // this.props.initSupplierTable();
         
     }
-    showModal = () => {
-        this.props.doFormEdit();
+    showModal = (key,id)=>(e) => {
+        const value = e.target.innerHTML;
+        this.props.typehandle(value)
+        this.props.doFormEdit(key,id);
       }
     render() {
         const data = this.props.data;
-        const title = <div><a src="#">{data.mainName}</a><span className='card-date'>{data.createDate}</span></div>;
-        const tags = <div>{data.tags.map((o,index) => { return <Tag key={index} >{o.label}</Tag> })}</div>
-        // const title =this.props.mainName;
+        const title = <div><a src="#">{data.companyName}</a><span className='card-date'>{data.createTime}</span></div>;
+        var tagsType = data.followUpFlag != '' ? data.followUpFlag.split(',') : data.followUpNode.split(',');
+        const tags =  <div>{tagsType.map((o,index) => { return <Tag key={index} >{o}</Tag> })}</div> ;
         return (
             <div className="myFollowUp">
                  <Card  title={title}  noHovering extra={ tags }>
                      <Row>
                         <Col span={6}>
                             <span className='label' >跟进人:&nbsp;</span>
-                            <span className='value'>{data.followPeople}</span>
+                            <span className='value'>{data.realName}</span>
                         </Col>
                         <Col span={6}>
                             <span className='label'>主动联络方:&nbsp;</span>
-                            <span className='value'>{data.doContact}</span>
+                            <span className='value'>{data.activeContact}</span>
                         </Col>
                         <Col span={6}>
                             <span className='label'>联系人:&nbsp;</span>
-                            <span className='value'>{data.contactPerson}</span>
+                            <span className='value'>{data.contactPersonnel}</span>
                         </Col>
                         <Col span={6}>
                             <span className='label'>跟进方式:&nbsp;</span>
-                            <span className='value'>{data.followType}</span>
+                            <span className='value'>{data.contactWay}</span>
                         </Col>
                     </Row>
                     <Row className="marginStyle">
                         <Col>
                             <span className='label'>洽谈内容:&nbsp;</span>
-                            <span className='value'>{data.negotiationContent}</span>
+                            <span className='value'>{data.followUpTheContent}</span>
                         </Col>
                     </Row>
-                    <Row>
-                         <Col span={6}>
+                    <Row type="flex" justify="start">
+                         <Col span={14}>
                             <span className='label'>下次跟进计划:&nbsp;</span>
-                            <span className='value'>{data.planNext}</span>
+                            <span className='value'>{data.planNextContent}</span>
                         </Col>
                         <Col span={6}>
-                            <span>{data.followInfo}</span>
+                            <span>{data.planNextContactTime}</span>
                         </Col>
                     </Row>
-                    {data.message.map((o) => {
-                    return <Row key={o.key} className="region-tool" type="flex" justify="space-between">
+                    {data.supplierFollowupPostilDTOs.map((o) => {
+                    return <Row key={o.id} className="region-tool" type="flex" justify="space-between">
                         <Col span={20}>
-                            <span className='label'>{o.author}:</span>
-                            <span className='value'>{o.message}</span>
+                            <span className='value'>{o.postilContent}</span>
                         </Col>
-                        <Col span={3} className='card-option'>
-                            <div>{o.date}</div>
+                        <Col span={4} className='card-option'>
+                            <div>{o.createTime}</div>
                         </Col>
                     </Row>
                 })}
                     <Row type="flex" justify="end">
                          <Col >
-                            <Icon  type="edit" onClick={this.showModal} className="editStyle"></Icon>
-                            <EditModal/>
+                            <Icon  type="edit" onClick={this.showModal(data.supplierId,data.id)} className="editStyle"></Icon>
+                            <PublicModal modalType={this.props.type} type = {data.followupType}/>
                         </Col>
                     </Row>
                 </Card>  

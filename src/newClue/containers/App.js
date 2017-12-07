@@ -5,7 +5,6 @@ import {bindActionCreators} from 'redux';
 import actions from '../actions'
 import moment from 'moment'
 import Modalmodel  from '../components/Modalmodel'
-import * as config  from '../../util/connectConfig'
 
 
 import {
@@ -24,6 +23,7 @@ import {
     Modal,
     DatePicker,
     message,
+    Spin,
 } from 'antd'
 import 'antd/dist/antd.css'
 import '../css/css.css'
@@ -31,10 +31,11 @@ const FormItem = Form.Item
 const Option = Select.Option
 const RadioButton = Radio.Button
 const RadioGroup = Radio.Group
-import axios from 'axios'
+
 const RangePicker = DatePicker.RangePicker;
-axios.defaults.timeout = 30000;                        //响应时间
-axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8';           //配置请求头
+import axios from '../../util/axios'
+import * as config  from '../../util/connectConfig'
+
 
 import CategorySelector from '../../components/business/categoryselector';
 import BrandSelector from '../../components/business/brandselector';
@@ -46,7 +47,7 @@ class UserForm extends Component {
         super(props);
 
         this.columns = [{
-            title: (<div><em style={{color:'#ff0000',marginRight:'5px'}}>*</em>姓名</div>),
+            title: (<div><em style={{color: '#ff0000', marginRight: '5px'}}>*</em>姓名</div>),
             dataIndex: 'fullname',
             render: this.addinputdata,
             width: 115,
@@ -57,7 +58,7 @@ class UserForm extends Component {
             render: this.addselectdata,
             width: 85,
         }, {
-            title: (<div><em style={{color:'#ff0000',marginRight:'5px'}}>*</em>手机</div>),
+            title: (<div><em style={{color: '#ff0000', marginRight: '5px'}}>*</em>手机</div>),
             dataIndex: 'mobile',
             render: this.addinputdata,
             width: 115,
@@ -296,7 +297,7 @@ class UserForm extends Component {
 
 
     addinputdata = ({name, message, placeholder = '', initialValue = '', required = false, type = 'string',}) => (
-        <FormItem style={{width:'100%'}} {...{
+        <FormItem style={{width: '100%'}} {...{
             ...this.formItemLayout, ...{
                 wrapperCol: {
                     span: 24,
@@ -305,14 +306,14 @@ class UserForm extends Component {
         }}>
             {this.props.form.getFieldDecorator(name, {
                 rules: [{required: required, message: message, type: type}, {
-                    validator: name == 'mobile1' ? this.telphonevalid : null,
+                    validator: name.match(/^mobile/g) ? this.telphonevalid : null,
                 }], initialValue: initialValue
             })(
-                <Input placeholder={placeholder} style={{width:'100%'}}/>
+                <Input placeholder={placeholder} style={{width: '100%'}}/>
             )}
         </FormItem>)
 
-    addbirthday = ({name, message, initialValue = null, placeholder = '',}) => (<FormItem style={{width:'100%'}} {...{
+    addbirthday = ({name, message, initialValue = null, placeholder = '',}) => (<FormItem style={{width: '100%'}} {...{
         ...this.formItemLayout, ...{
             wrapperCol: {
                 span: 24,
@@ -322,13 +323,13 @@ class UserForm extends Component {
         {this.props.form.getFieldDecorator(name, {
             rules: [{required: false, message: message,}], initialValue: initialValue
         })(
-            <DatePicker placeholder={placeholder} style={{width:'100%'}}/>
+            <DatePicker placeholder={placeholder} style={{width: '100%'}}/>
         )}
     </FormItem>)
 
 
     addselectdata = ({name, message, initialValue = undefined, placeholder = ''}) => (
-        <FormItem style={{width:'100%'}} {...{
+        <FormItem style={{width: '100%'}} {...{
             ...this.formItemLayout, ...{
                 wrapperCol: {
                     span: 24,
@@ -338,7 +339,7 @@ class UserForm extends Component {
             {this.props.form.getFieldDecorator(name, {
                 rules: [{required: false, message: message}], initialValue: initialValue
             })(
-                <Select style={{ width: '100%'}} placeholder="请选择">
+                <Select style={{width: '100%'}} placeholder="请选择">
                     <Option value="男">男</Option>
                     <Option value="女">女</Option>
                 </Select>
@@ -347,7 +348,7 @@ class UserForm extends Component {
 
     adduploaddata = ({name, message, initialValue = [], placeholder = '', num = 1}) => {
         const newname = name.replace(/(.*?)s(\d+)$/g, '$1$2')
-        return (<FormItem style={{width:'100%'}} {...{
+        return (<FormItem style={{width: '100%'}} {...{
             ...this.formItemLayout, ...{
                 wrapperCol: {
                     span: 24,
@@ -403,7 +404,7 @@ class UserForm extends Component {
             authorization: {name: 'authorization' + count, message: '请上传授权书', placeholder: '授权书',},
             registration: {name: 'registration' + count, message: '请上传注册证', placeholder: '注册证',},
             certification: {name: 'certification' + count, message: '请上传认证报告', placeholder: '认证报告',},
-            otherAptitude: {name: 'otherAptitude' + count, message: '请上传其他资料', placeholder: '其他资料',},
+            otherAptitude: {name: 'otherAptitude' + count, message: '请上传其他资料', placeholder: '其他资料', num: 3,},
             Operation: '删除',
         };
 
@@ -460,7 +461,6 @@ class UserForm extends Component {
     }
 
     handleChange = (value) => {
-        //this.props.baseInfoForm({[name]: {name: name, value: value}})
         console.log(value)
     }
 
@@ -487,9 +487,10 @@ class UserForm extends Component {
 
 
     componentDidMount() {
+        this.setState({formloading: true})
         axios.get(`${config.connect_srm}/clue/viewSupplierClueInfo.do?`, {
             params: {
-                supplierId: ''
+                supplierId: 'e540da65-5d60-4bc3-af27-089d5aafdbc4'
             }
         }).then(response => {
             if (response.status == 200) {
@@ -528,25 +529,28 @@ class UserForm extends Component {
                                 initialValue: this.fileListhanddle(v.authorization),
                                 message: '请上传授权书',
                                 placeholder: '授权书',
-                                num: 2,
+
                             },
                             registration: {
                                 name: `registration${v.key}`,
                                 initialValue: this.fileListhanddle(v.registration),
                                 message: '请输入注册证',
                                 placeholder: '注册证',
+
                             },
                             certification: {
                                 name: `certification${v.key}`,
                                 initialValue: this.fileListhanddle(v.certification),
                                 message: '请输入认证报告',
                                 placeholder: '认证报告',
+
                             },
                             otherAptitude: {
                                 name: `otherAptitude${v.key}`,
                                 initialValue: this.fileListhanddle(v.otherAptitude),
                                 message: '请输入其他资料',
                                 placeholder: '其他资料',
+                                num: 3,
                             },
                             Operation: '删除',
                         })
@@ -710,9 +714,11 @@ class UserForm extends Component {
                         city: {key: city},
                     })
                 } else {
-
                 }
             }
+            this.setState({formloading: false})
+        }).catch(e=> {
+            this.setState({formloading: false});
         })
 
 
@@ -751,9 +757,6 @@ class UserForm extends Component {
         }
 
         arr.sort((a, b)=>a[0].match(/\d+$/g).join('') * 1 - b[0].match(/\d+$/g).join('') * 1)
-
-        console.log(arr)
-        console.log(arr2)
         newarr = [...arr, ...arr2]
         return newarr;
     }
@@ -771,12 +774,10 @@ class UserForm extends Component {
     handleSubmit = (e) => {
         typeof e == 'object' && e.preventDefault();
         this.props.form.validateFieldsAndScroll((err, values) => {
-            console.log(values)
             if (!err) {
 
                 const params = {}
                 const newarrobj = this.objToarrsort(values)
-                console.log(newarrobj)
                 const newarrobjlen = newarrobj.length
 
                 for (let i = 0; i < newarrobjlen; i++) {
@@ -800,7 +801,6 @@ class UserForm extends Component {
 
                 }
 
-                console.log(params)
 
                 const newparams = {}
                 for (let o in params) {
@@ -828,7 +828,6 @@ class UserForm extends Component {
                 }
                 newparams.supplierId = this.props.Infos.supplierId
 
-                console.log(newparams)
                 typeof e == 'string' && (()=>newparams[e] = 'ok')()
                 const data = this.objTodata(newparams)
                 axios.post(`${config.connect_srm}/clue/addSupplierClue.do`, data)
@@ -845,10 +844,9 @@ class UserForm extends Component {
                         } else if (code == 1) {
                             message.success(`${response.data.msg}`);
                         }
-                    })
-                    .catch(function (error) {
-                        console.log(error);
-                    });
+                    }).catch(e=> {
+                    console.log(e);
+                })
 
 
             }
@@ -909,6 +907,8 @@ class UserForm extends Component {
                 this.props.baseInfoForm({jsbutton: false})
                 this.ajaxpost = false;
 
+            }).catch(e=> {
+                console.log(e);
             })
         } else if (this.isajaxpost) {
             callback('企业名称还未检测！')
@@ -936,6 +936,8 @@ class UserForm extends Component {
                 } else {
                     callback()
                 }
+            }).catch(e=> {
+                console.log(e);
             })
         } else {
             callback()
@@ -1000,20 +1002,6 @@ class UserForm extends Component {
     }
 
 
-    /*    companyIntroductionHandle = (n, v)=>(e)=> {
-     const {value} = e.target;
-     const len = value.length
-     const reg = new RegExp('(.{' + v + '}).*', 'g');
-     if (len > v) {
-     e.target.value = e.target.value.replace(reg, '$1');
-     n.style.color = "#ff0000";
-     return false;
-     }
-     n.style.color = ''
-     n.innerHTML = len + `/${v}`
-     }*/
-
-
     companyIntroductionHandle = (n, v)=>(e)=> {
         const {value} = e.target;
         var len = value.length
@@ -1028,7 +1016,7 @@ class UserForm extends Component {
     }
 
     uploadIcon = (<Icon type="plus" className="avatar-uploader-trigger"
-                        style={{border: '1px dashed #d9d9d9',cursor: 'pointer','borderRadius': '6px'}}/>)
+                        style={{border: '1px dashed #d9d9d9', cursor: 'pointer', 'borderRadius': '6px'}}/>)
 
     uploadicon = (id, num, ic = this.uploadIcon)=>
         this.props.form.getFieldValue(id) && this.props.form.getFieldValue(id).length >= num ? null : ic
@@ -1085,15 +1073,15 @@ class UserForm extends Component {
                     offset: 5
                 }
             }
-        }} style={{"width":"100%",'marginTop':'5px'}} colon={false}
+        }} style={{"width": "100%", 'marginTop': '5px'}} colon={false}
         >
             {getFieldDecorator('provincebase', {
                 rules: [{required: false, message: '请选择省'}],
                 initialValue: this.props.Infos.provincebase ? this.props.Infos.provincebase : undefined
             })(
-                <Select labelInValue style={{"width":"23%","marginRight":"5px"}}
+                <Select labelInValue style={{"width": "23%", "marginRight": "5px"}}
                         placeholder="请选择省"
-                        onChange={this.provincehandle('id','citys')}>
+                        onChange={this.provincehandle('id', 'citys')}>
                     {provincesarr}
                 </Select>
             )}
@@ -1101,9 +1089,9 @@ class UserForm extends Component {
             {getFieldDecorator('citybase', {
                 rules: [{required: false, message: '请选择市'}],
             })(
-                <Select labelInValue style={{"width":"23%","marginRight":"5px"}}
+                <Select labelInValue style={{"width": "23%", "marginRight": "5px"}}
                         placeholder="请选择市"
-                        onChange={this.provincehandle('id','countys')}>
+                        onChange={this.provincehandle('id', 'countys')}>
                     {citysarr}
                 </Select>
             )}
@@ -1111,9 +1099,9 @@ class UserForm extends Component {
             {getFieldDecorator('countybase', {
                 rules: [{required: false, message: '请选择镇'}],
             })(
-                <Select labelInValue style={{"width":"23%","marginRight":"5px"}}
+                <Select labelInValue style={{"width": "23%", "marginRight": "5px"}}
                         placeholder="请选择镇"
-                        onChange={this.provincehandle('id','towns')}>
+                        onChange={this.provincehandle('id', 'towns')}>
                     {countysarr}
                 </Select>
             )}
@@ -1121,7 +1109,7 @@ class UserForm extends Component {
             {getFieldDecorator('townbase', {
                 rules: [{required: false, message: '请选择县'}],
             })(
-                <Select labelInValue style={{"width":"23%","marginRight":"5px"}}
+                <Select labelInValue style={{"width": "23%", "marginRight": "5px"}}
                         placeholder="请选择县">
                     {townsarr}
                 </Select>
@@ -1134,15 +1122,15 @@ class UserForm extends Component {
                     offset: 5
                 }
             }
-        }} style={{"width":"100%",'marginTop':'5px'}} colon={false}
+        }} style={{"width": "100%", 'marginTop': '5px'}} colon={false}
         >
 
             {getFieldDecorator('Harea', {
                 rules: [{required: false, message: '请选择市'}],
             })(
-                <Select labelInValue style={{"width":"23%","marginRight":"5px"}}
+                <Select labelInValue style={{"width": "23%", "marginRight": "5px"}}
                         placeholder="请选择市"
-                        onChange={this.provincehandle('cityId','Hvenues')}>
+                        onChange={this.provincehandle('cityId', 'Hvenues')}>
                     {Hareasarr}
                 </Select>
             )}
@@ -1150,9 +1138,9 @@ class UserForm extends Component {
             {getFieldDecorator('Hvenue', {
                 rules: [{required: false, message: '请选择广场'}],
             })(
-                <Select labelInValue style={{"width":"23%","marginRight":"5px"}}
+                <Select labelInValue style={{"width": "23%", "marginRight": "5px"}}
                         placeholder="请选择广场"
-                        onChange={this.provincehandle('venueId','Hfloors')}>
+                        onChange={this.provincehandle('venueId', 'Hfloors')}>
                     {Hvenuesarr}
                 </Select>
             )}
@@ -1160,9 +1148,9 @@ class UserForm extends Component {
             {getFieldDecorator('Hfloor', {
                 rules: [{required: false, message: '请选择楼层'}],
             })(
-                <Select labelInValue style={{"width":"23%","marginRight":"5px"}}
+                <Select labelInValue style={{"width": "23%", "marginRight": "5px"}}
                         placeholder="请选择楼层"
-                        onChange={this.provincehandle('floorId','Hdistricts')}>
+                        onChange={this.provincehandle('floorId', 'Hdistricts')}>
                     {Hfloorsarr}
                 </Select>
             )}
@@ -1170,7 +1158,7 @@ class UserForm extends Component {
             {getFieldDecorator('Hdistrict', {
                 rules: [{required: false, message: '请选择区号'}],
             })(
-                <Select labelInValue style={{"width":"23%","marginRight":"5px"}}
+                <Select labelInValue style={{"width": "23%", "marginRight": "5px"}}
                         placeholder="请选择区号">
                     {Hdistrictsarr}
                 </Select>
@@ -1178,7 +1166,7 @@ class UserForm extends Component {
         </FormItem>)
 
         const cttext = <div>
-            <p style={{textAlign:'left',padding:'10px 0px'}}>
+            <p style={{textAlign: 'left', padding: '10px 0px'}}>
                 您添加的线索可能与以下{this.props.tablemodel3.count}个企业的资料冲突,请确认是否继续添加</p>
             <Table
                 columns={this.cttextcolumns}
@@ -1186,12 +1174,12 @@ class UserForm extends Component {
                 dataSource={this.props.tablemodel3.data3}
                 bordered
             />
-            <p><Button type="primary" style={{marginTop:'20px'}}
+            <p><Button type="primary" style={{marginTop: '20px'}}
                        onClick={this.handleCancel2('jsbuttionVisible')}>确认添加</Button></p>
         </div>
 
         const ct2text = <div>
-            <p style={{textAlign:'left',padding:'10px 0px'}}>
+            <p style={{textAlign: 'left', padding: '10px 0px'}}>
                 您添加的线索可能与以下{this.props.tablemodel4.count}个企业的资料冲突,请确认是否继续添加</p>
             <Table
                 columns={this.cttextcolumns}
@@ -1206,840 +1194,903 @@ class UserForm extends Component {
             <div className="newClue">
                 <h2>新建供应商线索</h2>
                 <div className="newCluewk">
-                    <Form layout="inline" onSubmit={this.handleSubmit}>
-                        <div className="newCluewk">
-                            <div className="newCluenk">
-                                <div className="title">基础资料</div>
-                                <div className="content">
+                    <Spin spinning={this.state.formloading} delay={500} tip="Loading...">
+                        <Form layout="inline" onSubmit={this.handleSubmit}>
+                            <div className="newCluewk">
+                                <div className="newCluenk">
+                                    <div className="title">基础资料</div>
+                                    <div className="content">
 
-                                    <Row style={{'padding':'8px 0px'}}>
+                                        <Row style={{'padding': '8px 0px'}}>
 
-                                        <Col span={12} style={{ textAlign: 'left' }}>
-                                            <Col span={5}>
-                                                <div
-                                                    style={{display:'block',verticalAlign:'middle',textAlign:'right',lineHeight:'29px',fontSize:'12px',paddingRight:'10px',color:'rgba(0, 0, 0, 0.85)'}}>
-                                                    <em style={{color:'#ff0000',marginRight:'5px'}}>*</em>企业名称 :
-                                                </div>
-                                            </Col>
-                                            <Col span={19}>
-
-                                                <Col span={20} style={{paddingRight:'5px'}}>
-                                                    <FormItem hasFeedback
-                                                              label=""  {...this.formItemLayout2}
-                                                              style={{"width":"100%"}}
-                                                    >
-                                                        {getFieldDecorator('companyName', {
-                                                            rules: [{
-                                                                validator: this.CompanyNamehandle
-                                                            }], initialValue: '', onChange: this.conpanynamechange
-                                                        })(
-                                                            <Input
-                                                                prefix={<Icon type="idcard" style={{ fontSize: 13 }} />}
-                                                                placeholder="请输入企业名称"
-                                                                style={{"width":"100%",}}/>
-                                                        )}
-                                                    </FormItem>
+                                            <Col span={12} style={{textAlign: 'left'}}>
+                                                <Col span={5}>
+                                                    <div
+                                                        style={{
+                                                            display: 'block',
+                                                            verticalAlign: 'middle',
+                                                            textAlign: 'right',
+                                                            lineHeight: '29px',
+                                                            fontSize: '12px',
+                                                            paddingRight: '10px',
+                                                            color: 'rgba(0, 0, 0, 0.85)'
+                                                        }}>
+                                                        <em style={{color: '#ff0000', marginRight: '5px'}}>*</em>企业名称 :
+                                                    </div>
                                                 </Col>
-                                                <Col span={4}>
-                                                    <Button type="primary" onClick={this.jcbuttion} size="large"
-                                                            style={{width: '100%'}}
-                                                            disabled={jsbutton}>检测</Button>
+                                                <Col span={19}>
+
+                                                    <Col span={20} style={{paddingRight: '5px'}}>
+                                                        <FormItem hasFeedback
+                                                                  label=""  {...this.formItemLayout2}
+                                                                  style={{"width": "100%"}}
+                                                        >
+                                                            {getFieldDecorator('companyName', {
+                                                                rules: [{
+                                                                    validator: this.CompanyNamehandle
+                                                                }], initialValue: '', onChange: this.conpanynamechange
+                                                            })(
+                                                                <Input
+                                                                    prefix={<Icon type="idcard"
+                                                                                  style={{fontSize: 13}}/>}
+                                                                    placeholder="请输入企业名称"
+                                                                    style={{"width": "100%",}}/>
+                                                            )}
+                                                        </FormItem>
+                                                    </Col>
+                                                    <Col span={4}>
+                                                        <Button type="primary" onClick={this.jcbuttion} size="large"
+                                                                style={{width: '100%'}}
+                                                                disabled={jsbutton}>检测</Button>
+                                                        <Modalmodel  {...{
+                                                            ...this.props.modalmodel,
+                                                            visible: this.props.modalmodel.jsbuttionVisible,
+                                                            title: '冲突提示',
+                                                            width: '650px',
+                                                            style: {'maxWidth': '100%'},
+                                                        }}
+                                                                     ModalText={cttext} footer={null}
+                                                                     onCancel={this.handleCancel2('jsbuttionVisible')}/>
+                                                    </Col>
+
+                                                </Col>
+
+
+                                            </Col>
+
+
+                                            <Col span={12} style={{textAlign: 'left'}}>
+                                                <FormItem
+                                                    label="经营品类"  {...this.formItemLayout} style={{"width": "100%"}}
+                                                >
+
+                                                    {getFieldDecorator('varietyName')(
+                                                        <Input onClick={this.handleOpenChooseForCategory} readOnly
+                                                               placeholder="点击选择经营类目"/>
+                                                    )}
+
+                                                    {getFieldDecorator('varietyId')(
+                                                        <Input type='hidden'/>
+                                                    )}
+
+                                                </FormItem>
+                                                <CategorySelector onChoosed={this.handleChoosedForCategory}
+                                                                  choosedKeys={choosedKeys1}
+                                                                  visible={this.state.categorySelectorVisible}
+                                                                  onCancel={this.handleCancelForCategory}
+                                                />
+
+                                            </Col>
+                                        </Row>
+                                        <Row style={{'padding': '8px 0px'}}>
+                                            <Col span={12} style={{textAlign: 'left'}}>
+                                                <Col span={5}>
+                                                    <div
+                                                        style={{
+                                                            display: 'block',
+                                                            verticalAlign: 'middle',
+                                                            textAlign: 'right',
+                                                            lineHeight: '29px',
+                                                            fontSize: '12px',
+                                                            paddingRight: '10px',
+                                                            color: 'rgba(0, 0, 0, 0.85)'
+                                                        }}>
+                                                        绑定账号 :
+                                                    </div>
+                                                </Col>
+                                                <Col span={19}>
+                                                    <Col span={12}>
+                                                        <Col span={8} style={{paddingRight: '5px'}}>
+                                                            <Button type="primary" style={{width: '100%'}}
+                                                                    size="large">csc86</Button>
+                                                        </Col>
+                                                        <Col span={16} style={{paddingRight: '5px'}}>
+                                                            <FormItem {...this.formItemLayout2}
+                                                                      style={{"width": "100%"}}
+                                                                      hasFeedback>
+
+                                                                {getFieldDecorator('cscAccount', {
+                                                                    rules: [{
+                                                                        validator: this.bindinghandle('cscAccount')
+                                                                    }], initialValue: '', validateTrigger: 'onBlur'
+                                                                })(
+                                                                    <Input placeholder="输入账号"
+                                                                           style={{'width': '100%',}}/>
+                                                                )}
+                                                            </FormItem>
+                                                        </Col>
+
+                                                    </Col>
+                                                    <Col span={12}>
+                                                        <Col span={8} style={{paddingRight: '5px'}}>
+                                                            <Button type="primary" style={{width: '100%'}}
+                                                                    size="large">buy5j</Button>
+                                                        </Col>
+                                                        <Col span={16}>
+                                                            <FormItem  {...this.formItemLayout2}
+                                                                       style={{"width": "100%"}}
+                                                                       hasFeedback>
+
+                                                                {getFieldDecorator('buy5jAccount', {
+                                                                    rules: [{
+                                                                        validator: this.bindinghandle('buy5jAccount')
+                                                                    }], initialValue: '', validateTrigger: 'onBlur'
+                                                                })(
+                                                                    <Input placeholder="输入账号"
+                                                                           style={{'width': '100%',}}/>
+                                                                )}
+                                                            </FormItem>
+                                                        </Col>
+
+                                                    </Col>
+                                                </Col>
+
+                                            </Col>
+                                            <Col span={12} style={{textAlign: 'left'}}>
+                                                <FormItem
+                                                    label="来源"  {...this.formItemLayout} style={{"width": "100%"}}
+                                                >
+
+                                                    {getFieldDecorator('source', {
+                                                        rules: [{required: false, message: '请选择来源'}],
+                                                    })(
+                                                        <Select style={{width: 240}} placeholder="请选择来源">
+                                                            <Option value="自行开发">自行开发</Option>
+                                                            <Option value="来电咨询">来电咨询</Option>
+                                                            <Option value="网络推广">网络推广</Option>
+                                                            <Option value="csc86">csc86</Option>
+                                                            <Option value="buy5j">buy5j</Option>
+                                                            <Option value="爬取导入">爬取导入</Option>
+                                                        </Select>
+                                                    )}
+
+
+                                                </FormItem>
+
+                                            </Col>
+                                        </Row>
+
+                                        <Row style={{'padding': '8px 0px'}}>
+                                            <Col span={12} style={{textAlign: 'left'}}>
+                                                <FormItem
+                                                    label="线索级别"  {...this.formItemLayout} style={{"width": "100%"}}
+                                                >
+                                                    {getFieldDecorator('clueLevel', {
+                                                        rules: [{required: false, message: '请选择'}],
+                                                    })(
+                                                        <Select style={{width: 240}} placeholder="请选择">
+                                                            <Option value="即将签约">即将签约</Option>
+                                                            <Option value="意向客户">意向客户</Option>
+                                                            <Option value="待培育客户">待培育客户</Option>
+                                                            <Option value="暂无兴趣">暂无兴趣</Option>
+                                                            <Option value="无效线索">无效线索</Option>
+                                                        </Select>
+                                                    )}
+
+
+                                                </FormItem>
+                                            </Col>
+                                            <Col span={12} style={{textAlign: 'left'}}>
+                                                <FormItem
+                                                    label="是否新增SKU"  {...this.formItemLayout} style={{"width": "100%"}}
+                                                >
+
+                                                    {getFieldDecorator('isAddSku', {
+                                                        rules: [{required: false, message: '请选择'}],
+
+                                                    })(
+                                                        <RadioGroup name="orSku">
+                                                            <Radio value={1}>是</Radio>
+                                                            <Radio value={2}>否</Radio>
+                                                        </RadioGroup>
+                                                    )}
+
+                                                </FormItem>
+                                            </Col>
+                                        </Row>
+
+                                        <Row style={{'padding': '8px 0px'}}>
+                                            <Col span={12} style={{textAlign: 'left'}}>
+                                                <FormItem
+                                                    label="企业性质"  {...this.formItemLayout} style={{"width": "100%"}}
+                                                >
+                                                    {getFieldDecorator('enterpriseType', {
+                                                        rules: [{required: false, message: '请选择'}],
+                                                    })(
+                                                        <Select style={{width: 240}} placeholder="请选择">
+                                                            <Option value="一级代理商">一级代理商</Option>
+                                                            <Option value="厂家">厂家</Option>
+                                                            <Option value="经销商">经销商</Option>
+                                                        </Select>
+                                                    )}
+
+
+                                                </FormItem>
+                                            </Col>
+                                            <Col span={12} style={{textAlign: 'left'}}>
+                                                <FormItem
+                                                    label="企业网址"  {...this.formItemLayout} style={{"width": "100%"}}
+                                                >
+                                                    {getFieldDecorator('website', {
+                                                        rules: [{required: false, message: '请输入网址'}],
+                                                    })(
+                                                        <Input placeholder="请输入网址" id="success"/>
+                                                    )}
+                                                </FormItem>
+                                            </Col>
+                                        </Row>
+
+                                        <Row style={{'padding': '8px 0px'}}>
+                                            <Col span={12} style={{textAlign: 'left'}}>
+                                                <FormItem
+                                                    label="优势产品"  {...this.formItemLayout} style={{"width": "100%"}}
+                                                >
+                                                    {getFieldDecorator('goods', {
+                                                        rules: [{required: false, message: '请填写优势产品'}],
+                                                    })(
+                                                        <Input placeholder="请填写优势产品"/>
+                                                    )}
+                                                </FormItem>
+                                            </Col>
+                                            <Col span={12} style={{textAlign: 'left'}}>
+                                                <FormItem
+                                                    label="旺铺地址"  {...this.formItemLayout} style={{"width": "100%"}}
+                                                >
+                                                    {getFieldDecorator('shopsite', {
+                                                        rules: [{required: false, message: '请填写旺铺地址'}],
+                                                    })(
+                                                        <Input placeholder="请填写旺铺地址"/>
+                                                    )}
+                                                </FormItem>
+                                            </Col>
+                                        </Row>
+
+                                        <Row style={{'padding': '8px 0px'}}>
+                                            <Col span={12} style={{textAlign: 'left'}}>
+                                                <FormItem
+                                                    label="经营品牌"  {...this.formItemLayout} style={{"width": "100%"}}
+                                                >
+                                                    {/*{getFieldDecorator('mainBrand', {
+                                                     rules: [{
+                                                     required: false, message: '点击选择经营的类目', type: 'array',
+                                                     }], initialValue: [],
+                                                     })(
+                                                     <Select
+                                                     mode="multiple"
+
+                                                     placeholder="点击选择经营的类目"
+                                                     onChange={this.handleChange}
+                                                     style={{ width: '100%' }}
+                                                     >
+                                                     {categorysarr}
+                                                     </Select>
+                                                     )}*/}
+
+                                                    {getFieldDecorator('mainBrandId')(
+                                                        <Input type='hidden'/>
+                                                    )}
+                                                    {getFieldDecorator('mainBrand')(
+                                                        <Input onClick={this.handleOpenChoose} readOnly
+                                                               placeholder="点击选择经营品牌"/>
+                                                    )}
+
+                                                </FormItem>
+                                                <BrandSelector onChoosed={this.handleChoosed}
+                                                               visible={this.state.brandSelectorVisible}
+                                                               choosedKeys={choosedKeys}
+                                                               onCancel={this.handleCancel}
+                                                />
+
+                                                <FormItem
+                                                    label="联系地址"  {...this.formItemLayout}
+                                                    style={{"width": "100%", 'marginTop': '5px'}}
+                                                >
+
+                                                    {getFieldDecorator('orOut', {
+                                                        rules: [{required: false, message: '请选择'}],
+                                                        initialValue: this.props.Infos.orOut && this.props.Infos.orOut.value
+                                                    })(
+                                                        <RadioGroup>
+                                                            <Radio value={'1'}>城内</Radio>
+                                                            <Radio value={'2'}>城外</Radio>
+                                                        </RadioGroup>
+                                                    )}
+                                                </FormItem>
+                                                {ssqx}
+                                                <FormItem
+                                                    label=""  {...{
+                                                    ...this.formItemLayout, ...{
+                                                        wrapperCol: {
+                                                            span: 19,
+                                                            offset: 5
+                                                        }
+                                                    }
+                                                }} style={{"width": "100%", 'marginTop': '10px'}} colon={false}
+                                                >
+                                                    {getFieldDecorator('address', {
+                                                        rules: [{required: false, message: '详细地址'}],
+                                                        initialValue: this.props.Infos.address && this.props.Infos.address.value
+                                                    })(
+                                                        <Input addonBefore={addressText}
+                                                               placeholder="详细地址（注意：只填写路、门号等详细地址）"
+                                                        />
+                                                    )}
+                                                </FormItem>
+                                            </Col>
+
+                                            <Col span={12} style={{textAlign: 'left'}}>
+                                                <FormItem
+                                                    label="主营业务"  {...this.formItemLayout} style={{"width": "100%"}}
+                                                >
+
+                                                    {getFieldDecorator('mainBusiness', {
+                                                        rules: [{required: false, message: '请填写主营业务(50个字符)'}],
+                                                        onChange: this.companyIntroductionHandle('numb1', 50)
+                                                    })(
+                                                        <div style={{position: 'relative'}}>
+                                                            <Input type="textarea" rows={3} placeholder="请填写主营业务(50个字符)"
+                                                                   value={this.props.Infos.mainBusiness && this.props.Infos.mainBusiness.value}/>
+                                                            <p style={{
+                                                                position: 'relative',
+                                                                position: 'absolute',
+                                                                bottom: '0px',
+                                                                right: '0px',
+                                                                paddingRight: '10px',
+                                                                color: this.state.numb1.color,
+                                                            }}
+                                                            >{this.state.numb1.len}/50</p>
+                                                        </div>
+                                                    )}
+
+                                                </FormItem>
+
+                                                <FormItem
+                                                    label="备注"  {...this.formItemLayout}
+                                                    style={{"width": "100%", 'marginTop': '15px'}}
+                                                >
+                                                    {getFieldDecorator('remarkbase', {
+                                                        rules: [{required: false, message: '请填写备注(50个字符)'}],
+                                                        onChange: this.companyIntroductionHandle('numb2', 50)
+                                                    })(
+                                                        <div style={{position: 'relative'}}>
+                                                            <Input type="textarea" rows={3} placeholder="请填写备注(50个字符)"
+                                                                   value={this.props.Infos.remarkbase && this.props.Infos.remarkbase.value}/>
+                                                            <p style={{
+                                                                position: 'relative',
+                                                                position: 'absolute',
+                                                                bottom: '0px',
+                                                                right: '0px',
+                                                                paddingRight: '10px',
+                                                                color: this.state.numb2.color,
+                                                            }}
+                                                                /*ref={(node) => {this.numb2 = node}}*/>{this.state.numb2.len}/50</p>
+                                                        </div>
+                                                    )}
+
+                                                </FormItem>
+
+                                            </Col>
+                                        </Row>
+                                    </div>
+                                </div>
+                                <div className="newCluenk">
+                                    <div className="title">联系人资料（手机或固话至少填写一项）</div>
+                                    <div className="content">
+                                        <Table
+                                            columns={columns}
+                                            dataSource={data}
+                                            pagination={false}
+                                            bordered
+                                            footer={() =><div style={{textAlign: 'center'}}><Button
+                                                className="editable-add-btn" onClick={this.handleAdd}>+添加联系人</Button>
+                                            </div>}
+                                        />
+
+                                        <Modalmodel  {...{...this.props.modalmodel, ModalText: '确认删除吗？'}}
+                                                     onOk={this.ModalhandleOk}
+                                                     confirmLoading={this.props.modalmodel.confirmLoading}
+                                                     onCancel={this.ModalhandleCancel('visible')}/>
+                                    </div>
+                                </div>
+                                <div className="newCluenk">
+                                    <div className="title">营业品控资料</div>
+                                    <div className="content">
+                                        <Row style={{'padding': '8px 0px'}}>
+                                            <Col span={12} style={{textAlign: 'left'}}>
+                                                <FormItem
+                                                    label="营业执照注册号"  {...this.formItemLayout} style={{"width": "100%"}}
+                                                >
+                                                    {getFieldDecorator('creditNumber', {
+                                                        rules: [{required: false, message: '请输入营业执照注册号'}],
+                                                    })(
+                                                        <Input placeholder="营业执照注册号"/>
+                                                    )}
+
+
+                                                </FormItem>
+                                            </Col>
+                                            <Col span={12} style={{textAlign: 'left'}}>
+                                                <FormItem
+                                                    label="营业执照注册地"  {...this.formItemLayout} style={{"width": "100%"}}
+                                                >
+
+                                                    {getFieldDecorator('province', {
+                                                        rules: [{required: false, message: '请选择省'}],
+                                                    })(
+                                                        <Select labelInValue
+                                                                style={{"width": "45%", "marginRight": "5px"}}
+                                                                placeholder="请选择省"
+                                                                onChange={this.provincehandle('id', 'registAddressCitys')}>
+                                                            {provincesarr}
+                                                        </Select>
+                                                    )}
+
+                                                    {getFieldDecorator('city', {
+                                                        rules: [{required: false, message: '请选择市'}],
+                                                    })(
+                                                        <Select labelInValue
+                                                                style={{"width": "45%", "marginRight": "5px"}}
+                                                                placeholder="请选择市">
+                                                            {registAddressCitysarr}
+                                                        </Select>
+                                                    )}
+
+                                                </FormItem>
+                                            </Col>
+                                        </Row>
+
+                                        <Row style={{'padding': '8px 0px'}}>
+                                            <Col span={12} style={{textAlign: 'left'}}>
+                                                <FormItem
+                                                    label="营业执照期限"  {...this.formItemLayout} style={{"width": "100%"}}
+                                                >
+
+                                                    {getFieldDecorator('deadline', {
+                                                        rules: [{type: 'array', required: false, message: '请选择'}],
+                                                    })(
+                                                        <RangePicker style={{"width": "65%"}}/>
+                                                    )}
+
+
+                                                </FormItem>
+                                            </Col>
+                                            <Col span={12} style={{textAlign: 'left'}}>
+                                                <FormItem
+                                                    label="登记机构"  {...this.formItemLayout} style={{"width": "100%"}}
+                                                >
+                                                    {getFieldDecorator('organization', {
+                                                        rules: [{required: false, message: '请输入登记机构'}],
+                                                    })(
+                                                        <Input placeholder="登记机构"/>
+                                                    )}
+                                                </FormItem>
+                                            </Col>
+                                        </Row>
+
+                                        <Row style={{'padding': '8px 0px'}}>
+                                            <Col span={12} style={{textAlign: 'left'}}>
+                                                <FormItem
+                                                    label="企业法人"  {...{...this.formItemLayout, ...{wrapperCol: {span: 19}}}}
+                                                    style={{"width": "100%"}}
+                                                >
+                                                    {getFieldDecorator('corporation', {
+                                                        rules: [{required: false, message: '请输入企业法人'}],
+                                                    })(
+                                                        <Input placeholder="企业法人"
+                                                               style={{width: '65%', 'marginRight': '10px'}}/>
+                                                    )}
+                                                    {getFieldDecorator('corporationGender', {
+                                                        rules: [{required: false, message: '请选择'}],
+                                                        initialValue: this.props.Infos.corporationGender && this.props.Infos.corporationGender.value
+                                                    })(
+                                                        <RadioGroup name="orwomen">
+                                                            <Radio value={0}>先生</Radio>
+                                                            <Radio value={1}>女士</Radio>
+                                                        </RadioGroup>
+                                                    )}
+                                                </FormItem>
+
+                                            </Col>
+                                            <Col span={12} style={{textAlign: 'left'}}>
+                                                <FormItem
+                                                    label="身份证号"  {...this.formItemLayout} style={{"width": "100%"}}
+                                                >
+                                                    {getFieldDecorator('idcard', {
+                                                        rules: [{required: false, message: '请输入身份证号'}],
+                                                    })(
+                                                        <Input placeholder="身份证号"/>
+                                                    )}
+                                                </FormItem>
+                                            </Col>
+                                        </Row>
+
+                                        <Row style={{'padding': '8px 0px'}}>
+                                            <Col span={12} style={{textAlign: 'left'}}>
+                                                <FormItem
+                                                    label="法人身份证"  {...this.formItemLayout} style={{"width": "100%"}}
+                                                >
+
+                                                    {getFieldDecorator('idcards', {
+                                                        rules: [{required: false, message: '请上传法人身份证'}],
+                                                        onChange: this.uploadonChange,
+                                                        valuePropName: 'fileList',
+                                                        getValueFromEvent: this.normFile,
+
+                                                    })(
+                                                        <Upload {...this.uploadsprops2}
+                                                                beforeUpload={this.beforeUpload}>
+                                                            {this.uploadicon('idcards', 2)}
+                                                        </Upload>
+                                                    )}
+
+
+                                                </FormItem>
+                                            </Col>
+                                            <Col span={12} style={{textAlign: 'left'}}>
+                                                <FormItem
+                                                    label="营业执照"  {...this.formItemLayout} style={{"width": "100%"}}
+                                                >
+
+                                                    {getFieldDecorator('license', {
+                                                        rules: [{required: false, message: '请上传'}],
+                                                        onChange: this.uploadonChange,
+                                                        valuePropName: 'fileList',
+                                                        getValueFromEvent: this.normFile,
+                                                    })(
+                                                        <Upload {...this.uploadsprops2}
+                                                                beforeUpload={this.beforeUpload}>
+                                                            {this.uploadicon('license', 1)}
+                                                        </Upload>
+                                                    )}
+
+                                                </FormItem>
+                                            </Col>
+                                        </Row>
+
+                                        <Row style={{'padding': '8px 0px'}}>
+                                            <Col span={12} style={{textAlign: 'left'}}>
+                                                <FormItem
+                                                    label="一般人纳税资质"  {...this.formItemLayout} style={{"width": "100%"}}
+                                                >
+
+                                                    {getFieldDecorator('qualification', {
+                                                        rules: [{required: false, message: '请上传'}],
+                                                        onChange: this.uploadonChange,
+                                                        valuePropName: 'fileList',
+                                                        getValueFromEvent: this.normFile,
+                                                    })(
+                                                        <Upload {...this.uploadsprops2}
+                                                                beforeUpload={this.beforeUpload}>
+                                                            {this.uploadicon('qualification', 1)}
+                                                        </Upload>
+                                                    )}
+
+                                                </FormItem>
+                                            </Col>
+                                            <Col span={12} style={{textAlign: 'left'}}>
+                                                <FormItem
+                                                    label="法人授权书/代理人授权书"  {...this.formItemLayout}
+                                                    style={{"width": "100%"}}
+                                                >
+
+                                                    {getFieldDecorator('authorizationBus', {
+                                                        rules: [{required: false, message: '请上传'}],
+                                                        onChange: this.uploadonChange,
+                                                        valuePropName: 'fileList',
+                                                        getValueFromEvent: this.normFile,
+                                                    })(
+                                                        <Upload {...this.uploadsprops2}
+                                                                beforeUpload={this.beforeUpload}>
+                                                            {this.uploadicon('authorizationBus', 1)}
+                                                        </Upload>
+                                                    )}
+
+                                                </FormItem>
+                                            </Col>
+                                        </Row>
+
+                                        <Row style={{'padding': '8px 0px'}}>
+                                            <Col span={12} style={{textAlign: 'left'}}>
+                                                <FormItem
+                                                    label="廉洁承诺书"  {...this.formItemLayout} style={{"width": "100%"}}
+                                                >
+
+                                                    {getFieldDecorator('undertaking', {
+                                                        rules: [{required: false, message: '请上传'}],
+                                                        onChange: this.uploadonChange,
+                                                        valuePropName: 'fileList',
+                                                        getValueFromEvent: this.normFile,
+                                                    })(
+                                                        <Upload {...this.uploadsprops2}
+                                                                beforeUpload={this.beforeUpload}>
+                                                            {this.uploadicon('undertaking', 1)}
+                                                        </Upload>
+                                                    )}
+
+                                                </FormItem>
+                                            </Col>
+                                            <Col span={12} style={{textAlign: 'left'}}>
+                                                <FormItem
+                                                    label="办公场所"  {...this.formItemLayout} style={{"width": "100%"}}
+                                                >
+
+                                                    {getFieldDecorator('officespace', {
+                                                        rules: [{required: false, message: '请上传'}],
+                                                        onChange: this.uploadonChange,
+                                                        valuePropName: 'fileList',
+                                                        getValueFromEvent: this.normFile,
+
+                                                    })(
+                                                        <Upload {...this.uploadsprops2}
+                                                                beforeUpload={this.beforeUpload}>
+                                                            {this.uploadicon('officespace', 1)}
+                                                        </Upload>
+                                                    )}
+
+                                                </FormItem>
+                                            </Col>
+                                        </Row>
+
+                                        <Row style={{'padding': '8px 0px'}}>
+                                            <Col span={12} style={{textAlign: 'left'}}>
+                                                <FormItem
+                                                    label="生产车间/仓库"  {...this.formItemLayout} style={{"width": "100%"}}
+                                                >
+                                                    {getFieldDecorator('workshop', {
+                                                        rules: [{required: false, message: '请上传'}],
+                                                        onChange: this.uploadonChange,
+                                                        valuePropName: 'fileList',
+                                                        getValueFromEvent: this.normFile,
+                                                    })(
+                                                        <Upload {...this.uploadsprops2} beforeUpload={this.beforeUpload}
+                                                                multiple={true}>
+                                                            {this.uploadicon('workshop', 3)}
+                                                        </Upload>
+                                                    )}
+
+
                                                     <Modalmodel  {...{
                                                         ...this.props.modalmodel,
-                                                        visible: this.props.modalmodel.jsbuttionVisible,
-                                                        title: '冲突提示',
+                                                        visible: this.props.modalmodel.previewVisible,
+                                                        title: '',
                                                         width: '650px',
-                                                        style: {'maxWidth': '100%'},
-                                                    }}
-                                                        ModalText={cttext} footer={null}
-                                                        onCancel={this.handleCancel2('jsbuttionVisible')}/>
-                                                </Col>
-
+                                                        style: {'maxWidth': '100%'}
+                                                    }} footer={null} onCancel={this.handleCancel2('previewVisible')}
+                                                                 ModalText={(
+                                                                     <img alt='example' style={{'maxWidth': '100%'}}
+                                                                          src={this.props.modalmodel.previewImage}/>)}/>
+                                                </FormItem>
                                             </Col>
 
+                                        </Row>
+                                    </div>
+                                </div>
+                                <div className="newCluenk">
+                                    <div className="title">经营品牌</div>
+                                    <div className="content">
 
-                                        </Col>
+                                        <Table
+                                            columns={columns2}
+                                            pagination={false}
+                                            dataSource={data2}
+                                            bordered
+                                            footer={() =><div style={{textAlign: 'center'}}><Button
+                                                className="editable-add-btn" onClick={this.handleAdd2}>+添加经营品牌</Button>
+                                            </div>}
+                                        />
 
+                                        <Modalmodel  {...{
+                                            ...this.props.modalmodel,
+                                            visible: this.props.modalmodel.visible2,
+                                            ModalText: '确认删除吗?',
+                                        }}
+                                                     onOk={this.ModalhandleOk2}
+                                                     confirmLoading={this.props.modalmodel.confirmLoading}
+                                                     onCancel={this.ModalhandleCancel('visible2')}/>
+                                    </div>
+                                </div>
+                                <div className="newCluenk" style={{marginBottom: '0px'}}>
+                                    <div className="title">企业规模</div>
+                                    <div className="content">
 
-                                        <Col span={12} style={{ textAlign: 'left' }}>
-                                            <FormItem
-                                                label="经营品类"  {...this.formItemLayout} style={{"width":"100%"}}
-                                            >
+                                        <Row style={{'padding': '8px 0px'}}>
+                                            <Col span={12} style={{textAlign: 'left'}}>
+                                                <FormItem
+                                                    label="支持来料加工"  {...this.formItemLayout} style={{"width": "100%"}}
+                                                >
 
-                                                {getFieldDecorator('varietyName')(
-                                                    <Input onClick={this.handleOpenChooseForCategory} readOnly
-                                                           placeholder="点击选择经营类目"/>
-                                                )}
+                                                    {getFieldDecorator('oem', {
+                                                        rules: [{required: false, message: '请选择'}],
+                                                        onChange: this.onChange,
+                                                    })(
+                                                        <RadioGroup>
+                                                            <Radio value={1}>支持</Radio>
+                                                            <Radio value={2}>不支持</Radio>
+                                                        </RadioGroup>
+                                                    )}
 
-                                                {getFieldDecorator('varietyId')(
-                                                    <Input type='hidden'/>
-                                                )}
-
-                                            </FormItem>
-                                            <CategorySelector onChoosed={this.handleChoosedForCategory}
-                                                              choosedKeys={choosedKeys1}
-                                                              visible={this.state.categorySelectorVisible}
-                                                              onCancel={this.handleCancelForCategory}
-                                            />
-
-                                        </Col>
-                                    </Row>
-                                    <Row style={{'padding':'8px 0px'}}>
-                                        <Col span={12} style={{ textAlign: 'left' }}>
-                                            <Col span={5}>
-                                                <div
-                                                    style={{display:'block',verticalAlign:'middle',textAlign:'right',lineHeight:'29px',fontSize:'12px',paddingRight:'10px',color:'rgba(0, 0, 0, 0.85)'}}>
-                                                    绑定账号 :
-                                                </div>
+                                                </FormItem>
                                             </Col>
-                                            <Col span={19}>
-                                                <Col span={12}>
-                                                    <Col span={8} style={{paddingRight:'5px'}}>
-                                                        <Button type="primary" style={{width:'100%'}}
-                                                                size="large">csc86</Button>
-                                                    </Col>
-                                                    <Col span={16} style={{paddingRight:'5px'}}>
-                                                        <FormItem {...this.formItemLayout2} style={{"width":"100%"}}
-                                                                                            hasFeedback>
+                                            <Col span={12} style={{textAlign: 'left'}}>
+                                                <FormItem
+                                                    label="管理体系认证"  {...this.formItemLayout} style={{"width": "100%"}}
+                                                >
+                                                    {getFieldDecorator('manage', {
+                                                        rules: [{required: false, message: '请选择'}],
 
-                                                            {getFieldDecorator('cscAccount', {
-                                                                rules: [{
-                                                                    validator: this.bindinghandle('cscAccount')
-                                                                }], initialValue: '', validateTrigger: 'onBlur'
-                                                            })(
-                                                                <Input placeholder="输入账号"
-                                                                       style={{'width':'100%',}}/>
-                                                            )}
-                                                        </FormItem>
-                                                    </Col>
-
-                                                </Col>
-                                                <Col span={12}>
-                                                    <Col span={8} style={{paddingRight:'5px'}}>
-                                                        <Button type="primary" style={{width:'100%'}}
-                                                                size="large">buy5j</Button>
-                                                    </Col>
-                                                    <Col span={16}>
-                                                        <FormItem  {...this.formItemLayout2} style={{"width":"100%"}}
-                                                                                             hasFeedback>
-
-                                                            {getFieldDecorator('buy5jAccount', {
-                                                                rules: [{
-                                                                    validator: this.bindinghandle('buy5jAccount')
-                                                                }], initialValue: '', validateTrigger: 'onBlur'
-                                                            })(
-                                                                <Input placeholder="输入账号"
-                                                                       style={{'width':'100%',}}/>
-                                                            )}
-                                                        </FormItem>
-                                                    </Col>
-
-                                                </Col>
+                                                    })(
+                                                        <Select style={{width: 240}}
+                                                                placeholder="请选择">
+                                                            <Option value="ISO9000">ISO9000</Option>
+                                                            <Option value="ISO9001">ISO9001</Option>
+                                                            <Option value="ISO9002">ISO9002</Option>
+                                                        </Select>
+                                                    )}
+                                                </FormItem>
                                             </Col>
+                                        </Row>
 
-                                        </Col>
-                                        <Col span={12} style={{ textAlign: 'left' }}>
-                                            <FormItem
-                                                label="来源"  {...this.formItemLayout} style={{"width":"100%"}}
-                                            >
+                                        <Row style={{'padding': '8px 0px'}}>
+                                            <Col span={12} style={{textAlign: 'left'}}>
+                                                <FormItem
+                                                    label="经营模式"  {...this.formItemLayout} style={{"width": "100%"}}
+                                                >
+                                                    {getFieldDecorator('model', {
+                                                        rules: [{required: false, message: '请选择'}],
 
-                                                {getFieldDecorator('source', {
-                                                    rules: [{required: false, message: '请选择来源'}],
-                                                })(
-                                                    <Select style={{ width: 240 }} placeholder="请选择来源">
-                                                        <Option value="自行开发">自行开发</Option>
-                                                        <Option value="来电咨询">来电咨询</Option>
-                                                        <Option value="网络推广">网络推广</Option>
-                                                        <Option value="csc86">csc86</Option>
-                                                        <Option value="buy5j">buy5j</Option>
-                                                        <Option value="爬取导入">爬取导入</Option>
-                                                    </Select>
-                                                )}
+                                                    })(
+                                                        <Select style={{width: 240}}
+                                                                placeholder="请选择">
+                                                            <Option value="贸易型">贸易型</Option>
+                                                            <Option value="生产型">生产型</Option>
+                                                            <Option value="服务型">服务型</Option>
+                                                            <Option value="招商代理">招商代理</Option>
+                                                            <Option value="政府机构">政府机构</Option>
+                                                            <Option value="其它">其它</Option>
+                                                        </Select>
+                                                    )}
 
+                                                </FormItem>
+                                            </Col>
+                                            <Col span={12} style={{textAlign: 'left'}}>
+                                                <FormItem
+                                                    label="注册资本"  {...this.formItemLayout} style={{"width": "100%"}}
+                                                >
+                                                    {getFieldDecorator('regmoney', {
+                                                        rules: [{required: false, message: '请选择'}],
 
-                                            </FormItem>
+                                                    })(
+                                                        <Select style={{width: 240}}
+                                                                placeholder="请选择">
+                                                            <Option value="50万">50万</Option>
+                                                            <Option value="100万">100万</Option>
+                                                        </Select>
+                                                    )}
+                                                </FormItem>
+                                            </Col>
+                                        </Row>
 
-                                        </Col>
-                                    </Row>
+                                        <Row style={{'padding': '8px 0px'}}>
+                                            <Col span={12} style={{textAlign: 'left'}}>
+                                                <FormItem
+                                                    label="员工数量"  {...this.formItemLayout} style={{"width": "100%"}}
+                                                >
+                                                    {getFieldDecorator('employees', {
+                                                        rules: [{required: false, message: '请选择'}],
 
-                                    <Row style={{'padding':'8px 0px'}}>
-                                        <Col span={12} style={{ textAlign: 'left' }}>
-                                            <FormItem
-                                                label="线索级别"  {...this.formItemLayout} style={{"width":"100%"}}
-                                            >
-                                                {getFieldDecorator('clueLevel', {
-                                                    rules: [{required: false, message: '请选择'}],
-                                                })(
-                                                    <Select style={{ width: 240 }} placeholder="请选择">
-                                                        <Option value="即将签约">即将签约</Option>
-                                                        <Option value="意向客户">意向客户</Option>
-                                                        <Option value="待培育客户">待培育客户</Option>
-                                                        <Option value="暂无兴趣">暂无兴趣</Option>
-                                                        <Option value="无效线索">无效线索</Option>
-                                                    </Select>
-                                                )}
+                                                    })(
+                                                        <Select style={{width: 240}}
+                                                                placeholder="请选择">
+                                                            <Option value="1-50人以下">1-50人以下</Option>
+                                                            <Option value="51-100人">51-100人</Option>
+                                                            <Option value="101-500人">101-500人</Option>
+                                                            <Option value="501-1000人">501-1000人</Option>
+                                                            <Option value="1000人以上">1000人以上</Option>
+                                                        </Select>
+                                                    )}
 
+                                                </FormItem>
+                                            </Col>
+                                            <Col span={12} style={{textAlign: 'left'}}>
+                                                <FormItem
+                                                    label="年营业额"  {...this.formItemLayout} style={{"width": "100%"}}
+                                                >
+                                                    {getFieldDecorator('turnover', {
+                                                        rules: [{required: false, message: '请选择'}],
 
-                                            </FormItem>
-                                        </Col>
-                                        <Col span={12} style={{ textAlign: 'left' }}>
-                                            <FormItem
-                                                label="是否新增SKU"  {...this.formItemLayout} style={{"width":"100%"}}
-                                            >
+                                                    })(
+                                                        <Select style={{width: 240}}
+                                                                placeholder="请选择">
+                                                            <Option value="人民币500万/年以下">人民币500万/年以下</Option>
+                                                            <Option
+                                                                value="人民币501万元/年-1000万/年">人民币501万元/年-1000万/年</Option>
+                                                            <Option
+                                                                value="人民币1001万元/年-5000万/年">人民币1001万元/年-5000万/年</Option>
+                                                            <Option value="5001万/年-1亿元/年">5001万/年-1亿元/年</Option>
+                                                            <Option value="人民币1亿元/年以上">人民币1亿元/年以上</Option>
+                                                        </Select>
+                                                    )}
+                                                </FormItem>
+                                            </Col>
+                                        </Row>
 
-                                                {getFieldDecorator('isAddSku', {
-                                                    rules: [{required: false, message: '请选择'}],
+                                        <Row style={{'padding': '8px 0px'}}>
+                                            <Col span={12} style={{textAlign: 'left'}}>
+                                                <FormItem
+                                                    label="公司介绍"  {...this.formItemLayout}
+                                                    style={{"width": "100%", 'marginTop': '0px'}}
+                                                >
+                                                    {getFieldDecorator('introduce', {
+                                                        rules: [{required: false, message: '请填写公司介绍(100个字符)'}],
+                                                        onChange: this.companyIntroductionHandle('numb3', 100)
+                                                    })(
+                                                        <div style={{position: 'relative'}}>
+                                                            <Input type="textarea" rows={3}
+                                                                   placeholder="请填写公司介绍（100个字符）"
+                                                                   value={this.props.Infos.introduce && this.props.Infos.introduce.value}/>
+                                                            <p style={{
+                                                                position: 'relative',
+                                                                position: 'absolute',
+                                                                bottom: '0px',
+                                                                right: '0px',
+                                                                paddingRight: '10px',
+                                                                color: this.state.numb3.color,
+                                                            }}
+                                                                /* ref={(node) => {this.numb3 = node}}*/>{this.state.numb3.len}/100</p>
+                                                        </div>
+                                                    )}
 
-                                                })(
-                                                    <RadioGroup name="orSku">
-                                                        <Radio value={1}>是</Radio>
-                                                        <Radio value={2}>否</Radio>
-                                                    </RadioGroup>
-                                                )}
-
-                                            </FormItem>
-                                        </Col>
-                                    </Row>
-
-                                    <Row style={{'padding':'8px 0px'}}>
-                                        <Col span={12} style={{ textAlign: 'left' }}>
-                                            <FormItem
-                                                label="企业性质"  {...this.formItemLayout} style={{"width":"100%"}}
-                                            >
-                                                {getFieldDecorator('enterpriseType', {
-                                                    rules: [{required: false, message: '请选择'}],
-                                                })(
-                                                    <Select style={{ width: 240 }} placeholder="请选择">
-                                                        <Option value="一级代理商">一级代理商</Option>
-                                                        <Option value="厂家">厂家</Option>
-                                                        <Option value="经销商">经销商</Option>
-                                                    </Select>
-                                                )}
-
-
-                                            </FormItem>
-                                        </Col>
-                                        <Col span={12} style={{ textAlign: 'left' }}>
-                                            <FormItem
-                                                label="企业网址"  {...this.formItemLayout} style={{"width":"100%"}}
-                                            >
-                                                {getFieldDecorator('website', {
-                                                    rules: [{required: false, message: '请输入网址'}],
-                                                })(
-                                                    <Input placeholder="请输入网址" id="success"/>
-                                                )}
-                                            </FormItem>
-                                        </Col>
-                                    </Row>
-
-                                    <Row style={{'padding':'8px 0px'}}>
-                                        <Col span={12} style={{ textAlign: 'left' }}>
-                                            <FormItem
-                                                label="优势产品"  {...this.formItemLayout} style={{"width":"100%"}}
-                                            >
-                                                {getFieldDecorator('goods', {
-                                                    rules: [{required: false, message: '请填写优势产品'}],
-                                                })(
-                                                    <Input placeholder="请填写优势产品"/>
-                                                )}
-                                            </FormItem>
-                                        </Col>
-                                        <Col span={12} style={{ textAlign: 'left' }}>
-                                            <FormItem
-                                                label="旺铺地址"  {...this.formItemLayout} style={{"width":"100%"}}
-                                            >
-                                                {getFieldDecorator('shopsite', {
-                                                    rules: [{required: false, message: '请填写旺铺地址'}],
-                                                })(
-                                                    <Input placeholder="请填写旺铺地址"/>
-                                                )}
-                                            </FormItem>
-                                        </Col>
-                                    </Row>
-
-                                    <Row style={{'padding':'8px 0px'}}>
-                                        <Col span={12} style={{ textAlign: 'left' }}>
-                                            <FormItem
-                                                label="经营品牌"  {...this.formItemLayout} style={{"width":"100%"}}
-                                            >
-                                                {/*{getFieldDecorator('mainBrand', {
-                                                 rules: [{
-                                                 required: false, message: '点击选择经营的类目', type: 'array',
-                                                 }], initialValue: [],
-                                                 })(
-                                                 <Select
-                                                 mode="multiple"
-
-                                                 placeholder="点击选择经营的类目"
-                                                 onChange={this.handleChange}
-                                                 style={{ width: '100%' }}
-                                                 >
-                                                 {categorysarr}
-                                                 </Select>
-                                                 )}*/}
-
-                                                {getFieldDecorator('mainBrandId')(
-                                                    <Input type='hidden'/>
-                                                )}
-                                                {getFieldDecorator('mainBrand')(
-                                                    <Input onClick={this.handleOpenChoose} readOnly
-                                                           placeholder="点击选择经营品牌"/>
-                                                )}
-
-                                            </FormItem>
-                                            <BrandSelector onChoosed={this.handleChoosed}
-                                                           visible={this.state.brandSelectorVisible}
-                                                           choosedKeys={choosedKeys}
-                                                           onCancel={this.handleCancel}
-                                            />
-
-                                            <FormItem
-                                                label="联系地址"  {...this.formItemLayout}
-                                                style={{"width":"100%",'marginTop':'5px'}}
-                                            >
-
-                                                {getFieldDecorator('orOut', {
-                                                    rules: [{required: false, message: '请选择'}],
-                                                    initialValue: this.props.Infos.orOut && this.props.Infos.orOut.value
-                                                })(
-                                                    <RadioGroup>
-                                                        <Radio value={'1'}>城内</Radio>
-                                                        <Radio value={'2'}>城外</Radio>
-                                                    </RadioGroup>
-                                                )}
-                                            </FormItem>
-                                            {ssqx}
-                                            <FormItem
-                                                label=""  {...{
-                                                ...this.formItemLayout, ...{
-                                                    wrapperCol: {
-                                                        span: 19,
-                                                        offset: 5
-                                                    }
-                                                }
-                                            }} style={{"width":"100%",'marginTop':'10px'}} colon={false}
-                                            >
-                                                {getFieldDecorator('address', {
-                                                    rules: [{required: false, message: '详细地址'}],
-                                                    initialValue: this.props.Infos.address && this.props.Infos.address.value
-                                                })(
-                                                    <Input addonBefore={addressText} placeholder="详细地址（注意：只填写路、门号等详细地址）"
-                                                    />
-                                                )}
-                                            </FormItem>
-                                        </Col>
-
-                                        <Col span={12} style={{ textAlign: 'left' }}>
-                                            <FormItem
-                                                label="主营业务"  {...this.formItemLayout} style={{"width":"100%"}}
-                                            >
-
-                                                {getFieldDecorator('mainBusiness', {
-                                                    rules: [{required: false, message: '请填写主营业务(50个字符)'}],
-                                                    onChange: this.companyIntroductionHandle('numb1', 50)
-                                                })(
-                                                    <div style={{position:'relative'}}>
-                                                        <Input type="textarea" rows={3} placeholder="请填写主营业务(50个字符)"
-                                                               value={this.props.Infos.mainBusiness&&this.props.Infos.mainBusiness.value}/>
-                                                        <p style={{position:'relative',position: 'absolute',bottom: '0px',right: '0px',paddingRight:'10px',color:this.state.numb1.color,}}
-                                                        >{this.state.numb1.len}/50</p>
-                                                    </div>
-                                                )}
-
-                                            </FormItem>
-
-                                            <FormItem
-                                                label="备注"  {...this.formItemLayout}
-                                                style={{"width":"100%",'marginTop':'15px'}}
-                                            >
-                                                {getFieldDecorator('remarkbase', {
-                                                    rules: [{required: false, message: '请填写备注(50个字符)'}],
-                                                    onChange: this.companyIntroductionHandle('numb2', 50)
-                                                })(
-                                                    <div style={{position:'relative'}}>
-                                                        <Input type="textarea" rows={3} placeholder="请填写备注(50个字符)"
-                                                               value={this.props.Infos.remarkbase&&this.props.Infos.remarkbase.value}/>
-                                                        <p style={{position:'relative',position: 'absolute',bottom: '0px',right: '0px',paddingRight:'10px',color:this.state.numb2.color,}}
-                                                            /*ref={(node) => {this.numb2 = node}}*/>{this.state.numb2.len}/50</p>
-                                                    </div>
-                                                )}
-
-                                            </FormItem>
-
-                                        </Col>
-                                    </Row>
+                                                </FormItem>
+                                            </Col>
+                                        </Row>
+                                    </div>
                                 </div>
+
                             </div>
-                            <div className="newCluenk">
-                                <div className="title">联系人资料（手机或固话至少填写一项）</div>
-                                <div className="content">
-                                    <Table
-                                        columns={columns}
-                                        dataSource={data}
-                                        pagination={false}
-                                        bordered
-                                        footer={() =><div style={{textAlign:'center'}}><Button className="editable-add-btn" onClick={this.handleAdd}>+添加联系人</Button></div>}
-                                    />
-
-                                    <Modalmodel  {...{...this.props.modalmodel, ModalText: '确认删除吗？'}}
-                                        onOk={this.ModalhandleOk} confirmLoading={this.props.modalmodel.confirmLoading}
-                                        onCancel={this.ModalhandleCancel('visible')}/>
-                                </div>
+                            <div className="submit">
+                                <Row style={{'padding': '8px 0px'}}>
+                                    <FormItem>
+                                        <Button style={{padding: '2px 55px'}}
+                                                type="primary"
+                                                htmlType="submit"
+                                                disabled={this.hasErrors(getFieldsError())}
+                                        >
+                                            提交
+                                        </Button>
+                                        <Modalmodel  {...{
+                                            ...this.props.modalmodel,
+                                            visible: this.props.modalmodel.submitVisible,
+                                            title: '冲突提示',
+                                            width: '650px',
+                                            style: {'maxWidth': '100%'},
+                                        }}
+                                                     ModalText={ct2text} onCancel={this.handleCancel2('submitVisible')}
+                                                     onOk={this.handleOk2('submitVisible')} okText='确认提交'/>
+                                    </FormItem>
+                                </Row>
                             </div>
-                            <div className="newCluenk">
-                                <div className="title">营业品控资料</div>
-                                <div className="content">
-                                    <Row style={{'padding':'8px 0px'}}>
-                                        <Col span={12} style={{ textAlign: 'left' }}>
-                                            <FormItem
-                                                label="营业执照注册号"  {...this.formItemLayout} style={{"width":"100%"}}
-                                            >
-                                                {getFieldDecorator('creditNumber', {
-                                                    rules: [{required: false, message: '请输入营业执照注册号'}],
-                                                })(
-                                                    <Input placeholder="营业执照注册号"/>
-                                                )}
-
-
-                                            </FormItem>
-                                        </Col>
-                                        <Col span={12} style={{ textAlign: 'left' }}>
-                                            <FormItem
-                                                label="营业执照注册地"  {...this.formItemLayout} style={{"width":"100%"}}
-                                            >
-
-                                                {getFieldDecorator('province', {
-                                                    rules: [{required: false, message: '请选择省'}],
-                                                })(
-                                                    <Select labelInValue style={{"width":"45%","marginRight":"5px"}}
-                                                            placeholder="请选择省"
-                                                            onChange={this.provincehandle('id','registAddressCitys')}>
-                                                        {provincesarr}
-                                                    </Select>
-                                                )}
-
-                                                {getFieldDecorator('city', {
-                                                    rules: [{required: false, message: '请选择市'}],
-                                                })(
-                                                    <Select labelInValue style={{"width":"45%","marginRight":"5px"}}
-                                                            placeholder="请选择市">
-                                                        {registAddressCitysarr}
-                                                    </Select>
-                                                )}
-
-                                            </FormItem>
-                                        </Col>
-                                    </Row>
-
-                                    <Row style={{'padding':'8px 0px'}}>
-                                        <Col span={12} style={{ textAlign: 'left' }}>
-                                            <FormItem
-                                                label="营业执照期限"  {...this.formItemLayout} style={{"width":"100%"}}
-                                            >
-
-                                                {getFieldDecorator('deadline', {
-                                                    rules: [{type: 'array', required: false, message: '请选择'}],
-                                                })(
-                                                    <RangePicker style={{"width":"65%"}}/>
-                                                )}
-
-
-                                            </FormItem>
-                                        </Col>
-                                        <Col span={12} style={{ textAlign: 'left' }}>
-                                            <FormItem
-                                                label="登记机构"  {...this.formItemLayout} style={{"width":"100%"}}
-                                            >
-                                                {getFieldDecorator('organization', {
-                                                    rules: [{required: false, message: '请输入登记机构'}],
-                                                })(
-                                                    <Input placeholder="登记机构"/>
-                                                )}
-                                            </FormItem>
-                                        </Col>
-                                    </Row>
-
-                                    <Row style={{'padding':'8px 0px'}}>
-                                        <Col span={12} style={{ textAlign: 'left' }}>
-                                            <FormItem
-                                                label="企业法人"  {...{...this.formItemLayout, ...{wrapperCol: {span: 19}}}}
-                                                style={{"width":"100%"}}
-                                            >
-                                                {getFieldDecorator('corporation', {
-                                                    rules: [{required: false, message: '请输入企业法人'}],
-                                                })(
-                                                    <Input placeholder="企业法人"
-                                                           style={{width:'65%','marginRight':'10px'}}/>
-                                                )}
-                                                {getFieldDecorator('corporationGender', {
-                                                    rules: [{required: false, message: '请选择'}],
-                                                    initialValue: this.props.Infos.corporationGender && this.props.Infos.corporationGender.value
-                                                })(
-                                                    <RadioGroup name="orwomen">
-                                                        <Radio value={0}>先生</Radio>
-                                                        <Radio value={1}>女士</Radio>
-                                                    </RadioGroup>
-                                                )}
-                                            </FormItem>
-
-                                        </Col>
-                                        <Col span={12} style={{ textAlign: 'left' }}>
-                                            <FormItem
-                                                label="身份证号"  {...this.formItemLayout} style={{"width":"100%"}}
-                                            >
-                                                {getFieldDecorator('idcard', {
-                                                    rules: [{required: false, message: '请输入身份证号'}],
-                                                })(
-                                                    <Input placeholder="身份证号"/>
-                                                )}
-                                            </FormItem>
-                                        </Col>
-                                    </Row>
-
-                                    <Row style={{'padding':'8px 0px'}}>
-                                        <Col span={12} style={{ textAlign: 'left' }}>
-                                            <FormItem
-                                                label="法人身份证"  {...this.formItemLayout} style={{"width":"100%"}}
-                                            >
-
-                                                {getFieldDecorator('idcards', {
-                                                    rules: [{required: false, message: '请上传法人身份证'}],
-                                                    onChange: this.uploadonChange,
-                                                    valuePropName: 'fileList',
-                                                    getValueFromEvent: this.normFile,
-
-                                                })(
-                                                    <Upload {...this.uploadsprops2} beforeUpload={this.beforeUpload}>
-                                                        {this.uploadicon('idcards', 2)}
-                                                    </Upload>
-                                                )}
-
-
-                                            </FormItem>
-                                        </Col>
-                                        <Col span={12} style={{ textAlign: 'left' }}>
-                                            <FormItem
-                                                label="营业执照"  {...this.formItemLayout} style={{"width":"100%"}}
-                                            >
-
-                                                {getFieldDecorator('license', {
-                                                    rules: [{required: false, message: '请上传'}],
-                                                    onChange: this.uploadonChange,
-                                                    valuePropName: 'fileList',
-                                                    getValueFromEvent: this.normFile,
-                                                })(
-                                                    <Upload {...this.uploadsprops2} beforeUpload={this.beforeUpload}>
-                                                        {this.uploadicon('license', 1)}
-                                                    </Upload>
-                                                )}
-
-                                            </FormItem>
-                                        </Col>
-                                    </Row>
-
-                                    <Row style={{'padding':'8px 0px'}}>
-                                        <Col span={12} style={{ textAlign: 'left' }}>
-                                            <FormItem
-                                                label="一般人纳税资质"  {...this.formItemLayout} style={{"width":"100%"}}
-                                            >
-
-                                                {getFieldDecorator('qualification', {
-                                                    rules: [{required: false, message: '请上传'}],
-                                                    onChange: this.uploadonChange,
-                                                    valuePropName: 'fileList',
-                                                    getValueFromEvent: this.normFile,
-                                                })(
-                                                    <Upload {...this.uploadsprops2} beforeUpload={this.beforeUpload}>
-                                                        {this.uploadicon('qualification', 1)}
-                                                    </Upload>
-                                                )}
-
-                                            </FormItem>
-                                        </Col>
-                                        <Col span={12} style={{ textAlign: 'left' }}>
-                                            <FormItem
-                                                label="法人授权书/代理人授权书"  {...this.formItemLayout} style={{"width":"100%"}}
-                                            >
-
-                                                {getFieldDecorator('authorizationBus', {
-                                                    rules: [{required: false, message: '请上传'}],
-                                                    onChange: this.uploadonChange,
-                                                    valuePropName: 'fileList',
-                                                    getValueFromEvent: this.normFile,
-                                                })(
-                                                    <Upload {...this.uploadsprops2} beforeUpload={this.beforeUpload}>
-                                                        {this.uploadicon('authorizationBus', 1)}
-                                                    </Upload>
-                                                )}
-
-                                            </FormItem>
-                                        </Col>
-                                    </Row>
-
-                                    <Row style={{'padding':'8px 0px'}}>
-                                        <Col span={12} style={{ textAlign: 'left' }}>
-                                            <FormItem
-                                                label="廉洁承诺书"  {...this.formItemLayout} style={{"width":"100%"}}
-                                            >
-
-                                                {getFieldDecorator('undertaking', {
-                                                    rules: [{required: false, message: '请上传'}],
-                                                    onChange: this.uploadonChange,
-                                                    valuePropName: 'fileList',
-                                                    getValueFromEvent: this.normFile,
-                                                })(
-                                                    <Upload {...this.uploadsprops2} beforeUpload={this.beforeUpload}>
-                                                        {this.uploadicon('undertaking', 1)}
-                                                    </Upload>
-                                                )}
-
-                                            </FormItem>
-                                        </Col>
-                                        <Col span={12} style={{ textAlign: 'left' }}>
-                                            <FormItem
-                                                label="办公场所"  {...this.formItemLayout} style={{"width":"100%"}}
-                                            >
-
-                                                {getFieldDecorator('officespace', {
-                                                    rules: [{required: false, message: '请上传'}],
-                                                    onChange: this.uploadonChange,
-                                                    valuePropName: 'fileList',
-                                                    getValueFromEvent: this.normFile,
-
-                                                })(
-                                                    <Upload {...this.uploadsprops2} beforeUpload={this.beforeUpload}>
-                                                        {this.uploadicon('officespace', 1)}
-                                                    </Upload>
-                                                )}
-
-                                            </FormItem>
-                                        </Col>
-                                    </Row>
-
-                                    <Row style={{'padding':'8px 0px'}}>
-                                        <Col span={12} style={{ textAlign: 'left' }}>
-                                            <FormItem
-                                                label="生产车间/仓库"  {...this.formItemLayout} style={{"width":"100%"}}
-                                            >
-                                                {getFieldDecorator('workshop', {
-                                                    rules: [{required: false, message: '请上传'}],
-                                                    onChange: this.uploadonChange,
-                                                    valuePropName: 'fileList',
-                                                    getValueFromEvent: this.normFile,
-                                                })(
-                                                    <Upload {...this.uploadsprops2} beforeUpload={this.beforeUpload}
-                                                                                    multiple={true}>
-                                                        {this.uploadicon('workshop', 3)}
-                                                    </Upload>
-                                                )}
-
-
-                                                <Modalmodel  {...{
-                                                    ...this.props.modalmodel,
-                                                    visible: this.props.modalmodel.previewVisible,
-                                                    title: '',
-                                                    width: '650px',
-                                                    style: {'maxWidth': '100%'}
-                                                }} footer={null} onCancel={this.handleCancel2('previewVisible')}
-                                                   ModalText={(<img alt='example' style={{ 'maxWidth': '100%' }} src={this.props.modalmodel.previewImage} />)}/>
-                                            </FormItem>
-                                        </Col>
-
-                                    </Row>
-                                </div>
-                            </div>
-                            <div className="newCluenk">
-                                <div className="title">经营品牌</div>
-                                <div className="content">
-
-                                    <Table
-                                        columns={columns2}
-                                        pagination={false}
-                                        dataSource={data2}
-                                        bordered
-                                        footer={() =><div style={{textAlign:'center'}}><Button className="editable-add-btn" onClick={this.handleAdd2}>+添加经营品牌</Button></div>}
-                                    />
-
-                                    <Modalmodel  {...{
-                                        ...this.props.modalmodel,
-                                        visible: this.props.modalmodel.visible2,
-                                        ModalText: '确认删除吗?',
-                                    }}
-                                        onOk={this.ModalhandleOk2} confirmLoading={this.props.modalmodel.confirmLoading}
-                                        onCancel={this.ModalhandleCancel('visible2')}/>
-                                </div>
-                            </div>
-                            <div className="newCluenk" style={{marginBottom: '0px'}}>
-                                <div className="title">企业规模</div>
-                                <div className="content">
-
-                                    <Row style={{'padding':'8px 0px'}}>
-                                        <Col span={12} style={{ textAlign: 'left' }}>
-                                            <FormItem
-                                                label="支持来料加工"  {...this.formItemLayout} style={{"width":"100%"}}
-                                            >
-
-                                                {getFieldDecorator('oem', {
-                                                    rules: [{required: false, message: '请选择'}],
-                                                    onChange: this.onChange,
-                                                })(
-                                                    <RadioGroup>
-                                                        <Radio value={1}>支持</Radio>
-                                                        <Radio value={2}>不支持</Radio>
-                                                    </RadioGroup>
-                                                )}
-
-                                            </FormItem>
-                                        </Col>
-                                        <Col span={12} style={{ textAlign: 'left' }}>
-                                            <FormItem
-                                                label="管理体系认证"  {...this.formItemLayout} style={{"width":"100%"}}
-                                            >
-                                                {getFieldDecorator('manage', {
-                                                    rules: [{required: false, message: '请选择'}],
-
-                                                })(
-                                                    <Select style={{ width: 240 }}
-                                                            placeholder="请选择">
-                                                        <Option value="ISO9000">ISO9000</Option>
-                                                        <Option value="ISO9001">ISO9001</Option>
-                                                        <Option value="ISO9002">ISO9002</Option>
-                                                    </Select>
-                                                )}
-                                            </FormItem>
-                                        </Col>
-                                    </Row>
-
-                                    <Row style={{'padding':'8px 0px'}}>
-                                        <Col span={12} style={{ textAlign: 'left' }}>
-                                            <FormItem
-                                                label="经营模式"  {...this.formItemLayout} style={{"width":"100%"}}
-                                            >
-                                                {getFieldDecorator('model', {
-                                                    rules: [{required: false, message: '请选择'}],
-
-                                                })(
-                                                    <Select style={{ width: 240 }}
-                                                            placeholder="请选择">
-                                                        <Option value="贸易型">贸易型</Option>
-                                                        <Option value="生产型">生产型</Option>
-                                                        <Option value="服务型">服务型</Option>
-                                                        <Option value="招商代理">招商代理</Option>
-                                                        <Option value="政府机构">政府机构</Option>
-                                                        <Option value="其它">其它</Option>
-                                                    </Select>
-                                                )}
-
-                                            </FormItem>
-                                        </Col>
-                                        <Col span={12} style={{ textAlign: 'left' }}>
-                                            <FormItem
-                                                label="注册资本"  {...this.formItemLayout} style={{"width":"100%"}}
-                                            >
-                                                {getFieldDecorator('regmoney', {
-                                                    rules: [{required: false, message: '请选择'}],
-
-                                                })(
-                                                    <Select style={{ width: 240 }}
-                                                            placeholder="请选择">
-                                                        <Option value="50万">50万</Option>
-                                                        <Option value="100万">100万</Option>
-                                                    </Select>
-                                                )}
-                                            </FormItem>
-                                        </Col>
-                                    </Row>
-
-                                    <Row style={{'padding':'8px 0px'}}>
-                                        <Col span={12} style={{ textAlign: 'left' }}>
-                                            <FormItem
-                                                label="员工数量"  {...this.formItemLayout} style={{"width":"100%"}}
-                                            >
-                                                {getFieldDecorator('employees', {
-                                                    rules: [{required: false, message: '请选择'}],
-
-                                                })(
-                                                    <Select style={{ width: 240 }}
-                                                            placeholder="请选择">
-                                                        <Option value="1-50人以下">1-50人以下</Option>
-                                                        <Option value="51-100人">51-100人</Option>
-                                                        <Option value="101-500人">101-500人</Option>
-                                                        <Option value="501-1000人">501-1000人</Option>
-                                                        <Option value="1000人以上">1000人以上</Option>
-                                                    </Select>
-                                                )}
-
-                                            </FormItem>
-                                        </Col>
-                                        <Col span={12} style={{ textAlign: 'left' }}>
-                                            <FormItem
-                                                label="年营业额"  {...this.formItemLayout} style={{"width":"100%"}}
-                                            >
-                                                {getFieldDecorator('turnover', {
-                                                    rules: [{required: false, message: '请选择'}],
-
-                                                })(
-                                                    <Select style={{ width: 240 }}
-                                                            placeholder="请选择">
-                                                        <Option value="人民币500万/年以下">人民币500万/年以下</Option>
-                                                        <Option value="人民币501万元/年-1000万/年">人民币501万元/年-1000万/年</Option>
-                                                        <Option value="人民币1001万元/年-5000万/年">人民币1001万元/年-5000万/年</Option>
-                                                        <Option value="5001万/年-1亿元/年">5001万/年-1亿元/年</Option>
-                                                        <Option value="人民币1亿元/年以上">人民币1亿元/年以上</Option>
-                                                    </Select>
-                                                )}
-                                            </FormItem>
-                                        </Col>
-                                    </Row>
-
-                                    <Row style={{'padding':'8px 0px'}}>
-                                        <Col span={12} style={{ textAlign: 'left' }}>
-                                            <FormItem
-                                                label="公司介绍"  {...this.formItemLayout}
-                                                style={{"width":"100%",'marginTop':'0px'}}
-                                            >
-                                                {getFieldDecorator('introduce', {
-                                                    rules: [{required: false, message: '请填写公司介绍(100个字符)'}],
-                                                    onChange: this.companyIntroductionHandle('numb3', 100)
-                                                })(
-                                                    <div style={{position:'relative'}}>
-                                                        <Input type="textarea" rows={3} placeholder="请填写公司介绍（100个字符）"
-                                                               value={this.props.Infos.introduce&&this.props.Infos.introduce.value}/>
-                                                        <p style={{position:'relative',position: 'absolute',bottom: '0px',right: '0px',paddingRight:'10px',color:this.state.numb3.color,}}
-                                                            /* ref={(node) => {this.numb3 = node}}*/>{this.state.numb3.len}/100</p>
-                                                    </div>
-                                                )}
-
-                                            </FormItem>
-                                        </Col>
-                                    </Row>
-                                </div>
-                            </div>
-
-                        </div>
-                        <div className="submit">
-                            <Row style={{'padding':'8px 0px'}}>
-                                <FormItem>
-                                    <Button style={{padding:'2px 55px'}}
-                                            type="primary"
-                                            htmlType="submit"
-                                            disabled={this.hasErrors(getFieldsError())}
-                                    >
-                                        提交
-                                    </Button>
-                                    <Modalmodel  {...{
-                                        ...this.props.modalmodel,
-                                        visible: this.props.modalmodel.submitVisible,
-                                        title: '冲突提示',
-                                        width: '650px',
-                                        style: {'maxWidth': '100%'},
-                                    }}
-                                        ModalText={ct2text} onCancel={this.handleCancel2('submitVisible')}
-                                        onOk={this.handleOk2('submitVisible')} okText='确认提交'/>
-                                </FormItem>
-                            </Row>
-                        </div>
-                    </Form>
+                        </Form>
+                    </Spin>
                 </div>
             </div>
         );

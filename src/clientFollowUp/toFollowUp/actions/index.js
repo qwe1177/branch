@@ -1,6 +1,7 @@
-import { getLoginInfo ,getUrlParams} from '../../../util/baseTool';
 import axios from 'axios';
 import moment from 'moment'
+import { getLoginInfo ,getUrlParams} from '../../../util/baseTool.js';
+import { connect_url } from '../../../util/connectConfig.js';
 import {connect_srm} from '../../../util/connectConfig.js';
 import _ from 'lodash';
 
@@ -77,33 +78,29 @@ export const setQueryFrom = data => (dispatch, getState) => {
 }
 
 
-
 //使用async/await方式
 export const queryTableData = (data) => async(dispatch, getState) => {
     try {
         await dispatch(requestSupplier(data));
+        var token = getLoginInfo()['token'];  //获取token　登录用
+        var urlParams = getUrlParams();
+        var moduleId = urlParams['moduleId']?urlParams['moduleId']:'';
         var queryform = data.queryform;
+        var pagination = data.pagination;
+        var paramPagination = {pageNo :pagination.current,pageSize:pagination.pageSize};
         if (queryform.finishData && queryform.finishData.length > 0) {
             queryform.startTime = queryform.finishData[0].format("YYYY-MM-DD");
             queryform.endTime = queryform.finishData[1].format("YYYY-MM-DD");
         }
-        var params = { ...queryform};
+        var params = { ...queryform, ...paramPagination,token, moduleId};
         params.finishData = undefined
         params = _.omitBy(params, _.isUndefined); //删除undefined参数
         // console.log(params)
-        let res = await axios.get(connect_srm + '/v1/supplier/queryFollowupList.do', {
-            params: params,
-            headers: {
-                'Content-Type': 'application/json;charset=UTF-8'
-            }
-        });
+        let res = await axios.get('http://10.10.10.29:9407/v1/supplier/queryFollowupList.do', { params: params });
+        var pageSize=parseInt(res.data.data.pageSize);
         return await dispatch(receiveSupplier({
             tableData: res.data.data.supplierFollowupPlanList,
-            pagination: {
-                total: res.data.data.rowCount,
-                current: res.data.data.pageCount,
-                pageSize: res.data.data.pageSize,
-            }
+            pagination: { ...pagination,pageSize:pageSize,total:res.data.data.rowCount}
         }));
     } catch (error) {
         console.log('error: ', error)

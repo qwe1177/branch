@@ -32,13 +32,9 @@ import {getOperateData,getCurrentData,getFieldData} from '../../../components/co
 
 class App extends Component {
 	componentWillMount() {
-		// this.queryData();
-		var token = getLoginInfo()['token'];  //获取token　登录用
-		var urlParams = getUrlParams();
-		var moduleId = urlParams['moduleId']?urlParams['moduleId']:'';
-		this.props.getOperateData(token,moduleId);/**操作权限 */
-		this.props.getCurrentData(token,moduleId);/**数据权限 */
-		this.props.getFieldData(token,moduleId);/**字段权限 */
+		this.props.getOperateData();/**操作权限 */
+		this.props.getCurrentData();/**数据权限 */
+		this.props.getFieldData();/**字段权限 */
 	}
 	render() {
 		return (

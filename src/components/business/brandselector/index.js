@@ -10,7 +10,6 @@ import { getLoginInfo ,getUrlParams} from '../../../util/baseTool';
 import axios from 'axios';
 
 //联调叶群丽，上线后去掉
-const yequanli_url ='http://10.10.10.121:9503/srm-app/v1';
 
 export default class BrandSelector extends React.Component {
     static propTypes = { //声明prop中属性变量
@@ -76,7 +75,7 @@ export default class BrandSelector extends React.Component {
     }
     handleCancel = (e) => {
         this.props.onCancel();
-        //this.restDefault();
+        this.restDefault();
     }
     handleTableChange = (pagination, filters, sorter) => {  //点击分页控件调用  比如换页或者换pageSize
         this.fetch({pagination});
@@ -99,7 +98,7 @@ export default class BrandSelector extends React.Component {
             query = _.omitBy(queryParams.query, _.isUndefined); //删除undefined参数
         }
         var params = {...query,page:pagination.current,limit:pagination.pageSize,token: token,moduleId:moduleId};
-        axios.get(yequanli_url + '/queryBrandList.do', { params: params }).then((res)=>{
+        axios.get(connect_srm + '/queryBrandList.do', { params: params }).then((res)=>{
             if(res.data.status){
                 var original = res.data.data.brandList;
                 var data = this.formateDataWithChecked(checkedList,original);

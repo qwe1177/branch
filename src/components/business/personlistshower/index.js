@@ -1,14 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types'
-import { Modal, Table, Form, Button, Icon ,message } from 'antd';
+import { Modal, Table, Form, Button, Icon ,message ,Spin} from 'antd';
 
 import './layout.css';
 import EffectFrom from './EffectFrom';
-
+import { getOneUrlParams,getLoginAccount} from '../../../util/baseTool';
 
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
-import {doReceiveList,doPreEdit,doPreAdd,doEffectFlow,doCancelForm} from './redux';
+import {doPreEdit,doPreAdd,doEffectFlow,doCancelForm,fetchListData} from './redux';
 
 /**
  * 
@@ -22,7 +22,7 @@ import {doReceiveList,doPreEdit,doPreAdd,doEffectFlow,doCancelForm} from './redu
  */
 @connect(
   state =>  ({personListShower: state.personListShower}),
-  dispatch => bindActionCreators({doReceiveList,doPreEdit,doPreAdd,doEffectFlow,doCancelForm}, dispatch)
+  dispatch => bindActionCreators({doPreEdit,doPreAdd,doEffectFlow,doCancelForm,fetchListData}, dispatch)
 )
 
 class PersonListshower extends React.Component {
@@ -30,7 +30,9 @@ class PersonListshower extends React.Component {
         requestId: PropTypes.string.isRequired //供应商,采购商id等，用于查选联系人
     }
     componentWillMount(){
-        this.props.doReceiveList();
+        // this.props.doReceiveList();
+        var supplierId = getOneUrlParams('supplierId');
+		this.props.fetchListData(supplierId);
     }
     constructor(props) {
         super(props);
@@ -39,13 +41,12 @@ class PersonListshower extends React.Component {
         }
     }
     handleCancel = () => {
-        console.log('取消');
         this.props.doCancelForm();
     }
     effect =(o)=>{
         if(o){ //修改
             this.setState({title:"编辑联系人"});
-            this.props.doPreEdit(o);
+            this.props.doPreEdit(o.id);
         }else{
             this.setState({title:"新建联系人"});
             this.props.doPreAdd();
@@ -55,26 +56,30 @@ class PersonListshower extends React.Component {
         const {title} = this.state
         const WrappedEffectFrom = Form.create()(EffectFrom);
         const {personList,visible} = this.props.personListShower;
-
+        const mainClassName = personList.length>5?'content-wrap hasScroll':'content-wrap';
         return (
             <div className='personlist-shower'>
                 <div className='add-wrap' onClick={() => this.effect()} ><Icon type="plus-circle" className='add'   />新增联系人</div>
                 <div className='list-wrap'> 
-                    <div className='content-wrap'>
-                    {personList.map((o, index) => {
-                        return (
-                        <div className='item' key={o.key} >
-                        <div className='name-wrap'>{o.name}</div>
-                            <div className='phone-wrap' onClick={() => this.effect(o)}>
-                                <div className='phone-el'>{o.phone}</div>
-                                <Icon type="right" />
-                            </div>
-                       </div>)
-                    })}
+                    <Spin spinning={this.props.personListShower.islistFetching}>
+                    <div className={mainClassName}>
+                        {personList.map((o, index) => {
+                            return (
+                            <div className='item' key={o.id} >
+                            <div className='name-wrap'>{o.fullname}</div>
+                                <div className='phone-wrap' onClick={() => this.effect(o)}>
+                                    <div className='phone-el'>{o.mobile}</div>
+                                    <Icon type="right" />
+                                </div>
+                        </div>)
+                        })}
                     </div>
+                    </Spin>
                 </div>
                 <Modal className='personlist-shower-modal' title={title} visible={visible} onCancel={this.handleCancel} footer={null} >
+                    <Spin spinning={this.props.personListShower.isFetching} >
                     <WrappedEffectFrom />
+                    </Spin>
                 </Modal >
             </div>
         );

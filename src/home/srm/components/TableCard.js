@@ -41,7 +41,7 @@ class MainTable extends React.Component {
     var { pagination } = this.state;
     // var params = {token:token,moduleId:moduleId,pageSize:pagination.pageSize,current:pagination.current}
     var params = { token: token, pageSize: pagination.pageSize }
-    axios.get(connect_srm + '/supplier/queryFollowupList.do', { params: params }).then((res) => {
+    axios.get(connect_srm + '/supplier/queryFollowupList.do', { params: params ,timeout:20000}).then((res) => {
       if (res.data.code == '1') {
         var newPagination = { ...pagination, total: res.data.data.rowCount };
         this.setState({ tableData: res.data.data.supplierFollowupPlanList, pagination: newPagination, isFetching: false });

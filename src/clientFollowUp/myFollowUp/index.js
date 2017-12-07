@@ -7,6 +7,7 @@ import { Provider } from 'react-redux'
 import thunk from 'redux-thunk'
 import { createLogger } from 'redux-logger'
 import reducer from './reducers'
+import CommonApp from '../../common/containers/App'
 import App from './containers/App'
 
 const middleware = [ thunk ]
@@ -21,7 +22,9 @@ const store = createStore(
 
 render(
   <Provider store={store}>
-    <App />
+    <CommonApp>
+      <App />
+    </CommonApp>
   </Provider>,
   document.getElementById('root')
 )

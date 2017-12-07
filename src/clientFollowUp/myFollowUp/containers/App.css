@@ -4,11 +4,6 @@
   height: 100%;
   font-size: 14px;
 }
-.main{
-  height: 100%;
-  background: #edf1f5; 
-  padding: 0 30px;
-}
 /* 选择框整体的样式 */
 .query-wrap{
   padding: 20px;
@@ -36,6 +31,7 @@
 /* 跟进统计模块的样式 */
 .statistics {
   width: 278px;
+  height: 300px;
   margin-left: 18px;
   padding: 20px;
   background-color: #fff;

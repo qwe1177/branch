@@ -38,3 +38,7 @@
   width: 20px;
   height: 20px;
 }
+.ant-checkbox-inner:after {
+  width: 6px;
+  height: 12px;
+}

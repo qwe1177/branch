@@ -40,7 +40,7 @@ export default class Card1 extends React.Component {
     var moduleId = urlParams['moduleId']?urlParams['moduleId']:'';
     this.setState({ isFetching: true });
     var params = {token: token,moduleId:moduleId};
-    axios.get(connect_srm + '/clue/viewSupplierClueTotal.do', { params: params }).then((res) => {
+    axios.get(connect_srm + '/clue/viewSupplierClueTotal.do', { params: params,timeout:20000 }).then((res) => {
       if (res.data.code == '1') {
         this.setState({ cardData: res.data.data,isFetching: false });
       } else {

@@ -1,10 +1,6 @@
 import {combineReducers} from 'redux'
 import commonReducer from '../../common/reducers/commonreducer'
 import {
-    SELECT_REDDIT,
-    INVALIDATE_REDDIT,
-    REQUEST_POSTS,
-    RECEIVE_POSTS,
     baseInfo,
     modalmodelInfo,
     tablemodelInfo,
@@ -78,10 +74,10 @@ function tablemodel2(state = {
         No: '1',
         brankName: {name: 'brankName1', message: '请输入品牌名称', placeholder: '品牌名称',},
         brankType: {name: 'brankType1', message: '请输入品牌类型', placeholder: '品牌类型',},
-        authorization: {name: 'authorization1', message: '请上传授权书', placeholder: '授权书', num: 2,},
+        authorization: {name: 'authorization1', message: '请上传授权书', placeholder: '授权书',},
         registration: {name: 'registration1', message: '请输入注册证', placeholder: '注册证',},
         certification: {name: 'certification1', message: '请输入认证报告', placeholder: '认证报告',},
-        otherAptitude: {name: 'otherAptitude1', message: '请输入其他资料', placeholder: '其他资料',},
+        otherAptitude: {name: 'otherAptitude1', message: '请输入其他资料', placeholder: '其他资料', num: 3,},
         Operation: '删除',
     }],
     count: 2,
