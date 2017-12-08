@@ -7,12 +7,13 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { doAdd,doRequest,doCancelForm } from './redux';
 import {doFormAdd} from '../../../../components/publicFollowUp/redux'
+import {doQueryFollow } from '../../actions'
 const FormItem = Form.Item;
 const Option = Select.Option;
 
 @connect(
-	state =>  ({ AddModal: state.AddModal,EditModal: state.EditModal }),
-	dispatch => bindActionCreators({ doAdd,doRequest,doCancelForm,doFormAdd }, dispatch)
+	state =>  ({ AddModal: state.AddModal,EditModal: state.EditModal,MyFollowUP: state.MyFollowUP }),
+	dispatch => bindActionCreators({ doAdd,doRequest,doCancelForm,doFormAdd,doQueryFollow  }, dispatch)
   )
 
 
@@ -40,12 +41,14 @@ class ModalForm extends React.Component {
         this.props.EditModal.pform.companyName = value;
         this.props.EditModal.pform.supplierId = key;
         this.props.EditModal.pform.followupType = type;
+        this.props.EditModal.modalType = 1;
         this.props.doFormAdd();
       }
-      
+      handleAddSuccess =()=>{
+		var {query,pagination} = this.props.MyFollowUP;
+		this.props.doQueryFollow({query,pagination});
+	}
     addShow = (e) => {
-        const value = e.target.innerHTML;
-        this.props.typehandle(value)
         this.props.doAdd();
       }
     handleCancel = () => {
@@ -151,11 +154,12 @@ class ModalForm extends React.Component {
                         className="add-table" 
                         rowKey={record => record.supplierId}  //数据中已key为唯一标识
                         columns={columns} 
+                        loading={isFetching}
                         dataSource={tableData.resultList} 
                         pagination={pagination} 
                         onChange={this.handlePageChange}/>  
                 </Modal>
-                <PublicModal modalType={this.props.type} type = {this.props.EditModal.pform.followupType}/>
+                <PublicModal type = {this.props.EditModal.pform.followupType} onSuccess={this.handleAddSuccess.bind(this)}/>
             </div>
         )
     }

@@ -35,7 +35,28 @@
 }
 
 .tabel-wrap{
+  margin-top:20px; 
   background: #fff;
+
 }
 
-.g-fl{float: left;}
+.evalscore{
+  margin-left:40px;
+  line-height:120px;
+}
+.evalscore img{
+  vertical-align: sub;
+}
+.oflowen{ 
+  overflow: hidden;
+}
+
+.pl20{ padding-left:20px;}
+.pt10{ padding-top:10px;}
+.pt20{ padding-top:20px;}
+.g-fl{float: left; font-size: 14px;}
+.oflowen label{font-weight: bold;}
+
+.audit-tit{ background-color: #fff; height:50px; line-height:50px; font-size: 16px; border-bottom:1px solid #ccc; padding-left:20px;}
+
+.audit-ress{background-color: #fff; height:120px; font-size: 16px; padding-left:20px;}

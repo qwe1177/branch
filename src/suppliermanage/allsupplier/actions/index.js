@@ -1,9 +1,9 @@
 import { connect_srm } from '../../../util/connectConfig';
 import { getLoginInfo ,getUrlParams} from '../../../util/baseTool';
-import axios from 'axios';
+// import axios from 'axios';
+import axios from '../../../util/axios';
 import _ from 'lodash';
-const xiaowenwu_url = 'http://10.10.10.114:8080/v1';
-//  const xiaowenwu_url = 'http://10.10.10.214:9503/srm-app/v1';
+
 
 
 export const GET_HEAD_FIRST = 'GET_HEAD_FIRST'  //获取公共头1的数据
@@ -82,14 +82,12 @@ export const setQueryFrom = data => (dispatch, getState) => {
 export const queryTableData = (data) => async (dispatch, getState) => {
     try {
         await dispatch(requestSupplier());
-        var token = getLoginInfo()['token'];  //获取token　登录用
         var urlParams = getUrlParams();
         var moduleId = urlParams['moduleId']?urlParams['moduleId']:'';
         var queryform = data.queryform;
         var pagination = data.pagination;
-        // var paramPagination = _.pick(pagination, ['current', 'pageSize']);  //从分页数据中拿出第几页，每页多少条
         var paramPagination = {pageSize :pagination.current,offset:pagination.pageSize};
-        // var params = { ...queryform, ...paramPagination }; //查询条件和分页条件传入
+
         if (queryform.createdate && queryform.createdate.length > 0) {
             queryform.startTime = queryform.createdate[0].format("YYYY-MM-DD");
             queryform.endTime = queryform.createdate[1].format("YYYY-MM-DD");
@@ -104,9 +102,8 @@ export const queryTableData = (data) => async (dispatch, getState) => {
         queryform = _.omitBy(queryform, _.isUndefined); //删除undefined参数
         var powerKey = {'sign':'lbcx'}; //要对照SASS平台中的权限
 
-        var params = { ...queryform, ...paramPagination,token, moduleId,...powerKey}; //查询条件和分页条件传入
-        // params = _.pick(params,['isPass','markToDistinguish','pageSize','offset','token','moduleId']);//因为数据问题，暂时只能传如下参数
-        let res = await axios.get(connect_srm + '/management/viewSupplierList.do', { params: params,timeout: 10000 });
+        var params = { ...queryform, ...paramPagination, moduleId,...powerKey}; //查询条件和分页条件传入
+        let res = await axios.get(connect_srm + '/management/viewSupplierList.do', { params: params});
         return await dispatch(receiveSupplier({ tableData: res.data.data.data, pagination: { total: res.data.data.rowCount } }));
     } catch (error) {
         console.log('error: ', error)

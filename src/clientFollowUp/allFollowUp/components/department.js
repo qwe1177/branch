@@ -83,13 +83,13 @@ class Department extends React.Component {
         })(arrRead, treeData,'1');
         return treeData;
     }
-    var a = getTreeStruc(departmentList);
+    var treeData = getTreeStruc(departmentList);
     return (
         <div className="department-list">
                 <Tree
                 onSelect={this.onSelect}
             >
-                {this.renderTreeNodes(a)}
+                {this.renderTreeNodes(treeData)}
             </Tree> 
         </div>
     

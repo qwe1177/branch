@@ -3,15 +3,15 @@ import PropTypes from 'prop-types'
 import { Card,Tag,Row,Col,Button,Icon } from 'antd';
 import moment from 'moment';
 import './MainCard.css';
-import PublicModal from '../../../components/publicFollowUp'
+
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import {  doQueryFollow ,doEditFollowInfo} from '../actions/index.js';
-import {doFormEdit} from '../../../components/publicFollowUp/redux';
+
 
 @connect(
-    state => ({ MyFollowUP: state.MyFollowUP,EditModal: state.EditModal }),
-    dispatch => bindActionCreators({ doQueryFollow,doEditFollowInfo,doFormEdit }, dispatch)
+    state => ({ MyFollowUP: state.MyFollowUP }),
+    dispatch => bindActionCreators({ doQueryFollow,doEditFollowInfo }, dispatch)
 )
 
 class MainCard extends React.Component{
@@ -24,14 +24,8 @@ class MainCard extends React.Component{
         // selectedList:PropTypes.array, //表格中选择多选状态
          pagination:PropTypes.object //表格中的分页
     }
-    componentWillMount() {
-        // this.props.initSupplierTable();
-        
-    }
     showModal = (key,id)=>(e) => {
-        const value = e.target.innerHTML;
-        this.props.typehandle(value)
-        this.props.doFormEdit(key,id);
+        this.props.onEdit(key,id)
       }
     render() {
         const data = this.props.data;
@@ -87,7 +81,6 @@ class MainCard extends React.Component{
                     <Row type="flex" justify="end">
                          <Col >
                             <Icon  type="edit" onClick={this.showModal(data.supplierId,data.id)} className="editStyle"></Icon>
-                            <PublicModal modalType={this.props.type} type = {data.followupType}/>
                         </Col>
                     </Row>
                 </Card>  

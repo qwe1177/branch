@@ -7,7 +7,7 @@ import { Modal, Table,Form,Button,Tag  } from 'antd';
 
 import { connect_cas } from '../../../util/connectConfig';
 import { getLoginInfo} from '../../../util/baseTool';
-import axios from 'axios';
+import axios from '../../../util/axios';
 import _ from 'lodash';
 
 ///chooseperson
@@ -74,9 +74,8 @@ class PersonSelector extends React.Component {
         this.fetch({'query':currentquery});
     }
     fetch =(paramsObj)=>{
-        var token = getLoginInfo()['token'];  //获取token　登录用
         var {pagination,checkedList} =this.state;
-        var params = {token:token,page:pagination.current,pageSize:pagination.pageSize};
+        var params = {page:pagination.current,pageSize:pagination.pageSize};
         if(paramsObj){
             if(paramsObj.query){
                 params = {...params,...paramsObj.query};
@@ -136,8 +135,8 @@ class PersonSelector extends React.Component {
 		 return formatTree(items, parentId);
     }
     queryData =()=>{
-		var token = getLoginInfo()['token'];  //获取token　登录用
-		axios.get(connect_cas + '/api/user/getAllDepartment', { params: {token:token} }).then((res) => {
+		// var token = getLoginInfo()['token'];  //获取token　登录用
+		axios.get(connect_cas + '/api/user/getAllDepartment').then((res) => {
 			if(res.data.code=='0'){
 				var d  = res.data.data;
 				var treeData =this.getTree(d,'');

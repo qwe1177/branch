@@ -140,7 +140,7 @@ if (__PROD__) {
       minimize: true,
       debug: false,
     }),
-    new webpack.optimize.OccurrenceOrderPlugin()
+    new webpack.optimize.OccurrenceOrderPlugin(true)
   ]);
 }
 

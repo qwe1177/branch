@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types'
-import { Modal, Form } from 'antd';
+import { Modal, Form,Spin } from 'antd';
 import './layout.css';
 import ModalForm from './modalForm'
 import {connect} from 'react-redux';
@@ -26,17 +26,16 @@ class PublicModal extends React.Component {
     }
     render() {
       const ModalFormWrapped = Form.create()(ModalForm);
-      const {visible,isFetching} = this.props.EditModal;
+      const {visible,isFetching,modalType} = this.props.EditModal;
       var type = this.props.type;
-      var modalType = this.props.modalType; 
       var title = modalType != '2' ? '添加跟进' : '编辑跟进';
       var url = modalType != '2' ? 'http://10.10.10.29:9407/v1/supplier/saveSupplierFollowupRecords.do' : 'http://10.10.10.29:9407/v1/supplier/updateSupplierFollowupById.do';
       return (
-        <div>
-            <Modal visible={visible} title={title} loading={isFetching} onOk={this.handleOk} onCancel={this.handleCancel} width = {'650px'} footer={null}>
-                <ModalFormWrapped modalType = {modalType} type = {type} url = {url} />
+        <Spin spinning={isFetching} delay={500}>
+            <Modal visible={visible} title={title}  onOk={this.handleOk} onCancel={this.handleCancel} width = {'650px'} footer={null}>
+                <ModalFormWrapped type = {type} url = {url} onSuccess ={this.props.onSuccess} />
             </Modal>
-        </div>
+        </Spin>
       );
     }
 }

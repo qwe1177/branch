@@ -14,27 +14,9 @@ class App extends Component {
 		return (
 			<div>
 				<h3 className="page-title">上传产品报价</h3>
-				
-				{/* <div className="tabel-wrap g-mt0">
-					<UploadFromWarp />
-				</div> */}
 				<div className="tabel-wrap">
 					<UploadFromWarp2 />
 				</div>
-
-				{/* <div className="submit">
-					<Row style={{'padding':'8px 0px'}}>
-						<FormItem>
-							<Button style={{padding:'2px 55px'}}
-									type="primary"
-									htmlType="submit"
-							>
-								提交
-							</Button>
-						</FormItem>
-					</Row>
-				</div> */}
-
 			</div>
 		);
 	}

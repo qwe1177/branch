@@ -80,11 +80,13 @@ export default class BrandSelector extends React.Component {
         var urlParams = getUrlParams();
         //var moduleId = urlParams['moduleId']?urlParams['moduleId']:'';
         this.setState({ isFetching: true});
+
         var {query,pagination,checkedList} =this.state;
         if(queryParams &&　queryParams.pagination){ //解释分页查询条件
             pagination.current =queryParams.pagination.current;
             pagination.pageSize =queryParams.pagination.pageSize;
         }
+        
         if(queryParams &&　queryParams.query){ //解析form表单查询条件
             query = _.omitBy(queryParams.query, _.isUndefined); //删除undefined参数
         }

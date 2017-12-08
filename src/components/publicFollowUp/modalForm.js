@@ -12,61 +12,41 @@ import _ from 'lodash';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import {doReceiveSuccess,doReceiveFail,doEffectFlow,doCancelForm} from './redux';
-const  options = [ 
-	{label:'日常联系',value:'1'},
-	{label:'寄送样品',value:'2'},
-	{label:'询报价',value:'3'},
-	{label:'签订合同',value:'4'},
-	{label:'配送交货',value:'5'},
-	{label:'付款结束',value:'6'},
-	{label:'售后服务',value:'7'},
-	{label:'开票结算',value:'8'},
-  ]
+  const  options = [ '日常联系','寄送样品','询报价','签订合同','配送交货','付款结束','售后服务','开票结算', ]
 @connect(
 	state =>  ({EditModal: state.EditModal}),
 	dispatch => bindActionCreators({doReceiveSuccess,doReceiveFail,doEffectFlow,doCancelForm}, dispatch)
   )
 class ModalForm extends React.Component {
-	constructor(props) {
-		super(props);
-		this.state = {
-			followUpFlag:[],
-		}
-	}
-	handleChange(tag,checked) {
-		const { followUpFlag } = this.state;
+	state = {
+		selectedTags: [],
+	  };
+	
+	  handleChange(tag, checked) {
+		const { followUpFlag} = this.props.EditModal.pform;
 		const nextSelectedTags = checked ?
 				[...followUpFlag, tag] :
 				followUpFlag.filter(t => t !== tag);
-		this.props.EditModal.pform.followUpFlag= nextSelectedTags;
-		this.setState({ followUpFlag: nextSelectedTags });
+				this.props.EditModal.pform.followUpFlag = nextSelectedTags;
+		this.setState({ selectedTags: nextSelectedTags });
 	  }
 	handleSubmit = (e) => {
 		e.preventDefault();
 		this.props.form.validateFields((err, values) => {
 			if (!err) {
+				// var initdata=this.props.EditModal.selectedTags;
 				var initdata=this.props.EditModal.pform.followUpFlag;
-				var tags= initdata != undefined ?  initdata.map(item=>{
-					return item.label;
-				}):'';
-				values.followUpFlag=values.followUpFlag != undefined ? tags.join(',') : '';
+				values.followUpFlag= initdata!=undefined?initdata.join(',') : '';
 				var url = this.props.url;
-				
 				var promise = this.props.doEffectFlow(url,{pform:values});
 				promise.then((res)=>{
 					if(res.data.code=='1'){
 						message.success('提交成功');
-						this.props.doReceiveSuccess(true);
-						
+						this.props.onSuccess();
 					}else {
 						message.success('提交失败');
-						this.props.doReceiveSuccess(false);
-					
 					}
-				}).catch((e)=>{
-					message.error('提交失败');
-					this.props.doReceiveFail(false);
-				})
+				}) 
 			}
 		});
 	}
@@ -88,7 +68,6 @@ class ModalForm extends React.Component {
 	 
 	render() {
 		const { getFieldDecorator } = this.props.form;
-		const {visible,isFetching} = this.props.EditModal;
 		const formItemLayout = {  //form中的label和内容各自占用多少
 			labelCol: { span:8 },
 			wrapperCol: { span: 12 }
@@ -109,7 +88,7 @@ class ModalForm extends React.Component {
 			labelCol: { span: 5 },
 			wrapperCol: { span: 19 }
 		};
-		const { followUpFlag } = this.state;
+		const selectedTags = this.state.selectedTags.length != 0 ? this.state.selectedTags:(this.props.EditModal.pform.followUpFlag!=undefined?this.props.EditModal.pform.followUpFlag:[]);
 		const className = this.props.type==2 ?'editModal':'editModal xiansuo';
 		return (
 				<Form layout="horizontal" hideRequiredMark onSubmit={this.handleSubmit} className={className}>
@@ -142,7 +121,9 @@ class ModalForm extends React.Component {
 					</Col>
 					<Col span={9}>
 						<FormItem {...formItemLayout} label="主动联系方">
-							{getFieldDecorator('activeContact')(
+							{getFieldDecorator('activeContact',{
+								rules: [{ required: true, message: '主动联系方必填' }],
+							})(
 								<Select  style={{ width: '100%' }} placeholder="请选择" >
 									<Option value="1">客户</Option>
 									<Option value="2">自己</Option>
@@ -183,14 +164,13 @@ class ModalForm extends React.Component {
 						{getFieldDecorator('followUpFlag')(
 							<Input type="hidden" />
 						)}
-						{options.map(tag => (
+						{options.map((tag,index )=> (
 										<CheckableTag
-										key={tag.value}
-										value = {tag.value}
-										checked={followUpFlag.indexOf(tag) > -1}
+										key={index}
+										checked={selectedTags.indexOf(tag) > -1}
 										onChange={checked => this.handleChange(tag, checked)}
 										>
-											{tag.label}
+											{tag}
 										</CheckableTag>
 										))}
 						</FormItem>
@@ -201,14 +181,14 @@ class ModalForm extends React.Component {
 						<FormItem label="跟进节点" className="tagsWrap">
 						{getFieldDecorator('followUpNode')(
 							 <RadioGroup  size="large">
-								<RadioButton value="日常联系">日常联系</RadioButton>
-								<RadioButton value="寄送样品">寄送样品</RadioButton>
-								<RadioButton value="询报价">询报价</RadioButton>
-								<RadioButton value="签订合同">签订合同</RadioButton>
-								<RadioButton value="配送交货">配送交货</RadioButton>
-								<RadioButton value="付款结束">付款结束</RadioButton>
-								<RadioButton value="售后服务">售后服务</RadioButton>
-								<RadioButton value="开票结算">开票结算</RadioButton>
+								<RadioButton value="暂无兴趣">暂无兴趣</RadioButton>
+								<RadioButton value="待联系">待联系</RadioButton>
+								<RadioButton value="电话介绍">电话介绍</RadioButton>
+								<RadioButton value="确定KP">确定KP</RadioButton>
+								<RadioButton value="上门介绍">上门介绍</RadioButton>
+								<RadioButton value="意向强烈">意向强烈</RadioButton>
+								<RadioButton value="确定合作">确定合作</RadioButton>
+								<RadioButton value="沟通合作">沟通合作</RadioButton>
 							</RadioGroup> 
 						)}
 						</FormItem>

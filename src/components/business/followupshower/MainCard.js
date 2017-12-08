@@ -2,40 +2,40 @@ import React from 'react';
 import PropTypes from 'prop-types'
 import { Card, Tag, Row, Col, Button, Icon } from 'antd';
 
+import CommentForm from './CommentForm';
 import './MainCard.css';
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { doDeleteFollowMessage, doFirstQueryFollow, doQueryFollow ,doModifiyFollowInfo} from './redux';
+import { doDeleteFollowMessage, doFirstQueryFollow, doQueryFollow, doModifiyFollowInfo ,showOneCommentForm} from './redux';
+
 
 @connect(
     state => ({ followupShower: state.followupShower }),
-    dispatch => bindActionCreators({ doDeleteFollowMessage, doFirstQueryFollow, doQueryFollow,doModifiyFollowInfo }, dispatch)
+    dispatch => bindActionCreators({ doDeleteFollowMessage, doFirstQueryFollow, doQueryFollow, doModifiyFollowInfo ,showOneCommentForm}, dispatch)
 )
 
 
 class MainCard extends React.Component {
-    static propTypes = {
-        // tableData: PropTypes.array, //查询结果(表格数据)
-        // isFetching: PropTypes.bool, //是否正在查询中
-        // selectedList:PropTypes.array, //表格中选择多选状态
-        // pagination:PropTypes.object //表格中的分页
-    }
-    componentWillMount() {
-        // this.props.initSupplierTable();
-    }
 
-    removeOneMess =(listKey,messkey)=>{
-        console.log('listKey='+listKey);
-        console.log('messkey='+messkey);
-        this.props.doDeleteFollowMessage({listKey:listKey,messkey:messkey});
+    removeOneMess = (listKey, messkey) => {
+        console.log('listKey=' + listKey);
+        console.log('messkey=' + messkey);
+        this.props.doDeleteFollowMessage({ listKey: listKey, messkey: messkey });
+    }
+    showModal = (key, id) => {
+        this.props.onEdit(key, id)
+    }
+    showFrom = (id) =>{
+        var list = this.props.followupShower.list;
+        this.props.showOneCommentForm(list,id);
     }
     render() {
         const data = this.props.data;
         const title = <div><span>{data.contactPersonnel}</span><span className='card-date'>{data.thisContactTime}</span></div>;
-        var followUpFlag  = data.followUpFlag;
-        followUpFlag = (followUpFlag ==null || !followUpFlag)?[]:followUpFlag.split(",");
-        const tags = <div>{followUpFlag.map((o,index) => { return <Tag key={index} >{o}</Tag> })}</div>
+        var followUpFlag = data.followUpFlag;
+        followUpFlag = (followUpFlag == null || !followUpFlag) ? [] : followUpFlag.split(",");
+        const tags = <div>{followUpFlag.map((o, index) => { return <Tag key={index} >{o}</Tag> })}</div>
         // const title =this.props.mainName;
         return (
             <Card className='followup-card' title={title} noHovering extra={tags}>
@@ -76,13 +76,32 @@ class MainCard extends React.Component {
                         </Col>
                         <Col span={6} className='card-option'>
                             <div>{o.updateTime}</div>
-                            <div className='remove-btn'  onClick={() => this.removeOneMess(data.id,o.id)}>删除</div>
+                            {o.self == 'Y' ? <div className='remove-btn' onClick={() => this.removeOneMess(data.id, o.id)}>删除</div> : ''}
                         </Col>
                     </Row>
                 })}
+                {/* {data.underling=='Y'?
+                <Row>
+                    <Col span={24}>
+                    <CommentForm recordsId={data.id} />
+                    </Col>
+                </Row>:''} */}
+                {
+                    data.showCommentForm?
+                    <Row>
+                    <Col span={24}>
+                        <CommentForm recordsId={data.id} />
+                    </Col>
+                    </Row>:''
+                }
+                
                 <Row>
                     <Col span={24} className='card-edit'>
-                        <Icon type="edit" />
+                        {/* 自己是负责人可以修改 */}
+                        {/* {data.self=='Y'?<Icon type="edit" onClick={this.showModal(data.supplierId,data.id)}/>:''} */}
+                        {/* 下属是负责人可以添加批注 */}
+                        {data.underling == 'Y' ? <Icon type="edit" onClick={()=>{this.showFrom(data.id)}} /> : ''}
+                        <Icon type="edit" onClick={()=>{this.showFrom(data.id)}} />
                     </Col>
                 </Row>
             </Card>

@@ -52,7 +52,7 @@
     color: #fff;
 }
 /* 跟进标签的样式 */
-.followup-flag .ant-tag-checkable:active, .ant-tag-checkable-checked {
+.followup-flag  .ant-tag-checkable-checked {
     background-color: #6393bf;
 }
 .followup-flag .ant-tag {

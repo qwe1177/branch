@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types'
 import { Table, Icon } from 'antd';
-import axios from 'axios';
+import axios from '../../../util/axios'
 
 import './List.css';
 
@@ -21,7 +21,7 @@ const mock = [
 class MainTable extends React.Component {
   state = {
     pagination: {
-      total: 1,
+      total: 0,
       current: 1,
       pageSize: 6
     },
@@ -32,15 +32,17 @@ class MainTable extends React.Component {
     this.queryData();
   }
   handleTableChange = (pagination, filters, sorter) => {  //点击分页控件调用  比如换页或者换pageSize
-    
+    this.queryData({pagination});
   }
-  queryData = () => {
-    var token = getLoginInfo()['token'];  //获取token　登录用
+  queryData = (query) => {
     var moduleId = getUrlParams()['moduleId']?getUrlParams()['moduleId']:''; //获取moduleId;　权限用
     this.setState({ isFetching: true });
-    var { pagination } = this.state;
-    // var params = {token:token,moduleId:moduleId,pageSize:pagination.pageSize,current:pagination.current}
-    var params = { token: token, pageSize: pagination.pageSize }
+    var pagination = this.state.pagination;
+    if(query && query.pagination){
+      pagination = {...pagination,...query.pagination};
+    }
+    var { pageSize ,current} = pagination;
+    var params = {moduleId,pageSize,pageNo:current};
     axios.get(connect_srm + '/supplier/queryFollowupList.do', { params: params ,timeout:20000}).then((res) => {
       if (res.data.code == '1') {
         var newPagination = { ...pagination, total: res.data.data.rowCount };
@@ -56,8 +58,8 @@ class MainTable extends React.Component {
   render() {
     const columns = [{
       title: '客户名称',
-      dataIndex: 'supplierName',
-      key: 'supplierName'
+      dataIndex: 'companyName',
+      key: 'companyName'
     }, {
       title: '计划内容',
       dataIndex: 'planNextContent',

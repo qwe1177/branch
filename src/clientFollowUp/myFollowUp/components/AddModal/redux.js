@@ -85,8 +85,10 @@ const defaultState={
 const AddModal = function (state = defaultState, action = {}) {
   switch (action.type) {
     case ADDFOLLOWUP_ADD:
+    return { ...state, query:defaultState.query, visible:true};
     case ADDFOLLOWUP_REQUEST_EFFECT_ITEM:
-    return { ...state, query:defaultState.query, visible:true, isFetching:true };
+    let { query} = action.data
+    return { ...state, query:query, isFetching:true };
     case ADDFOLLOWUP_RECEIVE_SUCCESS:
       let { tableData,pagination } = action.data
       let newPagination = {...state.pagination,...action.data.pagination};

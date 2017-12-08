@@ -3,8 +3,6 @@ import PropTypes from 'prop-types'
 
 import './layout.css';
 
-import { connect_url } from '../../../util/connectConfig';
-import axios from 'axios';
 import QueryForm from './QueryForm';
 import MainList from './MainList';
 import { Form ,Spin} from 'antd';
@@ -30,12 +28,8 @@ import { doDeleteFollowMessage, doFirstQueryFollow, doQueryFollow, doModifiyFoll
  * 
  */
 class FollowUpShower extends React.Component {
-    static propTypes = { //声明prop中属性变量
-
-    }
     constructor(props) {
         super(props);
-
     }
     componentWillMount() {
         var queryParams =  this.props.followupShower;

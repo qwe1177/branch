@@ -1,6 +1,6 @@
 import axios from 'axios';
 // import { combineReducers } from 'redux';
-import { getLoginInfo ,getUrlParams} from '../../../util/baseTool.js';
+import { getLoginInfo } from '../../../util/baseTool.js';
 import { connect_url } from '../../../util/connectConfig.js';
 import {connect_cas} from '../../../util/connectConfig'
 import _ from 'lodash';
@@ -103,11 +103,11 @@ export const doQueryFollow = (data,userList) => async (dispatch, getState) => {
     try {
         await dispatch(requestData(data));
         var token = getLoginInfo()['token'];  //获取token　登录用
-        var urlParams = getUrlParams();
-        var moduleId = urlParams['moduleId']?urlParams['moduleId']:'';
         var query = data.query;
         var pagination = data.pagination;
-        console.log(userList)
+        if(userList!=undefined) {
+            userList= userList.join(',');
+        }
         var paramPagination = {pageNo :pagination.current,pageSize:pagination.pageSize};
         if (query.finishData && query.finishData.length > 0) {
             query.startTime = query.finishData[0].format("YYYY-MM-DD");
@@ -116,7 +116,7 @@ export const doQueryFollow = (data,userList) => async (dispatch, getState) => {
         if( query.followupType && typeof query.followupType != 'string') {
             query.followupType = query.followupType.join(',');
         }
-        var params = {...query,...paramPagination,token, moduleId};
+        var params = {...query,...paramPagination,token,userList};
         params.finishData = undefined
         params = _.omitBy(params, _.isUndefined); //删除undefined参数
         let res = await axios.get('http://10.10.10.29:9407/v1/supplier/querySupplierBySubordinate.do', { params: params });
@@ -152,7 +152,7 @@ const AllFollowUP = function (state = defaultState, action = {}) {
     switch (action.type) {
         case ALLFOLLOWUP_INIT_LIST:
             let {departmentList} = action.data;
-            return { ...state, departmentList: departmentList }
+            return { ...state, departmentList: departmentList ,isFetching: true}
         case ALLFOLLOWUP_REQUEST_DATA:
             let {query} = action.data;
             return { ...state, query: query,isFetching: true }

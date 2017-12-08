@@ -30,7 +30,7 @@ export default class BrandSelector extends React.Component {
                 showSizeChanger: true,
                 total:0,
                 current: 1,
-                pageSize: 10,
+                pageSize: 20,
                 showTotal: total => `共 ${total} 条`
             },
             query:{} //查询条件

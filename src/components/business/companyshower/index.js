@@ -73,25 +73,25 @@ class CompanyShower extends React.Component {
                         <Icon type="up" onClick={this.collapse} />
                     </div>
                     <div className='more-info'>
-                        <div><span className='title-2'>营业执照注册号</span><span className='content-1'>{data.supplierBusiness.creditNumber}</span></div>
-                        <div><span className='title-2'>营业执照注册地址</span><span className='content-1'>{data.supplierBusiness.province}{data.supplierBusiness.city}</span></div>
-                        <div><span className='title-2'>营业执照期限</span><span className='content-1'>{data.supplierBusiness.deadline}</span></div>
-                        <div><span className='title-2'>登记机构</span><span className='content-1'>{data.supplierBusiness.organization}</span></div>
-                        <div><span className='title-2'>企业法人</span><span className='content-1'>{data.supplierBusiness.corporation}</span></div>
-                        <div><span className='title-2'>身份证号码</span><span className='content-1'>{data.supplierBusiness.idcard}</span></div>
+                        <div><span className='title-2'>营业执照注册号</span><span className='content-1'>{data.supplierBusiness?data.supplierBusiness.creditNumber:''}</span></div>
+                        <div><span className='title-2'>营业执照注册地址</span><span className='content-1'>{data.supplierBusiness?data.supplierBusiness.province:''}{data.supplierBusiness?data.supplierBusiness.city:''}</span></div>
+                        <div><span className='title-2'>营业执照期限</span><span className='content-1'>{data.supplierBusiness?data.supplierBusiness.deadline:''}</span></div>
+                        <div><span className='title-2'>登记机构</span><span className='content-1'>{data.supplierBusiness?data.supplierBusiness.organization:''}</span></div>
+                        <div><span className='title-2'>企业法人</span><span className='content-1'>{data.supplierBusiness?data.supplierBusiness.corporation:''}</span></div>
+                        <div><span className='title-2'>身份证号码</span><span className='content-1'>{data.supplierBusiness?data.supplierBusiness.idcard:''}</span></div>
                         <div><span className='title-2'>法人省份证(复印件)</span>
-                            <span className='content-1' dangerouslySetInnerHTML={{ __html: data.supplierBusiness.idcards }}></span>
+                            <span className='content-1' dangerouslySetInnerHTML={{ __html: data.supplierBusiness?data.supplierBusiness.idcards:'' }}></span>
                         </div>
                         <div><span className='title-2'>营业执照(三证合一)</span>
-                            <span className='content-1' dangerouslySetInnerHTML={{ __html: data.supplierBusiness.license }}></span>
+                            <span className='content-1' dangerouslySetInnerHTML={{ __html: data.supplierBusiness?data.supplierBusiness.license:'' }}></span>
                         </div>
                     </div>
                 </div>
                 <div className='more-info'>
-                    <div><span className='title-2'>一般纳税人资质</span><span className='content-1'>{data.supplierBusiness.qualification}</span></div>
-                    <div><span className='title-2'>法人授权书/代理人授权书</span><span className='content-1'>{data.supplierBusiness.authorization}</span></div>
-                    <div><span className='title-2'>廉洁承诺书</span><span className='content-1'>{data.supplierBusiness.undertaking}</span></div>
-                    <div><span className='title-2'>生成车间/仓库</span><span className='content-1'>{data.supplierBusiness.workshop}</span></div>
+                    <div><span className='title-2'>一般纳税人资质</span><span className='content-1'>{data.supplierBusiness?data.supplierBusiness.qualification:''}</span></div>
+                    <div><span className='title-2'>法人授权书/代理人授权书</span><span className='content-1'>{data.supplierBusiness?data.supplierBusiness.authorization:''}</span></div>
+                    <div><span className='title-2'>廉洁承诺书</span><span className='content-1'>{data.supplierBusiness?data.supplierBusiness.undertaking:''}</span></div>
+                    <div><span className='title-2'>生成车间/仓库</span><span className='content-1'>{data.supplierBusiness?data.supplierBusiness.workshop:''}</span></div>
                     <div><span className='title-2'>授权品牌/自有品牌</span><span className='content-1'></span></div>
                     <div><span className='title-2'>品牌授权书</span><span className='content-1'></span></div>
                     <div><span className='title-2'>自有品牌注册/商标注册书</span><span className='content-1'></span></div>

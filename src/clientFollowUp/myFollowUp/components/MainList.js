@@ -3,17 +3,17 @@ import PropTypes from 'prop-types'
 import {Pagination,Spin} from 'antd';
 import axios from 'axios';
 import MainCard from './MainCard.js';
+import PublicModal from '../../../components/publicFollowUp'
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import {  doQueryFollow ,doEditFollowInfo} from '../actions/index.js';
+import {doFormEdit} from '../../../components/publicFollowUp/redux';
 
 @connect(
-    state => ({ MyFollowUP: state.MyFollowUP }),
-    dispatch => bindActionCreators({  doQueryFollow,doEditFollowInfo }, dispatch)
+    state => ({ MyFollowUP: state.MyFollowUP,EditModal: state.EditModal }),
+    dispatch => bindActionCreators({  doQueryFollow,doEditFollowInfo,doFormEdit }, dispatch)
 )
 class MainTable extends React.Component {
-  static propTypes = {
-  }
   handlePageChange = (page, pageSize) => {  //点击分页控件调用  比如换页或者换pageSize
     let paginationObj =  this.props.MyFollowUP.pagination;
     paginationObj.current = page;
@@ -26,7 +26,13 @@ class MainTable extends React.Component {
     paginationObj.pageSize = size;
     this.props.doQueryFollow({query:this.props.MyFollowUP.query,pagination:paginationObj});
   }
-  componentWillMount(){
+  showModal = (key,id  )=> {
+    this.props.doFormEdit(key,id);
+    this.props.EditModal.modalType = 2;
+  }
+  handleEditSucess = () =>{
+    var {query,pagination} = this.props.MyFollowUP;
+    this.props.doQueryFollow({query,pagination});
   }
   render() {
     const {cardData,pagination,isFetching} = this.props.MyFollowUP;
@@ -35,9 +41,9 @@ class MainTable extends React.Component {
         <Spin spinning={isFetching} delay={1000}>
             <div>
               {cardData==null ?  <div></div> : cardData.map((o)=>{
-                  return <MainCard  type ={this.props.type} typehandle={this.props.typehandle} data={o} key={o.id} />
+                  return <MainCard  onEdit={this.showModal.bind(this)} data={o} key={o.id} />
               })}
-            
+              <PublicModal  type = {cardData!=null ?cardData.followupType:'' } onSuccess={this.handleEditSucess.bind(this)}/>
             </div>
             <div className='pagination-wrap'>
               <Pagination current={pagination.current} total={pagination.total} 

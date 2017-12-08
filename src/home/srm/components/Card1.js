@@ -2,7 +2,8 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import './Card.css'
 import { Spin} from 'antd';
-import axios from 'axios';
+import axios from '../../../util/axios'
+
 
 import { connect_srm } from '../../../util/connectConfig';
 import { getLoginInfo ,getUrlParams} from '../../../util/baseTool';
@@ -35,11 +36,10 @@ export default class Card1 extends React.Component {
       isFetching:false
   }
   queryData =()=>{
-    var token = getLoginInfo()['token'];  //获取token　登录用
     var urlParams = getUrlParams();
     var moduleId = urlParams['moduleId']?urlParams['moduleId']:'';
     this.setState({ isFetching: true });
-    var params = {token: token,moduleId:moduleId};
+    var params = {moduleId};
     axios.get(connect_srm + '/clue/viewSupplierClueTotal.do', { params: params,timeout:20000 }).then((res) => {
       if (res.data.code == '1') {
         this.setState({ cardData: res.data.data,isFetching: false });

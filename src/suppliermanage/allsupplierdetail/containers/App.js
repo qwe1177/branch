@@ -12,16 +12,18 @@ import FollowUpShower from '../../../components/business/followupshower';
 import PersonListshower from '../../../components/business/personlistshower';
 import CompanyBaseShower from '../../../components/business/companybaseshower';
 import PlatformComponent from '../../../components/common/PlatformComponent';
+import PublicModal from '../../../components/publicFollowUp'
 
 import { fetchToHighSea,fetchSetContacts  } from '../../../components/common/publicrequest/index';
-
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { fetchMainData } from '../../../components/common/supplierdetails/redux';
+import {doFormAdd} from '../../../components/publicFollowUp/redux'
+import {doQueryFollow} from '../../../components/business/followupshower/redux'
 
 @connect(
-	state => ({ supplierDetailMain: state.supplierDetailMain }),
-	dispatch => bindActionCreators({ fetchMainData }, dispatch)
+	state => ({ supplierDetailMain: state.supplierDetailMain ,EditModal: state.EditModal,followupShower: state.followupShower}),
+	dispatch => bindActionCreators({ fetchMainData,doFormAdd,doQueryFollow }, dispatch)
 )
 
 class App extends Component {
@@ -92,6 +94,18 @@ class App extends Component {
 	handleCancel =() =>{
 		this.setState({mergeSuppliersVisible:false});
 	}
+	    
+	addShowModal = (key,value,type) => {
+        this.props.EditModal.pform.companyName = value;
+        this.props.EditModal.pform.supplierId = key;
+		this.props.EditModal.pform.followupType = type;
+		this.props.EditModal.modalType = 1;
+        this.props.doFormAdd();
+      }
+	handleAddSuccess =()=>{
+		var {query,pagination} = this.props.followupShower;
+		this.props.doQueryFollow({query,pagination});
+	}
 	render() {
 		var supplierId = this.supplierId;
 		const { isBtnExpand } = this.state;
@@ -99,6 +113,7 @@ class App extends Component {
 		const isExpandClassName = isExpandCompany ? 'page-main clearfix right-extend-limit' : 'page-main clearfix';
 		const btnClassName = isBtnExpand ? 'botton-wrap all-btns' : 'botton-wrap default-btns';
 		const companyName = this.props.supplierDetailMain.data.companyName?this.props.supplierDetailMain.data.companyName:'';
+		const isSelf = this.props.supplierDetailMain.data.self?(this.props.supplierDetailMain.data.self=='Y'):'Y'; //是否本人是负责人
 		return (
 			<div>
 				<h3 className="page-title">供应商详情</h3>
@@ -118,7 +133,7 @@ class App extends Component {
 								<div className={btnClassName}>
 									<div className='btns'>
 										<Button type="primary" className='normal' onClick={this.openMergedWidget}>并入供应商</Button>
-										<Button type="primary" className='normal'>跟进供应商</Button>
+										{isSelf?<Button type="primary" className='normal'  onClick={(key,value,type) => this.addShowModal(this.supplierId,companyName,2)}>跟进供应商</Button>:''}
 										<Button type="primary" className='normal' onClick={this.turnToMidify} >编辑供应商</Button>
 										<Button type="primary" className='normal' onClick={this.handleOpenChoose}>分配负责人</Button>
 										<Button type="primary" className='normal' onClick={this.handleFetchToHighSea}>移入公海</Button>
@@ -133,6 +148,7 @@ class App extends Component {
 									supplierId={supplierId} 
 									companyName={companyName}
 									visible={this.state.mergeSuppliersVisible} />
+									<PublicModal type = {2} onSuccess={this.handleAddSuccess.bind(this)}/>
 								</div>
 							</div>
 							<div className="chart-wrap"></div>

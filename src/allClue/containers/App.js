@@ -109,8 +109,13 @@ class UserForm extends Component {
                 width: 120,
                 dataIndex: 'Operation',
                 render: (text, record, index) => {
-                    var value = record.userId.length > 1 ? [<p key={`${index}`} style={{marginBottom: '5px'}}>移入公海</p>,
-                        <p key={`_${index}`}>分配负责人</p>] : [<p key={`${index}`}>加入我的</p>]
+                    var value = []
+                    if (record.flag == '1') {
+                        value = [<p key={`${index}`} style={{marginBottom: '5px'}}>移入公海</p>,
+                            <p key={`_${index}`}>分配负责人</p>]
+                    } else if (record.userId == "0") {
+                        value = [<p key={`${index}`}>加入我的</p>]
+                    }
                     return (
                         (
                             <div><a onClick={this.Modalshow(text, record, index)}>{value}</a>
@@ -182,8 +187,8 @@ class UserForm extends Component {
             params: {
                 supplierId: supplierId,
                 responsibleSources: userId,
-                userId: getLoginAccount()['userId'],
-                realName: getLoginAccount()['realName'],
+                responsibleUserId: getLoginAccount()['userId'],
+                responsiblRealName: getLoginAccount()['realName'],
             }
         }).then(response => {
             if (response.status == 200) {
@@ -275,8 +280,8 @@ class UserForm extends Component {
                 params: {
                     supplierId: supplierId,
                     responsibleSources: this.props.tablemodel.userId,
-                    userId: ids,
-                    realName: labels,
+                    responsibleUserId: ids,
+                    responsiblRealName: labels,
                 }
             }).then(response => {
                 if (response.status == 200) {

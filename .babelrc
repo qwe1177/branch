@@ -13,5 +13,15 @@
     "stage-0",
     "react"
   ],
-  "plugins": ["transform-decorators-legacy"]
+  "plugins": [
+      "babel-plugin-transform-decorators-legacy",
+      "react-hot-loader/babel",
+      [
+        "import",
+        {
+          "libraryName": "antd",
+			"style": "css"
+        }
+      ]
+    ]
 }

@@ -86,7 +86,7 @@ class QueryFrom extends React.Component {
 						<FormItem {...formItemLayout} label="跟进方式">
 							{getFieldDecorator('followUpWay', { initialValue: '全部' })(
 								<Select style={{ width: '100%' }}  >
-									<Option value="全部">全部</Option>
+									<Option value="">全部</Option>
 									<Option value="商机">商机</Option>
 									<Option value="线索">线索</Option>
 								</Select>

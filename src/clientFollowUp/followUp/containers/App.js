@@ -7,12 +7,15 @@ import vueAxios from 'axios';
 import QueryFrom from '../components/QueryFrom';
 import MainList from '../components/MainList';
 import Department from '../components/department'
-import { Form,Button } from 'antd';
-
+import { Form,Button,Spin } from 'antd';
+import { connect } from 'react-redux';
+@connect(
+    state => ({ AllFollowUP: state.AllFollowUP }),
+)
 class App extends Component {
-
 	render() {
 		const WrappedQueryFrom = Form.create()(QueryFrom);
+		const {isFetching} = this.props.AllFollowUP;
 		return (
 			<div>
 						<h3 className="page-title">下属的跟进</h3>
@@ -21,10 +24,12 @@ class App extends Component {
 						</div>
 						<div className="content">	
 								<div className="statistics">
-									<Department/>
+										<Department/>
 								</div>  							
 								<div className="card-wrap">
-									<MainList/>
+									<Spin spinning={isFetching} delay={1000}>
+										<MainList/>
+									</Spin>
 								</div>					
 						</div>
 					</div>

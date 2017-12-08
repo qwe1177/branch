@@ -19,15 +19,17 @@ const vendors=[
   'redux-thunk',
   'axios',
   'lodash',
+  'antd'
 ];
 
-
-var  entries = getEntries('src/**/index.js');  //编译所有页面
-//var  entries = getEntries('src/home/srm/index.js'); //编译首页
-//entries.push(getEntries('src/myClue/index.js')[0]);  //编译编辑线索页面
-
-
-
+//var  entries = getEntries('src/**/index.js');  //编译所有页面
+//var  entries = getEntries('src/suppliermanage/pubilcsupplier/index.js');  //编译某个页面
+var  entries = getEntries('src/allClue/index.js'); 
+entries.push(getEntries('src/myClue/index.js')[0]); 
+entries.push(getEntries('src/publicClue/index.js')[0]); 
+entries.push(getEntries('src/underlingClue/index.js')[0]); 
+entries.push(getEntries('src/newClue/index.js')[0]); 
+entries.push(getEntries('src/home/srm/index.js')[0]); 
 const __DEV__ = NODE_ENV === 'development';
 const __PROD__ = NODE_ENV === 'production';
 const conftilte = config.title;
@@ -45,7 +47,6 @@ const webpackConfig = {
     filename:__PROD__?'statics/js/[name].[chunkhash:6].js':'[name].[chunkhash:6].js'
   },
   devtool: 'source-map',
-
   devServer: {
     compress: true,
     inline: true,
@@ -88,25 +89,30 @@ const webpackConfig = {
   plugins: [
     // 提取公共模块
     new webpack.optimize.CommonsChunkPlugin({
-      name: ['commons','vendors'], // 公共模块的名称
+      name: 'vendors', // 公共模块的名称
       //chunks: '',  // chunks是需要提取的模块
-       minChunks: 2
-
+      // minChunks: entries.length
+      minChunks: function (module) {
+        // This prevents stylesheet resources with the .css or .scss extension
+        // from being moved from their original chunk to the vendor chunk
+        if(module.resource && (/^.*\.(css|scss)$/).test(module.resource)) {
+          return false;
+        }
+        return module.context && module.context.indexOf("node_modules") !== -1;
+      }
     }),
-	
+    new webpack.optimize.CommonsChunkPlugin({
+      name: "manifest",
+      minChunks: Infinity
+    }),
     //提取样式
     extractCSS
   ],
 };
-
+ 
 
 //生产环境
 if (__PROD__) {
-	  webpackConfig.stats={   modules: false,
-      children: false,
-      chunks: false,
-      chunkModules: false,
-	  assets:false},
   webpackConfig.plugins = webpackConfig.plugins.concat([
     new CleanWebpackPlugin([BUILD_PATH],　 
     {
@@ -140,7 +146,7 @@ if (__PROD__) {
       minimize: true,
       debug: false,
     }),
-    new webpack.optimize.OccurrenceOrderPlugin(true)
+    new webpack.optimize.OccurrenceOrderPlugin()
   ]);
 }
 
@@ -152,7 +158,6 @@ function getEntries(globPath) {
 }
 
 webpackConfig.entry['vendors'] = vendors; //公共文件单独注册一个vendors的入口文件
-
 
 entries.forEach(function(name) {
   const path =  name.replace(/^src\/(.*\/).*$/g, '$1');
@@ -168,7 +173,7 @@ entries.forEach(function(name) {
       collapseWhitespace: true,
       removeAttributeQuotes: true
     },
-    chunks: ['commons','vendors',newname]
+    chunks: ['manifest','vendors',newname]
   });
   webpackConfig.plugins.push(plugin);
 })

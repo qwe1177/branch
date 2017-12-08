@@ -1,6 +1,6 @@
 import axios from 'axios';
 import moment from 'moment'
-import { getLoginInfo ,getUrlParams} from '../../../util/baseTool.js';
+import { getLoginInfo} from '../../../util/baseTool.js';
 import { connect_url } from '../../../util/connectConfig.js';
 import {connect_srm} from '../../../util/connectConfig.js';
 import _ from 'lodash';
@@ -83,8 +83,6 @@ export const queryTableData = (data) => async(dispatch, getState) => {
     try {
         await dispatch(requestSupplier(data));
         var token = getLoginInfo()['token'];  //获取token　登录用
-        var urlParams = getUrlParams();
-        var moduleId = urlParams['moduleId']?urlParams['moduleId']:'';
         var queryform = data.queryform;
         var pagination = data.pagination;
         var paramPagination = {pageNo :pagination.current,pageSize:pagination.pageSize};
@@ -92,7 +90,7 @@ export const queryTableData = (data) => async(dispatch, getState) => {
             queryform.startTime = queryform.finishData[0].format("YYYY-MM-DD");
             queryform.endTime = queryform.finishData[1].format("YYYY-MM-DD");
         }
-        var params = { ...queryform, ...paramPagination,token, moduleId};
+        var params = { ...queryform, ...paramPagination,token};
         params.finishData = undefined
         params = _.omitBy(params, _.isUndefined); //删除undefined参数
         // console.log(params)

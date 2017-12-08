@@ -1,6 +1,6 @@
 import axios from 'axios';
 // import { combineReducers } from 'redux';
-import { getLoginInfo ,getUrlParams} from '../../../util/baseTool.js';
+import { getLoginInfo} from '../../../util/baseTool.js';
 import { connect_url } from '../../../util/connectConfig.js';
 import {connect_cas} from '../../../util/connectConfig'
 import _ from 'lodash';
@@ -67,9 +67,7 @@ export const doInitList = (data) => async (dispatch, getState) => {
 export const doDeleteFollowMessage = (id) => async (dispatch, getState) => {
     try {
         var token = getLoginInfo()['token'];  //获取token　登录用
-        var urlParams = getUrlParams();
-        var moduleId = urlParams['moduleId']?urlParams['moduleId']:'';
-        var params = {id,token, moduleId};
+        var params = {id,token};
         params = _.omitBy(params, _.isUndefined); //删除undefined参数
         let res = await axios.get('http://10.10.10.29:9407/v1/supplier/deleteSupplierFollowupPostil.do', { params: params });
         return await dispatch(deleteFollowMessage());
@@ -81,10 +79,8 @@ export const doDeleteFollowMessage = (id) => async (dispatch, getState) => {
 export const doAnnotate= (recordsId,value) => async (dispatch, getState) => {
     try {
         var token = getLoginInfo()['token'];  //获取token　登录用
-        var urlParams = getUrlParams();
-        var moduleId = urlParams['moduleId']?urlParams['moduleId']:'';
         var postilContent = value;
-        var params = {recordsId,postilContent,token, moduleId};
+        var params = {recordsId,postilContent,token};
         params = _.omitBy(params, _.isUndefined); //删除undefined参数
         let res = await axios.get('http://10.10.10.29:9407/v1/supplier/saveSupplierFollowupPostil.do', { params: params });
         return await dispatch(annotate());
@@ -104,11 +100,11 @@ export const doQueryFollow = (data,userList) => async (dispatch, getState) => {
     try {
         await dispatch(requestData(data));
         var token = getLoginInfo()['token'];  //获取token　登录用
-        var urlParams = getUrlParams();
-        var moduleId = urlParams['moduleId']?urlParams['moduleId']:'';
         var query = data.query;
         var pagination = data.pagination;
-        console.log(userList)
+        if(userList!=undefined) {
+            userList= userList.join(',');
+        }
         var paramPagination = {pageNo :pagination.current,pageSize:pagination.pageSize};
         if (query.finishData && query.finishData.length > 0) {
             query.startTime = query.finishData[0].format("YYYY-MM-DD");
@@ -117,7 +113,7 @@ export const doQueryFollow = (data,userList) => async (dispatch, getState) => {
         if( query.followupType && typeof query.followupType != 'string') {
             query.followupType = query.followupType.join(',');
         }
-        var params = {...query,...paramPagination,token, moduleId};
+        var params = {...query,...paramPagination,token,userList};
         params.finishData = undefined
         params = _.omitBy(params, _.isUndefined); //删除undefined参数
         let res = await axios.get('http://10.10.10.29:9407/v1/supplier/querySupplierFollowupAll.do', { params: params });

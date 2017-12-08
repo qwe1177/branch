@@ -1,6 +1,6 @@
 import axios from 'axios';
 // import { combineReducers } from 'redux';
-import { getLoginInfo ,getUrlParams} from '../../../util/baseTool.js';
+import { getLoginInfo} from '../../../util/baseTool.js';
 import { connect_url } from '../../../util/connectConfig.js';
 import _ from 'lodash';
 
@@ -48,8 +48,6 @@ export const doQueryFollow = (data) => async (dispatch, getState) => {
     try {
         await dispatch(requestData(data));
         var token = getLoginInfo()['token'];  //获取token　登录用
-        var urlParams = getUrlParams();
-        var moduleId = urlParams['moduleId']?urlParams['moduleId']:'';
         var query = data.query;
         var pagination = data.pagination;
         var paramPagination = {pageNo :pagination.current,pageSize:pagination.pageSize};
@@ -60,7 +58,7 @@ export const doQueryFollow = (data) => async (dispatch, getState) => {
         if(query.followupType && typeof query.followupType != 'string') {
             query.followupType = query.followupType.join(',');
         }
-        var params = {...query,...paramPagination,token, moduleId};
+        var params = {...query,...paramPagination,token};
         params.finishData = undefined
         query = _.omitBy(query, _.isUndefined); //删除undefined参数
         // var params = { ...query,token, moduleId}; //查询条件和分页条件传入

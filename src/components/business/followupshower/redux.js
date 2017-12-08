@@ -1,6 +1,7 @@
 import { connect_srm } from '../../../util/connectConfig';
 import { getLoginInfo ,getUrlParams} from '../../../util/baseTool';
-import axios from 'axios';
+// import axios from 'axios';
+import axios from '../../../util/axios';
 import _ from 'lodash';
 // const xiaowenwu_url = 'http://10.10.10.114:8080/v1';
 
@@ -9,7 +10,7 @@ import _ from 'lodash';
 const FOLLOWUPSHOWER_REQUEST_DATA = 'FOLLOWUPSHOWER/REQUEST_DATA'; //发送查询请求中
 const FOLLOWUPSHOWER_RECEIVE_DATA = 'FOLLOWUPSHOWER/RECEIVE_DATA'; //获取查询信息
 const FOLLOWUPSHOWER_RECEIVE_DATA_FAIL = 'FOLLOWUPSHOWER/RECEIVE_DATA_FAIL'; //查选失败
-
+const FOLLOWUPSHOWER_SHOW_COMMENT_FORM = 'FOLLOWUPSHOWER/SHOW_COMMENT_FORM'; //显示添加批注
 
 const COMPANYSHOWER_CHANGE_QUERY = 'COMPANYSHOWER/CHANGE_QUERY'; //改变查询条件
 
@@ -45,6 +46,10 @@ const modifiyFollowInfo = data => ({
     data
 })
 
+const showCommentForm = data => ({
+    type: FOLLOWUPSHOWER_SHOW_COMMENT_FORM,
+    data
+})
 
 
 
@@ -65,7 +70,6 @@ export const doModifiyFollowInfo = data => (dispatch, getState) => {
 export const doQueryFollow = (queryParams) => async (dispatch, getState) => {
     try {
         await dispatch(changeQuery(queryParams));
-        var token = getLoginInfo()['token'];  //获取token　登录用
         var urlParams = getUrlParams();
         var url = urlParams['url']?urlParams['url']:'';
         var moduleUrl = urlParams['moduleUrl'] ? urlParams['moduleUrl'] : '';
@@ -83,8 +87,8 @@ export const doQueryFollow = (queryParams) => async (dispatch, getState) => {
             query.followUpNodeOrFlagValues =query.followUpNodeOrFlagValues.toString();
         }
         
-
-        var params ={...query,pageSize:pagination.pageSize,offset:pagination.current,supplierId,token,moduleUrl,url}
+        //pageSize  offset 后台的名字意义是代表当前第几页和偏移
+        var params ={...query,pageNo:pagination.current,offset:pagination.pageSize,supplierId,moduleUrl,url}
         await dispatch(requestData());
         var res = await axios.get(connect_srm + '/management/viewSupplierDetailsFollowupList.do', { params: params});
         if(res.data.code =='1'){
@@ -114,18 +118,24 @@ export const doQueryFollow = (queryParams) => async (dispatch, getState) => {
 export const doFirstQueryFollow = (queryParams) => async (dispatch, getState) => {
     try {
 
-        var token = getLoginInfo()['token'];  //获取token　登录用
         var urlParams = getUrlParams();
         var url = urlParams['url']?urlParams['url']:'';
         var moduleUrl = urlParams['moduleUrl'] ? urlParams['moduleUrl'] : '';
         var supplierId = urlParams['supplierId']?urlParams['supplierId']:'';
 
         var {query, pagination} = queryParams
-        var params ={...query,pageSize:pagination.pageSize,offset:pagination.current,supplierId,token,moduleUrl,url}
+
+        var params ={...query,pageSize:pagination.pageSize,pageNo:pagination.current,supplierId,moduleUrl,url}
         await dispatch(requestData());
         var res = await axios.get(connect_srm + '/management/viewSupplierDetailsFollowupList.do', { params: params});
         if(res.data.code =='1'){
             var list = res.data.data.data;
+            // list.map((o)=>{
+            //     o['type']= 'xiashu'  //'xiashu' 'ziji' 'other'
+            //     o['supplierFollowupPostilDTOs'].map((i)=>{
+            //         i['isown'] =true;
+            //     })
+            // })
             pagination.total = res.data.data.rowCount;
             return await dispatch(receiveData({list,pagination}));
         }else{
@@ -137,6 +147,15 @@ export const doFirstQueryFollow = (queryParams) => async (dispatch, getState) =>
     }
 }
 
+export const showOneCommentForm = (list,id) =>  (dispatch, getState) =>{
+    var newList = list.map((o)=>{
+        if(o.id ==id){
+            o['showCommentForm'] = true;
+        }
+        return o;
+    })
+    dispatch(showCommentForm(newList));
+}
 
 
 
@@ -144,7 +163,7 @@ export const doFirstQueryFollow = (queryParams) => async (dispatch, getState) =>
 const defaultState = {
     visible: true,
     query: {
-        followUpWay: '全部',
+        followUpWay: '',
         isPostil :'all',
         followUpDate: [],
         followUpNodeOrFlag:'flag',
@@ -170,6 +189,8 @@ const followupShower = function (state = defaultState, action = {}) {
             return { ...state, list: action.data.list,pagination:pagination, isFetching: false };
         case FOLLOWUPSHOWER_RECEIVE_DATA_FAIL:
             return { ...state, isFetching: false };
+        case FOLLOWUPSHOWER_SHOW_COMMENT_FORM:
+            return {...state, list:action.data};
         case COMPANYSHOWER_CHANGE_QUERY:
             var {query,pagination} = action.data;
             return { ...state, query: query, pagination: pagination };

@@ -181,8 +181,8 @@ class UserForm extends Component {
             params: {
                 supplierId: supplierId,
                 responsibleSources: userId,
-                userId: getLoginAccount()['userId'],
-                realName: getLoginAccount()['realName'],
+                responsibleUserId: getLoginAccount()['userId'],
+                responsiblRealName: getLoginAccount()['realName'],
             }
         }).then(response => {
             if (response.status == 200) {
@@ -274,8 +274,8 @@ class UserForm extends Component {
                 params: {
                     supplierId: supplierId,
                     responsibleSources: this.props.tablemodel.userId,
-                    userId: ids,
-                    realName: labels,
+                    responsibleUserId: ids,
+                    responsiblRealName: labels,
                 }
             }).then(response => {
                 if (response.status == 200) {

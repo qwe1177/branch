@@ -1,6 +1,6 @@
 import { connect_srm } from '../../../util/connectConfig';
 import { getLoginInfo, getUrlParams } from '../../../util/baseTool';
-import axios from 'axios';
+import axios from '../../../util/axios';
 import _ from 'lodash';
 // const xiaowenwu_url = 'http://10.10.10.114:8080/v1';
 
@@ -50,11 +50,10 @@ const closeUpdateTag = () => ({
 
 export const fetchMainData = (supplierId) => async (dispatch, getState) => {
   try {
-    var token = getLoginInfo()['token'];  //获取token　登录用
     var urlParams = getUrlParams();
     var moduleUrl = urlParams['moduleUrl'] ? urlParams['moduleUrl'] : ''; //使用moduleUrl验证权限
     await dispatch(requestMainData());
-    let res = await axios.get(connect_srm + '/management/viewSupplierDetails.do', { params: { supplierId, token, moduleUrl }, timeout: 20000 });
+    let res = await axios.get(connect_srm + '/management/viewSupplierDetails.do', { params: { supplierId, moduleUrl }});
     if (res.data.code == '1') {
       return dispatch(receiveMainData(res.data.data.data));
     } else {

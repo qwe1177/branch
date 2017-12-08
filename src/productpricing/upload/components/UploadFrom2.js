@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import './UploadFrom.css';
-import axios from '../../../util/connectConfig'
+import axios from '../../../util/axios'
 import {getLoginInfo, getUrlParams} from '../../../util/baseTool';
 import {connect_url, crmnew_url} from '../../../util/connectConfig';
 
@@ -55,12 +55,6 @@ class UploadFrom2 extends React.Component {
     };
 
     componentDidMount() {
-        document.getElementById('companyName').setAttribute('readonly',true);
-
-        //var token = getLoginInfo()['token'];
-        //var urlParams = getUrlParams();
-        //var moduleId = urlParams['moduleId'] ? urlParams['moduleId'] : '';
-        //var params = {token: token, moduleId: moduleId};
         axios.get(connect_url + '/v1/queryCategoryList.do').then((res)=> {
             var data = res.data.data;
             this.setState({catNamelist: data});
@@ -172,7 +166,6 @@ class UploadFrom2 extends React.Component {
               d1 =_.omitBy(d1, _.isUndefined);
               return d1;
             })
-            console.log(count);
             var newrespList = respdatas.map(v=> {
               return ({
                 id: count+v.id+'',
@@ -443,6 +436,9 @@ class UploadFrom2 extends React.Component {
       return arr.join('&')
   }
 
+  hrefhost =() =>{
+    window.location.reload();
+  }
     handleSubmit =(e)=> {
       e.preventDefault();
 
@@ -507,8 +503,6 @@ class UploadFrom2 extends React.Component {
           newparams.supplierId=supplierList.supplierId;
           newparams.purchaseId=BuyersList.id;
           newparams.purchaseName=BuyersList.name;
-          //newparams.token=token;
-          //newparams.moduleId=moduleId;
           const data = this.objTodata(newparams)
           axios.post(connect_url + '/v1/quotation/addQuotationSku.do', data).then((res)=> {
               if(res.data.code==1)
@@ -520,6 +514,10 @@ class UploadFrom2 extends React.Component {
                 };
                 //this.props.dispatch(modalmodelaction({ModalText: `${res.data.msg}`,visible: true,}));
                 notification.open(args);
+                setTimeout(() => {
+                    this.hrefhost();
+                }, 3000);
+
               }else if (res.data.code == 0) {
                 const args = {
                   message: '提示：',
