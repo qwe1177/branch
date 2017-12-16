@@ -35,7 +35,7 @@ class QueryFrom extends React.Component {
 		});
 
 		let form = this.props.detailsmodalmodel.data;
-		var d1 = _.pick(form, ['id', 'pName', 'brand', 'categoryName', 'specCode', 'unit', 'price', 'taux', 'invoice', 'deliveryTime', 'payWay']);
+		var d1 = _.pick(form, ['id','quotationId', 'pName', 'brand', 'categoryName', 'specCode', 'unit', 'price', 'taux', 'minQuantity','invoice', 'deliveryTime', 'payWay']);
 		d1 = _.omitBy(d1, _.isUndefined);
 		this.props.form.setFieldsValue(d1);
 
@@ -57,20 +57,26 @@ class QueryFrom extends React.Component {
 		return categorysarr;
 
 	}
+
 	detailsupdateSubmit=(e)=>{
 		e.preventDefault();
 		this.props.form.validateFields((err, values) => {
-			console.log(values);
-			//var params = { quotationId:quotationId,skuIds: selectedallKeys.join() };
-			axios.get(connect_srm + '/quotation/eidtQuotationSkuById.do', {params: params }).then((res) => {
-				var data = res.data.data;
-				this.setState({ catNamelist: data });
-	
+			var params = { quotationId:values.quotationId,skuId:values.id,pName:values.pName,brand:values.brand,categoryName:values.categoryName,specCode:values.specCode,specParams:values.specParams,unit:values.unit,minQuantity:values.minQuantity,price:values.price,taux:values.taux,invoice:values.invoice,deliveryTime:values.deliveryTime,payWay:values.payWay};
+			axios.get(connect_srm + '/quotation/editQuotationSkuById.do', {params: params }).then((res) => {
+				if(res.data.code=="0")
+				{
+					this.props.onCancel('true',res.data.msg);
+				}else{
+					this.props.onCancel('false',res.data.msg);
+				}
 			}).catch((e) => {
 				this.setState({ isFetching: false });
 				console.log('data error');
 			});
 		});
+	}
+	closefrom=()=>{
+		this.props.onclose('false');
 	}
 	render() {
 		const { getFieldDecorator } = this.props.form;
@@ -81,6 +87,35 @@ class QueryFrom extends React.Component {
 
 		return (
 			<Form layout="horizontal" onSubmit={this.detailsupdateSubmit} className="pd20">
+				<Row gutter={24} style={{ 'padding': '8px 0px' }}>
+					<Col span={12}>
+						{getFieldDecorator('id')(
+							<Input type="hidden" />
+						)}
+						{getFieldDecorator('quotationId')(
+							<Input type="hidden" />
+						)}
+
+						<FormItem label="规格编码"  {...formItemLayout} style={{ "width": "100%" }}>
+							{getFieldDecorator('specCode', {
+								rules: [{ required: false, message: '请输入规格编码' }],
+							})(
+								<Input />
+								)}
+						</FormItem>
+					</Col>
+
+					<Col span={12}>
+						<FormItem label="最小起订量"  {...formItemLayout} style={{ "width": "100%" }}>
+							{getFieldDecorator('minQuantity', {
+								rules: [{ required: false, message: '请输入品牌' }],
+							})(
+								<Input />
+								)}
+						</FormItem>
+					</Col>
+				</Row>
+
 				<Row gutter={24} style={{ 'padding': '8px 0px' }}>
 					<Col span={12}>
 						{getFieldDecorator('id')(
@@ -121,7 +156,7 @@ class QueryFrom extends React.Component {
 
 					<Col span={12}>
 						<FormItem label="规格型号"  {...formItemLayout} style={{ "width": "100%" }}>
-							{getFieldDecorator('specCode', {
+							{getFieldDecorator('specParams', {
 								rules: [{ required: false, message: '规格型号' }],
 							})(
 								<Input placeholder="" />
@@ -202,12 +237,13 @@ class QueryFrom extends React.Component {
 					</Col>
 				</Row>
 				<Row>
+					
 				</Row>	
 				<Row>
 				<Col span={16}>
 				</Col>
 					<Col span={8}>
-						<Button type="ghost" className="resetButton" >取消</Button>
+						<Button type="ghost" className="resetButton" onClick={this.closefrom}>取消</Button>
 						&nbsp;&nbsp;
 						<Button type="primary" htmlType="submit" >确认</Button>
 					</Col>

@@ -1,6 +1,4 @@
-.newClue{ /*padding-left:30px ; background: #edf0f5;*/}
-.newClue h2{font-size: 16px; font-family: Microsoft yahei; line-height: 50px; color: #000}
-.newClue .newCluewk{ /*min-width: 1130px; max-width: 1130px; */}
+/* .newClue h2{font-size: 16px; font-family: Microsoft yahei; line-height: 50px; color: #000}
 .newClue .newCluenk{ border: 1px solid #e6eaee ; background: #fff; margin-bottom: 20px; }
 .newClue .newCluenk .title{padding-left: 20px;border-bottom:1px solid #e6eaee ; line-height: 50px;font-size: 16px; font-family: Microsoft yahei; color: #333}
 .newClue .newCluenk .content{padding: 10px 20px; }
@@ -8,9 +6,32 @@
 .newClue .ant-form-inline .ant-form-item{ margin-right: 0px}
 
 .newClue .ant-table-thead  tr  th{ text-align: center}
+.newClue .ant-form-inline .has-feedback{ width: 100%} */
+
+.ant-upload-list-picture-card .ant-upload-list-item {
+    float: left;
+    width: 70px;
+    height: 70px;
+    margin: 0 8px 8px 0;
+}
+
+.ant-upload.ant-upload-select-picture-card > .ant-upload {
+    padding:  0;
+    width: 70px;
+    height: 70px;
+}
+.ant-upload.ant-upload-select-picture-card{
+    width: 70px;
+    height: 70px;
+}
+
+.ant-upload-select-picture-card i {
+    width: 70px;
+    height: 70px;
+    margin: 0 8px 8px 0;
+}
 
 .ant-upload-list-picture .ant-upload-list-item-name{max-width: 150px ;}
-.newClue .ant-form-inline .has-feedback{ width: 100%}
 .avatar-uploader,
 .avatar-uploader-trigger,
 .avatar {

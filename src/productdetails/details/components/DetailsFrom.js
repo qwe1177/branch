@@ -10,6 +10,7 @@ import {
 	tablemodelaction,
 	modalmodelaction
 } from '../../action'
+
 import BrandSelector from '../../../components/business/uploaddetails';
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -31,6 +32,13 @@ class DetailsFrom extends React.Component {
 			quotationId:'',
 			selectedallKeys:[],
 			brandSelectorVisible: false,
+			quotation:{
+				quotationId:'',//报价单编号
+				companyName:'',//供应商
+				contacts:'',//联系人
+				contactsWay:'',//联系人电话
+				userName:''//上传者
+			}
 		};
 
 		this.rowSelection = {
@@ -40,12 +48,10 @@ class DetailsFrom extends React.Component {
 		}
 
 		this.columns = [{
-			title: '报价单编号',
-			dataIndex: 'quotationId',
+			title: '规格编码',
+			dataIndex: 'specCode',
 			className: 'column-money',
-			render: (text, row, index) => {
-				return <a href="#">{text}</a>
-			},
+			render: renderContent,
 		}, {
 			title: '名称',
 			dataIndex: 'pName',
@@ -63,7 +69,7 @@ class DetailsFrom extends React.Component {
 			render: renderContent,
 		}, {
 			title: '规格型号',
-			dataIndex: 'specCode',
+			dataIndex: 'specParams',
 			className: 'column-money',
 			render: renderContent,
 		}, {
@@ -72,6 +78,11 @@ class DetailsFrom extends React.Component {
 			className: 'column-money',
 			render: renderContent,
 		}, {
+			title: '最小起订量',
+			dataIndex: 'minQuantity',
+			className: 'column-money',
+			render: renderContent,
+		},{
 			title: '进价',
 			dataIndex: 'price',
 			className: 'column-money',
@@ -108,7 +119,6 @@ class DetailsFrom extends React.Component {
 			render: (text, row, index) => {
 				return <span><a href="javascript:;" onClick={() => this.uploaddetails(row)} >修改</a></span>;
 			},
-			
 		}];
 	}
 
@@ -116,14 +126,16 @@ class DetailsFrom extends React.Component {
 	//页面加载之前调用URL地址的quotationId
 	componentDidMount() {
 		var quotationId=this.GetQueryString('quotationId');
+		var {quotation} = this.state;
 		this.setState({ quotationId: quotationId });
 
 		var params = { type: '',typeVale:'',quotationId:quotationId};
 		axios.get(connect_srm + '/quotation/viewQuotationSku.do', { params: params }).then((res) => {
+			console.log(res);
 			var data = res.data.data;
 			if (res.data.code == 1) {
-				this.props.dispatch(tablemodelaction({ data: data.quotationSkus }));
-			
+				this.setState({quotation: { ...quotation, quotationId: data.quotation.quotationId,companyName:data.quotation.companyName,contacts:data.quotation.contacts,contactsWay:data.quotation.contactsWay,userName:data.quotation.userName, }})
+				this.props.dispatch(tablemodelaction({ data: data.quotationSkus}));
 			} else if (res.data.code == 0) {
 				const args = {
 					message: '提示：',
@@ -181,6 +193,7 @@ class DetailsFrom extends React.Component {
 
 	
 	uploaddetails =(e) => {
+	
 		this.props.dispatch(modalmodelaction({ data:e }));
 	  
 		this.setState({ brandSelectorVisible: true });
@@ -229,8 +242,31 @@ class DetailsFrom extends React.Component {
 		});
 	}
 
-	handleChoosed = (company) => {
-	
+	handleChoosed = (bool,msg) => {
+		if(bool=='true')
+        {
+			this.setState({ brandSelectorVisible: false }); 
+
+            const args = {
+                message: '提示：',
+                description: msg,
+                duration: 2,
+            };
+            notification.open(args);
+			
+        }else{
+			this.setState({ brandSelectorVisible: false });
+            const args = {
+                message: '提示：',
+                description: msg,
+                duration: 2,
+            };
+            notification.open(args);
+			
+		}
+		setTimeout(() => {
+			location.reload();
+		}, 2000);
 	}
 
 	handleCancel = () => {
@@ -243,6 +279,8 @@ class DetailsFrom extends React.Component {
 			labelCol: { span: 5 },
 			wrapperCol: { span: 15 },
 		};
+		var  {quotation} =this.state;
+		
 		const { data } = this.props.tablemodel;
 		const rowSelection = this.rowSelection;
 		const columns = this.columns;
@@ -280,6 +318,15 @@ class DetailsFrom extends React.Component {
 					</Form>
 				</div>
 				<div className="bjed"></div>
+				<Row gutter={24} style={{ 'padding': '8px 30px', 'margin': '0px' }}>
+					<Col span={5}  style={{ 'padding': '3px 0px', 'margin': '0px' }}>报价单编号：<span>{this.state.quotation.quotationId}</span></Col>
+					<Col span={5}  style={{ 'padding': '3px 0px', 'margin': '0px' }}>供应商：<span>{this.state.quotation.companyName}</span></Col>
+					<Col span={5}  style={{ 'padding': '3px 0px', 'margin': '0px' }}>联系人：<span>{this.state.quotation.contacts}</span></Col>
+					<Col span={5}  style={{ 'padding': '3px 0px', 'margin': '0px' }}>联系电话：<span>{this.state.quotation.contactsWay}</span> </Col>
+					<Col span={4}  style={{ 'padding': '3px 0px', 'margin': '0px' }}>上传者：<span>{this.state.quotation.userName}</span> </Col>
+				</Row>
+				<div className="bjed"></div>
+
 				<div className="pd20">
 					<div className="tit"><div className="g-fl">商品信息</div></div>
 					<Table columns={columns} dataSource={data}  rowKey={record => record.id} bordered className="g-mt" rowSelection={rowSelection}

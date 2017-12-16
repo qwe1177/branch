@@ -85,7 +85,7 @@ export const queryTableData = (data) => async (dispatch, getState) => {
         var queryform = data.queryform;
         var pagination = data.pagination;
         // var paramPagination = _.pick(pagination, ['current', 'pageSize']);  //从分页数据中拿出第几页，每页多少条
-        var paramPagination = {pageSize :pagination.current,offset:pagination.pageSize};
+        var paramPagination = {pageNo :pagination.current,pageSize:pagination.pageSize};
         // var params = { ...queryform, ...paramPagination }; //查询条件和分页条件传入
         if (queryform.createdate && queryform.createdate.length > 0) {
             queryform.startTime = queryform.createdate[0].format("YYYY-MM-DD");

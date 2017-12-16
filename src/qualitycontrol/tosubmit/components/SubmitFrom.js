@@ -229,7 +229,7 @@ class SubmitFrom extends React.Component {
                 console.log(newparams)
                 //只提交基础信息和联系人资料和企业规模
                 var filteFields = [ 'creditNumber', 'province', 'city', 'deadline', 'organization', 'corporation', 'corporationGender', 'creditNumber',
-                    'idcard', 'idcards', 'license', 'qualification', 'authorizationBus', 'undertaking', 'officespace', 'workshop', 'brankName',
+                    'idcard', 'idcards', 'license', 'qualification', 'authorizationBus', 'undertaking', 'officespace', 'workshop','brankId', 'brankName',
                     'brankType', 'authorization', 'registration', 'certification','otherAptitude', 'remark'];
                 newparams = _.pick(newparams, filteFields);
                 var moduleUrl = location.pathname;
@@ -260,18 +260,21 @@ class SubmitFrom extends React.Component {
         return e && e.fileList;
     }
 
-    addinputdata = ({ name, message, placeholder = '', initialValue = '', required = false, type = 'string', }) => (
-        <FormItem style={{ width: '100%' }} {...{
-            labelCol: { span: 7 },
-            wrapperCol: { span: 17 }
+    addinputdata = ({name, message, placeholder = '', initialValue = '', required = false, type = 'string',}) => (
+        <FormItem style={{width: '100%'}} {...{
+            ...this.formItemLayout, ...{
+                wrapperCol: {
+                    span: 24,
+                }
+            }
         }}>
             {this.props.form.getFieldDecorator(name, {
-                rules: [{ required: required, message: message, type: type }, {
-                    validator: name == 'mobile1' ? this.telphonevalid : null,
+                rules: [{required: required, message: message, type: type}, {
+                    validator: name.match(/^mobile/g) ? this.telphonevalid : null,
                 }], initialValue: initialValue
             })(
-                <Input placeholder={placeholder} style={{ width: '100%' }} />
-                )}
+                <Input placeholder={placeholder} style={{width: '100%'}}/>
+            )}
         </FormItem>)
     addinputdata2 = ({name, message, placeholder = '', initialValue = ['',''], required = false, type = 'string',}) => (
         <FormItem style={{width: '100%'}} {...{

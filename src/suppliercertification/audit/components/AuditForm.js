@@ -242,7 +242,7 @@ class AuditForm extends React.Component {
                 getValueFromEvent: this.normFile,
                 initialValue: initialValue,
             })(
-                <Upload {...this.uploadsprops2} beforeUpload={this.beforeUpload}>
+                <Upload {...this.uploadsprops2} beforeUpload={this.beforeUpload} listType="picture-card">
                 </Upload>
                 )}
 
@@ -416,8 +416,12 @@ class AuditForm extends React.Component {
                     this.props.tablemodelaction({ data1: newbrankList, count: newbrankList.length + 1, })
                 }
 
-                var newdeadline = deadline.split(',');
-                newdeadline = newdeadline.length !== 1 ? [moment(newdeadline[0]), moment(newdeadline[1])] : [];
+                var newdeadline =[];
+                if(deadline !=''){
+                    newdeadline = deadline.split(',');
+                    newdeadline = newdeadline.length ? [moment(newdeadline[0]), moment(newdeadline[1])] : [];
+                }
+
                 var newidcards = this.fileListhanddle(idcards);
                 var newlicense = this.fileListhanddle(license)
                 var newqualification = this.fileListhanddle(qualification)
@@ -624,7 +628,7 @@ class AuditForm extends React.Component {
                                 })(
                                     <Upload
                                         {...this.uploadsprops2}
-                                        beforeUpload={this.beforeUpload}
+                                        beforeUpload={this.beforeUpload} listType="picture-card"
                                     >
                                         {this.uploadicon('idcards', 2)}
                                     </Upload>
@@ -643,7 +647,7 @@ class AuditForm extends React.Component {
                                 })(
                                     <Upload
                                         {...this.uploadsprops2}
-                                        beforeUpload={this.beforeUpload}>
+                                        beforeUpload={this.beforeUpload} listType="picture-card">
                                         {this.uploadicon('license', 1)}
                                     </Upload>
                                     )}
@@ -663,7 +667,7 @@ class AuditForm extends React.Component {
                                     getValueFromEvent: this.normFile,
                                 })(
                                     <Upload {...this.uploadsprops2}
-                                        beforeUpload={this.beforeUpload}>
+                                        beforeUpload={this.beforeUpload} listType="picture-card">
                                         {this.uploadicon('qualification', 1)}
                                     </Upload>
                                     )}
@@ -683,7 +687,7 @@ class AuditForm extends React.Component {
                                 })(
                                     <Upload
                                         {...this.uploadsprops2}
-                                        beforeUpload={this.beforeUpload}>
+                                        beforeUpload={this.beforeUpload} listType="picture-card">
                                         {this.uploadicon('authorizationBus', 1)}
                                     </Upload>
                                     )}
@@ -703,7 +707,7 @@ class AuditForm extends React.Component {
                                     getValueFromEvent: this.normFile,
                                 })(
                                     <Upload {...this.uploadsprops2}
-                                        beforeUpload={this.beforeUpload}>
+                                        beforeUpload={this.beforeUpload} listType="picture-card">
                                         {this.uploadicon('undertaking', 1)}
                                     </Upload>
                                     )}
@@ -722,7 +726,7 @@ class AuditForm extends React.Component {
 
                                 })(
                                     <Upload {...this.uploadsprops2}
-                                        beforeUpload={this.beforeUpload}>
+                                        beforeUpload={this.beforeUpload} listType="picture-card">
                                         {this.uploadicon('officespace', 1)}
                                     </Upload>
                                     )}
@@ -742,7 +746,7 @@ class AuditForm extends React.Component {
                                     getValueFromEvent: this.normFile,
                                 })(
                                     <Upload {...this.uploadsprops2} beforeUpload={this.beforeUpload}
-                                        multiple={true}>
+                                        multiple={true} listType="picture-card">
                                         {this.uploadicon('workshop', 3)}
                                     </Upload>
                                     )}

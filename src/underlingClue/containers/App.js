@@ -398,7 +398,7 @@ class UserForm extends Component {
                                                 {getFieldDecorator('compNameOrAddressOrMobileValue', {
                                                     rules: [{required: false, message: '请输入'}],
                                                 })(
-                                                    <Input placeholder=""/>
+                                                    <Input placeholder="" maxLength="100"/>
                                                 )}
 
 

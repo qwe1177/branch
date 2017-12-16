@@ -75,8 +75,9 @@ class App extends Component {
 	turnToMidify =()=>{
 		var supplierId = this.supplierId;
 		var urlParams = getUrlParams();
-        var moduleId = urlParams['moduleId']?urlParams['moduleId']:'';
-		location.href='/suppliermanage/modifysupplier/?supplierId='+supplierId+'&moduleId='+moduleId+'&moduleUrl=';
+		var moduleId = urlParams['moduleId']?urlParams['moduleId']:'';
+		var systemId = urlParams['systemId']?urlParams['systemId']:'';
+		location.href='/suppliermanage/modifysupplier/?supplierId='+supplierId+'&moduleId='+moduleId+'&systemId='+systemId;
 	}
 	handleMerged =(isSuccess)=>{
 		this.setState({mergeSuppliersVisible:false});
@@ -110,7 +111,7 @@ class App extends Component {
 		const isExpandClassName = isExpandCompany ? 'page-main clearfix right-extend-limit' : 'page-main clearfix';
 		const btnClassName = isBtnExpand ? 'botton-wrap all-btns' : 'botton-wrap default-btns';
 		const companyName = this.props.supplierDetailMain.data.companyName?this.props.supplierDetailMain.data.companyName:'';
-		const isSelf = this.props.supplierDetailMain.data.self?(this.props.supplierDetailMain.data.self=='Y'):false; //是否本人是负责人
+		const isSelf = this.props.supplierDetailMain.data.self?(this.props.supplierDetailMain.data.self=='my'):false; //是否本人是负责人
 		return (
 			<div>
 				<h3 className="page-title">供应商详情</h3>

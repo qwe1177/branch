@@ -58,15 +58,14 @@ class CancelFrom2 extends React.Component {
     let urlParams = getUrlParams();
     let moduleId = urlParams['moduleId'] ? urlParams['moduleId'] : '';
     let systemId = urlParams['systemId'] ? urlParams['systemId'] : '';
+    let detailUrl = '/allClueDetail/?moduleUrl='+location.pathname;
     let viewUrl = '/suppliercertification/supplierlook/?systemId=' + systemId + '&moduleId=' + moduleId + '&moduleUrl=/suppliercertification/supplierlook/';
     const columns = [{
       title: '企业名称',
       dataIndex: 'companyName',
       className: 'column-money',
       render: (text, row, index) => {
-        return <a href="#" > {
-          text
-        } </a>
+        return <a href={detailUrl + '&supplierId=' + row.supplierId} target='_blank'>{text}</a>
       }
     },
     {

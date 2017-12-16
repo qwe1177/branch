@@ -52,14 +52,14 @@ class RefuseFrom2 extends React.Component {
     let viewUrl = '/suppliercertification/supplierlook/?systemId=' + systemId + '&moduleId=' + moduleId + '&moduleUrl=/suppliercertification/supplierlook/';
 
     let { tableData, pagination, isFetching } = this.props.mainTableData;
-
+    let detailUrl = '/allClueDetail/?moduleUrl='+location.pathname;
     const columns = [
       {
         title: '企业名称',
         dataIndex: 'companyName',
         className: 'column-money',
         render: (text, row, index) => {
-          return <a href="#">{text}</a>
+          return <a href={detailUrl + '&supplierId=' + row.supplierId} target='_blank'>{text}</a>
         }
       },
       {

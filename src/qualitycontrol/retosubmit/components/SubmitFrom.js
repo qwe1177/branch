@@ -254,9 +254,9 @@ class SubmitFrom extends React.Component {
 
                 console.log(newparams)
                 //只提交基础信息和联系人资料和企业规模
-                var filteFields = ['supplierId', 'creditNumber', 'province', 'city', 'deadline', 'organization', 'corporation', 'corporationGender', 'creditNumber',
-                    'idcard', 'idcards', 'license', 'qualification', 'authorizationBus', 'undertaking', 'officespace', 'workshop', 'brankName',
-                    'brankType', 'authorization', 'registration', 'certification','otherAptitude', 'remark'];
+                var filteFields = [ 'creditNumber', 'province', 'city', 'deadline', 'organization', 'corporation', 'corporationGender', 'creditNumber',
+                'idcard', 'idcards', 'license', 'qualification', 'authorizationBus', 'undertaking', 'officespace', 'workshop','brankId', 'brankName',
+                'brankType', 'authorization', 'registration', 'certification','otherAptitude', 'remark'];
                 newparams = _.pick(newparams, filteFields);
                 var moduleUrl = location.pathname;
                 var supplierId = getOneUrlParams("supplierId");
@@ -286,18 +286,21 @@ class SubmitFrom extends React.Component {
         return e && e.fileList;
     }
 
-    addinputdata = ({ name, message, placeholder = '', initialValue = '', required = false, type = 'string', }) => (
-        <FormItem style={{ width: '100%' }} {...{
-            labelCol: { span: 7 },
-            wrapperCol: { span: 17 }
+    addinputdata = ({name, message, placeholder = '', initialValue = '', required = false, type = 'string',}) => (
+        <FormItem style={{width: '100%'}} {...{
+            ...this.formItemLayout, ...{
+                wrapperCol: {
+                    span: 24,
+                }
+            }
         }}>
             {this.props.form.getFieldDecorator(name, {
-                rules: [{ required: required, message: message, type: type }, {
-                    validator: name == 'mobile1' ? this.telphonevalid : null,
+                rules: [{required: required, message: message, type: type}, {
+                    validator: name.match(/^mobile/g) ? this.telphonevalid : null,
                 }], initialValue: initialValue
             })(
-                <Input placeholder={placeholder} style={{ width: '100%' }} />
-                )}
+                <Input placeholder={placeholder} style={{width: '100%'}}/>
+            )}
         </FormItem>)
      addinputdata2 = ({name, message, placeholder = '', initialValue = ['',''], required = false, type = 'string',}) => (
         <FormItem style={{width: '100%'}} {...{
@@ -444,7 +447,6 @@ class SubmitFrom extends React.Component {
         const url = this.props.Infos.orOut.value == 2 ? `${config.connect_srm}/clue/getZone.do` : `${config.connect_srm}/clue/getArea.do`
         this.props.fetchzonesPosts({ url, name, value: value['key'], returnName })
     }
-
     ModalhandleOk = () => {
         const data1 = [...this.props.tablemodel1.data1];
         const delkey = this.props.tablemodel1.delkey;
@@ -549,7 +551,7 @@ class SubmitFrom extends React.Component {
                 }
                 this.props.baseInfoForm(allcitys);
 
-                 var newdeadline =[];
+                var newdeadline =[];
                 if(deadline !=''){
                     newdeadline = deadline.split(',');
                     newdeadline = newdeadline.length ? [moment(newdeadline[0]), moment(newdeadline[1])] : [];

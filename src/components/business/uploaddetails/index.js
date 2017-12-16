@@ -67,21 +67,23 @@ export default class BrandSelector extends React.Component {
     }
 
     handleCancel = (e) => {
-        //this.props.onCancel();
         this.restDefault();
     }
 
-    handleChoosed= (e) => {
-    
+    handleChoosed= (bool,msg) => {
+        this.props.onChoosed(bool,msg);
+    }
+    handclosefrom =(e)=>{
+        this.restDefault();
     }
     render() {
         var { dataSource, checkedList, visible, pagination, isFetching } = this.state;
         
         const WrappedQueryFrom = Form.create()(QueryFrom);
         return (
-            <Modal title='修改报价单' visible={visible} onOk={this.handleOk} onCancel={this.handleCancel} footer={null}>
+            <Modal title='修改报价单' visible={visible} onCancel={this.handleCancel}  footer={null}>
 
-                <WrappedQueryFrom  />
+                <WrappedQueryFrom  onCancel={this.handleChoosed.bind(this)} onclose={this.handclosefrom.bind(this)}/>
 
             </Modal>
         );

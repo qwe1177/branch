@@ -91,7 +91,7 @@ class CancelFrom extends React.Component {
 							{getFieldDecorator('name', {
 								rules: [{ validator: this.checkName }],
 							})(
-								<Input style={{ width: '100%' }} placeholder="深圳华南城网科技有限公司" />
+								<Input style={{ width: '100%' }} placeholder="深圳华南城网科技有限公司" maxLength="30" />
 								)}
 						</FormItem>
 					</Col>

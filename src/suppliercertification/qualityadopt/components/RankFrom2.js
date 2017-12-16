@@ -17,17 +17,6 @@ import PersonSelector from '../../../components/business/personselector';
   state => ({ mainQueryData: state.mainQueryData, mainTableData: state.mainTableData, power: state.power }),
   dispatch => bindActionCreators({ queryTableData, setQueryFrom, doChangeMainCheck }, dispatch)
 )
-// const renderContent = (value, row, index) => {
-//   const obj = {
-//     children: value,
-//     props: {},
-//   };
-//   return obj;
-// };
-
-
-
-
 
 class RankFrom2 extends React.Component {
   componentWillMount() {
@@ -50,15 +39,16 @@ class RankFrom2 extends React.Component {
     let urlParams = getUrlParams();
     let moduleId = urlParams['moduleId'] ? urlParams['moduleId'] : '';
     let systemId = urlParams['systemId'] ? urlParams['systemId'] : '';
-    let viewUrl = '/suppliercertification/supplierlook/?systemId=' + systemId + '&moduleId=' + moduleId + '&moduleUrl=/suppliercertification/supplierlook/';
-    let updateUrl = '/suppliercertification/updateinfo/?systemId=' + systemId + '&moduleId=' + moduleId + '&moduleUrl=/suppliercertification/updateinfo/';
+    let detailUrl = '/allClueDetail/?moduleUrl='+location.pathname;
+    let viewUrl = '/suppliercertification/supplierlook/?moduleUrl='+location.pathname;
+    let updateUrl = '/suppliercertification/updateinfo/?moduleUrl='+location.pathname;
     const columns = [
       {
         title: '企业名称',
         dataIndex: 'companyName',
         className: 'column-money',
         render: (text, row, index) => {
-          return <a href="#">{text}</a>
+          return <a href={detailUrl + '&supplierId=' + row.supplierId} target='_blank'>{text}</a>
         }
       },
       {

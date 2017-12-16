@@ -1,6 +1,6 @@
 import { connect_srm } from '../../../util/connectConfig';
 import { getLoginInfo, getUrlParams } from '../../../util/baseTool';
-import axios from 'axios';
+import axios from '../../../util/axios';
 import _ from 'lodash';
 
 export const BASEINFO = 'BASEINFO' //一些基本信息
@@ -35,20 +35,16 @@ export const tablemodelaction2 = value => ({
 })
 
 export const fetchInitInfo = (supplierId) => {
-    var token = getLoginInfo()['token'];  //获取token　登录用
-    var urlParams = getUrlParams();
-    var moduleId = urlParams['moduleId'] ? urlParams['moduleId'] : '';
-    var params = { supplierId, token, moduleId };
-    return axios.get(connect_srm + '/qualityControl/viewToQualityControl.do', { params: params, timeout: 10000 });
+    var moduleUrl  = location.pathname;
+    var params = { supplierId,moduleUrl};
+    return axios.get(connect_srm + '/qualityControl/viewToQualityControl.do', { params: params });
 }
 
 export const fetchTable2Info = (supplierId) => async (dispatch, getState) => {
     try {
-        var token = getLoginInfo()['token'];  //获取token　登录用
-        var urlParams = getUrlParams();
-        var moduleId = urlParams['moduleId'] ? urlParams['moduleId'] : '';
-        var params = { supplierId, token, moduleId };
-        let res = await axios.get(connect_srm + '/quotation/queryQuotationListQC.do', { params: params, timeout: 10000 });
+        var moduleUrl  = location.pathname;
+        var params = { supplierId,moduleUrl};
+        let res = await axios.get(connect_srm + '/quotation/queryQuotationListQC.do', { params: params });
         if (res.data.code = '1') {
             var data2 = res.data.data.map((o, index) => {
                 o["index"] = index + 1;
@@ -62,7 +58,7 @@ export const fetchTable2Info = (supplierId) => async (dispatch, getState) => {
 }
 
 export const fetchzonesPosts = ({ url, name, value, returnName }) => (dispatch, getState) => {
-    return axios(`${url}?${name}=${value}&token=${getLoginInfo()['token']}`)
+    return axios(`${url}?${name}=${value}`)
         .then(response => {
             if (response.status == 200) {
                 dispatch(baseInfoForm({ [returnName]: response.data.data, }))
@@ -74,8 +70,7 @@ export const fetchzonesPosts = ({ url, name, value, returnName }) => (dispatch, 
 
 export const fetchCategory = () => async (dispatch, getState) => {
     try {
-        var token = getLoginInfo()['token'];  //获取token　登录用
-        let res = await axios.get(connect_srm + '/queryCategoryList.do', { params: { token }, timeout: 10000 });
+        let res = await axios.get(connect_srm + '/queryCategoryList.do', { params: {} });
         if (res.data.status) {
             var original = res.data.data;
             return await dispatch(baseInfoForm({ 'category': original }))
@@ -97,6 +92,4 @@ const actions = {
 }
 
 export default actions
-
-//e540da65-5d60-4bc3-af27-089d5aafdbc4
 

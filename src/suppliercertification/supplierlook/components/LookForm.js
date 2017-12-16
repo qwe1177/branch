@@ -171,83 +171,7 @@ class LookForm extends React.Component {
         e.preventDefault();
         this.props.form.validateFieldsAndScroll((err, values) => {
             if (!err) {
-                console.log('Received values of form: ', values);
-                const params = {}
-                const newarrobj = this.objToarrsort(values)
-                console.log(newarrobj)
-                const newarrobjlen = newarrobj.length
-
-                for (let i = 0; i < newarrobjlen; i++) {
-                    const re = /\d+$/g;
-                    const arr0 = newarrobj[i][0]
-                    const arr1 = newarrobj[i][1]
-                    if (re.test(arr0)) {
-                        const key = arr0.replace(/(.*)\d+/, '$1')
-                        if (Reflect.has(params, key)) {
-                            params[key].push(arr1)
-                        } else {
-                            params[key] = []
-                            params[key].push(arr1)
-                        }
-
-                    } else {
-                        params[arr0] = arr1
-                    }
-                }
-                console.log(params)
-                var newparams = {}
-                for (let o in params) {
-                    if (typeof params[o] === 'object') {
-                        if (params[o].constructor === Array) {
-                            if (o == 'deadline') {
-                                newparams[o] = params[o].map(v => v ? v.format("YYYY-MM-DD") : '').join(',')
-                            } else if (o == 'birthday') {
-                                newparams[o] = params[o].map(v => v ? v.format("YYYY-MM-DD") : '').join(',')
-                            } else if (typeof params[o][0] == 'object' && params[o][0] && params[o][0].status) {
-                                newparams[o] = params[o].map(v => (v.response ? v.response.key : v.url).replace(/.*com/g, '')).join('@')
-                            } else if (typeof params[o][0] == 'object' && params[o][0].constructor == Array && params[o][0][0] && params[o][0][0].status) {
-                                newparams[o] = params[o].map(v => v.map(k => (k.response ? k.response.key : k.url).replace(/.*com/g, '')).join('@')).join(',')
-                            } else {
-                                newparams[o] = params[o].join(',')
-                            }
-                        } else {
-                            newparams[o] = params[o].label
-                        }
-                    } else {
-                        if (params[o]) {
-                            newparams[o] = params[o]
-                        } else if (params[o] == '') {
-                            newparams[o] = params[o]
-                        }
-                    }
-                }
-                // newparams.supplierId = this.props.Infos.supplierId,
-                var token = getLoginInfo()['token'];  //获取token　登录用
-                var urlParams = getUrlParams();
-                var supplierId = urlParams['supplierId'] ? urlParams['supplierId'] : '';
-                newparams['supplierId'] = supplierId;
-
-                console.log(newparams)
-                //只提交基础信息和联系人资料和企业规模
-                var filteFields = ['supplierId', 'creditNumber', 'province', 'city', 'deadline', 'organization', 'corporation', 'corporationGender', 'creditNumber',
-                    'idcard', 'card1', 'card2', 'license', 'qualification', 'authorizationBus', 'undertaking', 'officespace', 'workshop', 'brankName',
-                    'brankType', 'authorization', 'registration', 'certification', 'otherAptitude'];
-                newparams = _.pick(newparams, filteFields);
-                newparams['token'] = token;
-
-                var data = qs.stringify(newparams);
-                axios.post(`${connect_srm}/qualityControl/editQualityControl.do`, data)
-                    .then(response => {
-                        const code = response.data.code
-                        if (code == 1) {
-                            message.success(`${response.data.msg}`);
-                        } else {
-                            message.error(`${response.data.msg}`);
-                        }
-                    })
-                    .catch(function (error) {
-                        console.log(error);
-                    });
+               
             }
         });
     }
@@ -259,7 +183,6 @@ class LookForm extends React.Component {
     }
 
     addinputdata = ({ name, message, placeholder = '', initialValue = '', required = false, type = 'string', }) => {
-        debugger;
         return (<FormItem style={{ width: '100%' }} {...{
             labelCol: { span: 7 },
             wrapperCol: { span: 17 }
@@ -303,7 +226,7 @@ class LookForm extends React.Component {
                 getValueFromEvent: this.normFile,
                 initialValue: initialValue,
             })(
-                <Upload {...this.uploadsprops2} beforeUpload={this.beforeUpload}>
+                <Upload {...this.uploadsprops2} beforeUpload={this.beforeUpload}  listType="picture-card">
                     {this.uploadicon(name, num)}
                 </Upload>
                 )}
@@ -496,9 +419,11 @@ class LookForm extends React.Component {
                 //     }
                 // }
                 // this.props.baseInfoForm(allcitys);
-                debugger;
-                var newdeadline = deadline.split(',');
-                newdeadline = newdeadline.length !== 1 ? [moment(newdeadline[0]), moment(newdeadline[1])] : [];
+                var newdeadline =[];
+                if(deadline !=''){
+                    newdeadline = deadline.split(',');
+                    newdeadline = newdeadline.length ? [moment(newdeadline[0]), moment(newdeadline[1])] : [];
+                }
                 var newidcards = this.fileListhanddle(idcards);
                 var newlicense = this.fileListhanddle(license)
                 var newqualification = this.fileListhanddle(qualification)
@@ -542,7 +467,7 @@ class LookForm extends React.Component {
             //     value: '',
             //     returnName: 'Hareas'
             // });
-            // this.props.fetchCategory();
+            this.props.fetchCategory();
         }).catch((e) => {
             console.log(e);
         })
@@ -720,7 +645,7 @@ class LookForm extends React.Component {
                                 })(
                                     <Upload
                                         {...this.uploadsprops2}
-                                        beforeUpload={this.beforeUpload}
+                                        beforeUpload={this.beforeUpload}  listType="picture-card"
                                     >
                                         {this.uploadicon('idcards', 2)}
                                     </Upload>
@@ -739,7 +664,7 @@ class LookForm extends React.Component {
                                 })(
                                     <Upload
                                         {...this.uploadsprops2}
-                                        beforeUpload={this.beforeUpload}>
+                                        beforeUpload={this.beforeUpload}  listType="picture-card">
                                         {this.uploadicon('license', 1)}
                                     </Upload>
                                     )}
@@ -759,7 +684,7 @@ class LookForm extends React.Component {
                                     getValueFromEvent: this.normFile,
                                 })(
                                     <Upload {...this.uploadsprops2}
-                                        beforeUpload={this.beforeUpload}>
+                                        beforeUpload={this.beforeUpload}  listType="picture-card">
                                         {this.uploadicon('qualification', 1)}
                                     </Upload>
                                     )}
@@ -779,7 +704,7 @@ class LookForm extends React.Component {
                                 })(
                                     <Upload
                                         {...this.uploadsprops2}
-                                        beforeUpload={this.beforeUpload}>
+                                        beforeUpload={this.beforeUpload}  listType="picture-card">
                                         {this.uploadicon('authorizationBus', 1)}
                                     </Upload>
                                     )}
@@ -799,7 +724,7 @@ class LookForm extends React.Component {
                                     getValueFromEvent: this.normFile,
                                 })(
                                     <Upload {...this.uploadsprops2}
-                                        beforeUpload={this.beforeUpload}>
+                                        beforeUpload={this.beforeUpload}  listType="picture-card">
                                         {this.uploadicon('undertaking', 1)}
                                     </Upload>
                                     )}
@@ -818,7 +743,7 @@ class LookForm extends React.Component {
 
                                 })(
                                     <Upload {...this.uploadsprops2}
-                                        beforeUpload={this.beforeUpload}>
+                                        beforeUpload={this.beforeUpload}  listType="picture-card">
                                         {this.uploadicon('officespace', 1)}
                                     </Upload>
                                     )}
@@ -838,7 +763,7 @@ class LookForm extends React.Component {
                                     getValueFromEvent: this.normFile,
                                 })(
                                     <Upload {...this.uploadsprops2} beforeUpload={this.beforeUpload}
-                                        multiple={true}>
+                                        multiple={true}  listType="picture-card">
                                         {this.uploadicon('workshop', 3)}
                                     </Upload>
                                     )}

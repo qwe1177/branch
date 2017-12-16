@@ -8,8 +8,7 @@ import qs from 'qs';
 import Modalmodel  from '../components/Modalmodel'
 import * as config  from '../../../util/connectConfig'
 import {connect_srm}  from '../../../util/connectConfig'
-// const connect_srm = 'http://10.10.10.114:8080/v1';
-import { getLoginInfo ,getUrlParams} from '../../../util/baseTool';
+import { getLoginInfo ,getUrlParams,getOneUrlParams} from '../../../util/baseTool';
 import _ from 'lodash';
 
 import {
@@ -35,10 +34,11 @@ const FormItem = Form.Item
 const Option = Select.Option
 const RadioButton = Radio.Button
 const RadioGroup = Radio.Group
-import axios from 'axios'
+
 const RangePicker = DatePicker.RangePicker;
-axios.defaults.timeout = 30000;                        //响应时间
-axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8';           //配置请求头
+
+import axios from '../../../util/axios';
+
 
 import CategorySelector from '../../../components/business/categoryselector/index';
 import BrandSelector from '../../../components/business/brandselector/index';
@@ -148,7 +148,7 @@ class UserForm extends Component {
         }, {
             title: '品牌类型',
             dataIndex: 'brankType',
-            render: this.addinputdata,
+            render: this.addselectdata1,
             width: 160,
         },
             {
@@ -300,7 +300,7 @@ class UserForm extends Component {
 
 
     addinputdata = ({name, message, placeholder = '', initialValue = '', required = false, type = 'string',}) => (
-        <FormItem style={{width:'100%'}} {...{
+        <FormItem style={{width: '100%'}} {...{
             ...this.formItemLayout, ...{
                 wrapperCol: {
                     span: 24,
@@ -309,13 +309,24 @@ class UserForm extends Component {
         }}>
             {this.props.form.getFieldDecorator(name, {
                 rules: [{required: required, message: message, type: type}, {
-                    validator: name == 'mobile1' ? this.telphonevalid : null,
-                }], initialValue: initialValue
+                    validator: name.match(/^mobile/g) ? this.telphonevalid : null,
+                }], initialValue: initialValue,
+                onChange: name.match(/^remark/g) ? this.companyIntroductionHandle(name, 30) : null,
             })(
-                <Input placeholder={placeholder} style={{width:'100%'}}/>
+                <Input placeholder={placeholder} style={{width: '100%'}}/>
             )}
         </FormItem>)
-
+    addselectdata1 = ({ name, message, placeholder = '',initialValue = '' }) => (<FormItem>
+        {this.props.form.getFieldDecorator(name, {
+            rules: [{ required: false, message: message }],initialValue: initialValue
+        })(
+            <Select style={{ width: 160 }} placeholder="请选择">
+                {this.props.Infos.category?this.props.Infos.category.map((o)=>{
+                    return <Option key={o.cid} value={o.cid+''}>{o.c_name}</Option>
+                }):''}
+            </Select>
+            )}
+    </FormItem>)
     addbirthday = ({name, message, initialValue = null, placeholder = '',}) => (<FormItem style={{width:'100%'}} {...{
         ...this.formItemLayout, ...{
             wrapperCol: {
@@ -365,7 +376,7 @@ class UserForm extends Component {
                 getValueFromEvent: this.normFile,
                 initialValue: initialValue,
             })(
-                <Upload {...this.uploadsprops2} beforeUpload={this.beforeUpload}>
+                <Upload {...this.uploadsprops2} beforeUpload={this.beforeUpload} listType="picture-card" disabled onRemove={this.handleOnRemove} >
                     {this.uploadicon(name, num)}
                 </Upload>
             )}
@@ -491,13 +502,11 @@ class UserForm extends Component {
 
 
     componentDidMount() {
-        var token = getLoginInfo()['token'];  //获取token　登录用
-        var urlParams = getUrlParams();
-        var moduleId = urlParams['moduleId']?urlParams['moduleId']:'';
-        var supplierId = urlParams['supplierId']?urlParams['supplierId']:'';
+        var moduleUrl = location.pathname;
+        var supplierId = getOneUrlParams("supplierId");
         axios.get(`${connect_srm}/clue/viewSupplierClueInfo.do`, {
             params: {
-                supplierId,moduleId,token
+                supplierId,moduleUrl
             }
         }).then(response => {
             if (response.status == 200) {
@@ -511,8 +520,12 @@ class UserForm extends Component {
                         brankList, contactsList, harea, province, city, hvenue, hfloor, hdistrict, submitOk, supplierId, provincebase,
                         citybase, countybase, townbase
                     } = response.data.data
-                    var newdeadline = deadline.split(',')
-                    newdeadline = newdeadline.length ? [moment(newdeadline[0]), moment(newdeadline[1])] : []
+
+                    var newdeadline =[];
+                    if(deadline !=''){
+                        newdeadline = deadline.split(',');
+                        newdeadline = newdeadline.length ? [moment(newdeadline[0]), moment(newdeadline[1])] : [];
+                    }
 
                     var newbrankList = brankList.map(v=> {
 
@@ -740,6 +753,7 @@ class UserForm extends Component {
             value: '',
             returnName: 'Hareas'
         })
+        this.props.fetchCategory();
     }
 
 
@@ -839,19 +853,22 @@ class UserForm extends Component {
                         }
                     }
                 }
-                newparams.supplierId = this.props.Infos.supplierId
 
                 console.log(newparams)
                 //只提交基础信息和联系人资料和企业规模
                 var filteFields= ['supplierId','companyName','varietyName','varietyId','cscAccount','buy5jAccount','source','partnership','isAddSku',
                 'enterpriseType','website','goods','shopsite','mainBrandId','mainBrand','orOut','address','mainBusiness','remarkbase',
-                'fullname','gender','mobile','telephone','position','birthday','email','fax','wangwang','qq','weixin','remark'];
+                'fullname','gender','mobile','telephone','position','birthday','email','fax','wangwang','qq','weixin','remark'
+                ,'oem','manage','model','regmoney','employees','turnover','introduce'];
                 newparams =_.pick(newparams,filteFields);
                 if(!this.isajaxpost){
                     newparams['submitOk'] = 'ok';  //如果默认检测名字通过， 给submitOk OK
                 }
                 typeof e == 'string' && (()=>newparams[e] = 'ok')(); //点击确认冲突提示时候加入 submitOk OK
                 // const data = this.objTodata(newparams)
+                newparams['moduleUrl'] = location.pathname;
+                newparams['supplierId'] = getOneUrlParams("supplierId");
+
                 var data = qs.stringify(newparams);
                 axios.post(`${connect_srm}/management/editorialSupplier.do`, data)
                     .then(response=> {
@@ -1021,22 +1038,7 @@ class UserForm extends Component {
         this.props.fetchzonesPosts({url, name, value: value['key'], returnName})
     }
 
-
-    /*    companyIntroductionHandle = (n, v)=>(e)=> {
-     const {value} = e.target;
-     const len = value.length
-     const reg = new RegExp('(.{' + v + '}).*', 'g');
-     if (len > v) {
-     e.target.value = e.target.value.replace(reg, '$1');
-     n.style.color = "#ff0000";
-     return false;
-     }
-     n.style.color = ''
-     n.innerHTML = len + `/${v}`
-     }*/
-
-
-    companyIntroductionHandle = (n, v)=>(e)=> {
+     companyIntroductionHandle = (n, v)=>(e)=> {
         const {value} = e.target;
         var len = value.length
         const reg = new RegExp('(.{' + v + '}).*', 'g');
@@ -1055,6 +1057,9 @@ class UserForm extends Component {
     uploadicon = (id, num, ic = this.uploadIcon)=>
         this.props.form.getFieldValue(id) && this.props.form.getFieldValue(id).length >= num ? null : ic
 
+    handleOnRemove =(e)=>{
+        return;
+    }
     render() {
         const {getFieldDecorator, getFieldsError, getFieldError, isFieldTouched} = this.props.form;
         const {data} = this.props.tablemodel;
@@ -1258,7 +1263,7 @@ class UserForm extends Component {
                                                             <Input
                                                                 prefix={<Icon type="idcard" style={{ fontSize: 13 }} />}
                                                                 placeholder="请输入企业名称"
-                                                                style={{"width":"100%",}}/>
+                                                                style={{"width":"100%",}} maxLength="20"/>
                                                         )}
                                                     </FormItem>
                                                 </Col>
@@ -1330,7 +1335,7 @@ class UserForm extends Component {
                                                                 }], initialValue: '', validateTrigger: 'onBlur'
                                                             })(
                                                                 <Input placeholder="输入账号"
-                                                                       style={{'width':'100%',}}/>
+                                                                       style={{'width':'100%'}} maxLength="20" />
                                                             )}
                                                         </FormItem>
                                                     </Col>
@@ -1351,7 +1356,7 @@ class UserForm extends Component {
                                                                 }], initialValue: '', validateTrigger: 'onBlur'
                                                             })(
                                                                 <Input placeholder="输入账号"
-                                                                       style={{'width':'100%',}}/>
+                                                                       style={{'width':'100%',}} maxLength="20" />
                                                             )}
                                                         </FormItem>
                                                     </Col>
@@ -1447,7 +1452,7 @@ class UserForm extends Component {
                                                 {getFieldDecorator('website', {
                                                     rules: [{required: false, message: '请输入网址'}],
                                                 })(
-                                                    <Input placeholder="请输入网址" id="success"/>
+                                                    <Input placeholder="请输入网址"  maxLength="60"  />
                                                 )}
                                             </FormItem>
                                         </Col>
@@ -1461,7 +1466,7 @@ class UserForm extends Component {
                                                 {getFieldDecorator('goods', {
                                                     rules: [{required: false, message: '请填写优势产品'}],
                                                 })(
-                                                    <Input placeholder="请填写优势产品"/>
+                                                    <Input placeholder="请填写优势产品" maxLength="30"/>
                                                 )}
                                             </FormItem>
                                         </Col>
@@ -1472,7 +1477,7 @@ class UserForm extends Component {
                                                 {getFieldDecorator('shopsite', {
                                                     rules: [{required: false, message: '请填写旺铺地址'}],
                                                 })(
-                                                    <Input placeholder="请填写旺铺地址"/>
+                                                    <Input placeholder="请填写旺铺地址" maxLength="30" />
                                                 )}
                                             </FormItem>
                                         </Col>
@@ -1483,22 +1488,6 @@ class UserForm extends Component {
                                             <FormItem
                                                 label="经营品牌"  {...this.formItemLayout} style={{"width":"100%"}}
                                             >
-                                                {/*{getFieldDecorator('mainBrand', {
-                                                 rules: [{
-                                                 required: false, message: '点击选择经营的类目', type: 'array',
-                                                 }], initialValue: [],
-                                                 })(
-                                                 <Select
-                                                 mode="multiple"
-
-                                                 placeholder="点击选择经营的类目"
-                                                 onChange={this.handleChange}
-                                                 style={{ width: '100%' }}
-                                                 >
-                                                 {categorysarr}
-                                                 </Select>
-                                                 )}*/}
-
                                                 {getFieldDecorator('mainBrandId')(
                                                     <Input type='hidden'/>
                                                 )}
@@ -1506,7 +1495,6 @@ class UserForm extends Component {
                                                     <Input onClick={this.handleOpenChoose} readOnly
                                                            placeholder="点击选择经营品牌"/>
                                                 )}
-
                                             </FormItem>
                                             <BrandSelector onChoosed={this.handleChoosed}
                                                            visible={this.state.brandSelectorVisible}
@@ -1518,7 +1506,6 @@ class UserForm extends Component {
                                                 label="联系地址"  {...this.formItemLayout}
                                                 style={{"width":"100%",'marginTop':'5px'}}
                                             >
-
                                                 {getFieldDecorator('orOut', {
                                                     rules: [{required: false, message: '请选择'}],
                                                     initialValue: this.props.Infos.orOut && this.props.Infos.orOut.value
@@ -1561,7 +1548,7 @@ class UserForm extends Component {
                                                 })(
                                                     <div style={{position:'relative'}}>
                                                         <Input type="textarea" rows={3} placeholder="请填写主营业务(50个字符)"
-                                                               value={this.props.Infos.mainBusiness&&this.props.Infos.mainBusiness.value}/>
+                                                               value={this.props.Infos.mainBusiness&&this.props.Infos.mainBusiness.value} maxLength="100"/>
                                                         <p style={{position:'relative',position: 'absolute',bottom: '0px',right: '0px',paddingRight:'10px',color:this.state.numb1.color,}}
                                                         >{this.state.numb1.len}/50</p>
                                                     </div>
@@ -1579,9 +1566,9 @@ class UserForm extends Component {
                                                 })(
                                                     <div style={{position:'relative'}}>
                                                         <Input type="textarea" rows={3} placeholder="请填写备注(50个字符)"
-                                                               value={this.props.Infos.remarkbase&&this.props.Infos.remarkbase.value}/>
+                                                               value={this.props.Infos.remarkbase&&this.props.Infos.remarkbase.value} maxLength="100"/>
                                                         <p style={{position:'relative',position: 'absolute',bottom: '0px',right: '0px',paddingRight:'10px',color:this.state.numb2.color,}}
-                                                            /*ref={(node) => {this.numb2 = node}}*/>{this.state.numb2.len}/50</p>
+                                                            >{this.state.numb2.len}/50</p>
                                                     </div>
                                                 )}
 
@@ -1730,7 +1717,7 @@ class UserForm extends Component {
                                                     getValueFromEvent: this.normFile,
 
                                                 })(
-                                                    <Upload {...this.uploadsprops2} beforeUpload={this.beforeUpload} disabled>
+                                                    <Upload {...this.uploadsprops2} beforeUpload={this.beforeUpload} listType="picture-card" disabled onRemove={this.handleOnRemove}>
                                                         {this.uploadicon('idcards', 2)}
                                                     </Upload>
                                                 )}
@@ -1742,14 +1729,13 @@ class UserForm extends Component {
                                             <FormItem
                                                 label="营业执照"  {...this.formItemLayout} style={{"width":"100%"}}
                                             >
-
                                                 {getFieldDecorator('license', {
                                                     rules: [{required: false, message: '请上传'}],
                                                     onChange: this.uploadonChange,
                                                     valuePropName: 'fileList',
                                                     getValueFromEvent: this.normFile,
                                                 })(
-                                                    <Upload {...this.uploadsprops2} beforeUpload={this.beforeUpload} disabled>
+                                                    <Upload {...this.uploadsprops2} beforeUpload={this.beforeUpload} listType="picture-card" disabled onRemove={this.handleOnRemove} >
                                                         {this.uploadicon('license', 1)}
                                                     </Upload>
                                                 )}
@@ -1770,7 +1756,7 @@ class UserForm extends Component {
                                                     valuePropName: 'fileList',
                                                     getValueFromEvent: this.normFile,
                                                 })(
-                                                    <Upload {...this.uploadsprops2} beforeUpload={this.beforeUpload} disabled>
+                                                    <Upload {...this.uploadsprops2} beforeUpload={this.beforeUpload} listType="picture-card" disabled onRemove={this.handleOnRemove}>
                                                         {this.uploadicon('qualification', 1)}
                                                     </Upload>
                                                 )}
@@ -1788,7 +1774,7 @@ class UserForm extends Component {
                                                     valuePropName: 'fileList',
                                                     getValueFromEvent: this.normFile,
                                                 })(
-                                                    <Upload {...this.uploadsprops2} beforeUpload={this.beforeUpload} disabled>
+                                                    <Upload {...this.uploadsprops2} beforeUpload={this.beforeUpload} listType="picture-card" disabled onRemove={this.handleOnRemove}>
                                                         {this.uploadicon('authorizationBus', 1)}
                                                     </Upload>
                                                 )}
@@ -1809,7 +1795,7 @@ class UserForm extends Component {
                                                     valuePropName: 'fileList',
                                                     getValueFromEvent: this.normFile,
                                                 })(
-                                                    <Upload {...this.uploadsprops2} beforeUpload={this.beforeUpload} disabled>
+                                                    <Upload {...this.uploadsprops2} beforeUpload={this.beforeUpload} listType="picture-card" disabled onRemove={this.handleOnRemove}>
                                                         {this.uploadicon('undertaking', 1)}
                                                     </Upload>
                                                 )}
@@ -1828,7 +1814,7 @@ class UserForm extends Component {
                                                     getValueFromEvent: this.normFile,
 
                                                 })(
-                                                    <Upload {...this.uploadsprops2} beforeUpload={this.beforeUpload} disabled>
+                                                    <Upload {...this.uploadsprops2} beforeUpload={this.beforeUpload} listType="picture-card" disabled onRemove={this.handleOnRemove}>
                                                         {this.uploadicon('officespace', 1)}
                                                     </Upload>
                                                 )}
@@ -1849,7 +1835,7 @@ class UserForm extends Component {
                                                     getValueFromEvent: this.normFile,
                                                 })(
                                                     <Upload {...this.uploadsprops2} beforeUpload={this.beforeUpload}
-                                                                                    multiple={true} disabled>
+                                                                                    multiple={true} listType="picture-card" disabled onRemove={this.handleOnRemove}>
                                                         {this.uploadicon('workshop', 3)}
                                                     </Upload>
                                                 )}
@@ -1899,7 +1885,6 @@ class UserForm extends Component {
                                             <FormItem
                                                 label="支持来料加工"  {...this.formItemLayout} style={{"width":"100%"}}
                                             >
-
                                                 {getFieldDecorator('oem', {
                                                     rules: [{required: false, message: '请选择'}],
                                                     onChange: this.onChange,
@@ -2025,7 +2010,7 @@ class UserForm extends Component {
                                                 })(
                                                     <div style={{position:'relative'}}>
                                                         <Input type="textarea" rows={3} placeholder="请填写公司介绍（100个字符）"
-                                                               value={this.props.Infos.introduce&&this.props.Infos.introduce.value} />
+                                                               value={this.props.Infos.introduce&&this.props.Infos.introduce.value} maxLength="200" />
                                                         <p style={{position:'relative',position: 'absolute',bottom: '0px',right: '0px',paddingRight:'10px',color:this.state.numb3.color,}}
                                                             >{this.state.numb3.len}/100</p>
                                                     </div>

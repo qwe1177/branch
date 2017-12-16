@@ -43,18 +43,19 @@ export default class BrandSelector extends React.Component {
     doInit =(props)=>{
         console.log(props)
         if(props.visible){ //显示的时候
+            var checkedList =[];
             if(props.choosedKeys && props.choosedKeys.labelstr && props.choosedKeys.idstr  ){
                 var ids = props.choosedKeys.idstr.split('、');
                 var labels = props.choosedKeys.labelstr.split('、');
 
                 if(ids.length>0 && ids.length === labels.length){
-                    var checkedList = ids.map((o,index)=>{
-                        return {id:o,brand_name_ch:labels[index]};
+                    checkedList = ids.map((o,index)=>{
+                        return {id:parseFloat(o),brand_name_ch:labels[index]};
                     })
-                    this.setState({checkedList});
+                    // this.setState({checkedList});
                 }
             }
-            this.fetch();
+            this.fetch({checkedList});
         }
         this.setState({visible:props.visible?true:false});
     }
@@ -99,12 +100,15 @@ export default class BrandSelector extends React.Component {
         if(queryParams &&　queryParams.query){ //解析form表单查询条件
             query = _.omitBy(queryParams.query, _.isUndefined); //删除undefined参数
         }
+        if(queryParams &&　queryParams.checkedList){ //解析初始化的代码
+            checkedList =queryParams.checkedList;
+        }
         var params = {...query,page:pagination.current,limit:pagination.pageSize,token: token,moduleId:moduleId};
         axios.get(connect_srm + '/queryBrandList.do', { params: params }).then((res)=>{
             if(res.data.status){
                 var original = res.data.data.brandList;
                 var data = this.formateDataWithChecked(checkedList,original);
-                this.setState({query:query, dataSource: data,pagination: {...pagination,total:res.data.data.count},isFetching: false});
+                this.setState({query:query, dataSource: data,pagination: {...pagination,total:res.data.data.count},isFetching: false,checkedList});
             }
         }).catch((e)=>{
             this.setState({ isFetching: false});

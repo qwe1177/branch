@@ -7,9 +7,6 @@ export const tablemodelInfo3 = 'tablemodelInfo3'
 export const tablemodelInfo4 = 'tablemodelInfo4'
 import * as config  from '../../../util/connectConfig'
 
-axios.defaults.timeout = 30000;                        //响应时间
-axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8';           //配置请求头
-
 
 export const baseInfoForm = value=> ({
     type: baseInfo,
@@ -61,6 +58,19 @@ export const fetchzonesPosts = ({url, name, value, returnName}) => (dispatch, ge
         })
 }
 
+export const fetchCategory = ()=> async(dispatch, getState) => {
+    try {
+        var moduleUrl = location.pathname;
+        let res = await axios.get(config.connect_srm + '/queryCategoryList.do', { params: {moduleUrl}});
+        if(res.data.status){
+            var original = res.data.data;
+            return await  dispatch(baseInfoForm({'category':original}))
+        }
+    } catch (error) {
+        console.log('error: ', error)
+    }
+}
+
 
 const actions = {
     baseInfoForm,
@@ -71,6 +81,7 @@ const actions = {
     tablemodelaction4,
     fetchPosts,
     fetchzonesPosts,
+    fetchCategory
 }
 
 export default actions

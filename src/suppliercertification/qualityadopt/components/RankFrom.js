@@ -15,22 +15,9 @@ const { MonthPicker, RangePicker } = DatePicker;
 	state => ({ mainQueryData: state.mainQueryData, mainTableData: state.mainTableData }),
 	dispatch => bindActionCreators({ initQueryFrom, setQueryFrom, resetQueryFrom, requestSupplier, queryTableData }, dispatch)
 )
-// const renderContent = (value, row, index) => {
-//   const obj = {
-//     children: value,
-//     props: {},
-//   };
-//   return obj;
-// };
+
 
 class RankFrom extends React.Component {
-	// componentDidMount() {
-	//   setFieldsValue方法必须在getFieldDecorator之后，getFieldDecorator在render生命周期中定义id来进行表单双向绑定
-	//   let {queryform} = this.props.mainQueryData;
-	//   this.props.form.setFieldsValue({   
-	//       other: queryform.other
-	//   });
-	// }
 	changeToLastSeven = () => {
 		this.props.form.setFieldsValue({
 			createdate: [moment().subtract(7, "days"), moment()]
@@ -105,7 +92,7 @@ class RankFrom extends React.Component {
 							{getFieldDecorator('name', {
 								rules: [{ validator: this.checkName }],
 							})(
-								<Input style={{ width: '100%' }} placeholder="深圳华南城网科技有限公司" />
+								<Input style={{ width: '100%' }} placeholder="深圳华南城网科技有限公司" maxLength="30" />
 								)}
 						</FormItem>
 					</Col>

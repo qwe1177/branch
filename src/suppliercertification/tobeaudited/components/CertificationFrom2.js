@@ -40,8 +40,8 @@ class CertificationFrom2 extends React.Component {
     let moduleId = urlParams['moduleId'] ? urlParams['moduleId'] : '';
     let systemId = urlParams['systemId'] ? urlParams['systemId'] : '';
     let hasPowerForDetail = isEntryVisableByName('列表查询', this.props.power.operate);//获取是否有进入详情页权限
-    let detailUrl = '/suppliermanage/allsupplierdetail/?systemId=' + systemId + '&moduleId=' + moduleId + '&moduleUrl=/suppliermanage/allsupplierdetail/';
-    let auditeUrl = '/suppliercertification/audit/?systemId=' + systemId + '&moduleId=' + moduleId + '&moduleUrl=/suppliercertification/audit/';
+    let detailUrl = '/allClueDetail/?moduleUrl='+location.pathname;
+    let auditeUrl = '/suppliercertification/audit/?moduleId='+moduleId+'&systemId='+systemId;
     const columns = [
       {
         title: '企业名称',
@@ -49,7 +49,7 @@ class CertificationFrom2 extends React.Component {
         dataIndex: 'companyName',
         className: 'column-money',
         render: (text, record) => {
-          return <a href={detailUrl + '&supplierId=' + record.supplierId}>{text}</a>
+          return <a href={detailUrl + '&supplierId=' + record.supplierId} target='_blank'>{text}</a>
         }
       },
       {

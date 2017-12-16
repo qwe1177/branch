@@ -305,7 +305,7 @@ class UserForm extends Component {
                 }], initialValue: initialValue,
                 onChange: name.match(/^remark/g) ? this.companyIntroductionHandle(name, 30) : null,
             })(
-                <Input placeholder={placeholder} style={{width: '100%'}}/>
+                <Input placeholder={placeholder} style={{width: '100%'}} maxLength="20"/>
             )}
         </FormItem>)
 
@@ -1230,7 +1230,7 @@ class UserForm extends Component {
 
         return (
             <div className="newClue">
-                <h2>新建供应商线索</h2>
+                <h2>编辑供应商线索</h2>
                 <div className="newCluewk">
                     <Spin spinning={this.state.formloading} delay={500} tip="Loading...">
                         <Form layout="inline" onSubmit={this.handleSubmit}>
@@ -1352,7 +1352,7 @@ class UserForm extends Component {
                                                                         validator: this.bindinghandle('cscAccount')
                                                                     }], initialValue: '', validateTrigger: 'onBlur'
                                                                 })(
-                                                                    <Input placeholder="输入账号"
+                                                                    <Input placeholder="输入账号" maxLength="20"
                                                                            style={{'width': '100%',}}/>
                                                                 )}
                                                             </FormItem>
@@ -1374,7 +1374,7 @@ class UserForm extends Component {
                                                                         validator: this.bindinghandle('buy5jAccount')
                                                                     }], initialValue: '', validateTrigger: 'onBlur'
                                                                 })(
-                                                                    <Input placeholder="输入账号"
+                                                                    <Input placeholder="输入账号" maxLength="20"
                                                                            style={{'width': '100%',}}/>
                                                                 )}
                                                             </FormItem>
@@ -1472,7 +1472,7 @@ class UserForm extends Component {
                                                     {getFieldDecorator('website', {
                                                         rules: [{required: false, message: '请输入网址'}],
                                                     })(
-                                                        <Input placeholder="请输入网址" id="success"/>
+                                                        <Input placeholder="请输入网址" id="success" maxLength="100"/>
                                                     )}
                                                 </FormItem>
                                             </Col>
@@ -1486,7 +1486,7 @@ class UserForm extends Component {
                                                     {getFieldDecorator('goods', {
                                                         rules: [{required: false, message: '请填写优势产品'}],
                                                     })(
-                                                        <Input placeholder="请填写优势产品"/>
+                                                        <Input placeholder="请填写优势产品" maxLength="100"/>
                                                     )}
                                                 </FormItem>
                                             </Col>
@@ -1497,7 +1497,7 @@ class UserForm extends Component {
                                                     {getFieldDecorator('shopsite', {
                                                         rules: [{required: false, message: '请填写旺铺地址'}],
                                                     })(
-                                                        <Input placeholder="请填写旺铺地址"/>
+                                                        <Input placeholder="请填写旺铺地址" maxLength="100"/>
                                                     )}
                                                 </FormItem>
                                             </Col>
@@ -1569,7 +1569,7 @@ class UserForm extends Component {
                                                         rules: [{required: false, message: '详细地址'}],
                                                         initialValue: this.props.Infos.address && this.props.Infos.address.value
                                                     })(
-                                                        <Input addonBefore={addressText}
+                                                        <Input addonBefore={addressText} maxLength="200"
                                                                placeholder="详细地址（注意：只填写路、门号等详细地址）"
                                                         />
                                                     )}
@@ -1661,7 +1661,7 @@ class UserForm extends Component {
                                                     {getFieldDecorator('creditNumber', {
                                                         rules: [{required: false, message: '请输入营业执照注册号'}],
                                                     })(
-                                                        <Input placeholder="营业执照注册号"/>
+                                                        <Input placeholder="营业执照注册号" maxLength="30"/>
                                                     )}
 
 
@@ -1719,7 +1719,7 @@ class UserForm extends Component {
                                                     {getFieldDecorator('organization', {
                                                         rules: [{required: false, message: '请输入登记机构'}],
                                                     })(
-                                                        <Input placeholder="登记机构"/>
+                                                        <Input placeholder="登记机构" maxLength="100"/>
                                                     )}
                                                 </FormItem>
                                             </Col>
@@ -1735,7 +1735,7 @@ class UserForm extends Component {
                                                         rules: [{required: false, message: '请输入企业法人'}],
                                                     })(
                                                         <Input placeholder="企业法人"
-                                                               style={{width: '65%', 'marginRight': '10px'}}/>
+                                                               style={{width: '65%', 'marginRight': '10px'}} maxLength="10"/>
                                                     )}
                                                     {getFieldDecorator('corporationGender', {
                                                         rules: [{required: false, message: '请选择'}],
@@ -1756,7 +1756,7 @@ class UserForm extends Component {
                                                     {getFieldDecorator('idcard', {
                                                         rules: [{required: false, message: '请输入身份证号'}],
                                                     })(
-                                                        <Input placeholder="身份证号"/>
+                                                        <Input placeholder="身份证号" maxLength="18"/>
                                                     )}
                                                 </FormItem>
                                             </Col>

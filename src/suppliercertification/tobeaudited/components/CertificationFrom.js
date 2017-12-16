@@ -79,7 +79,7 @@ class CertificationFrom extends React.Component {
           <Col span={6}>
             <FormItem>
               {getFieldDecorator('name', { rules: [{ validator: this.checkName }], })(
-                <Input style={{ width: '100%' }} placeholder="深圳华南城网科技有限公司" onBlur={this.handleConfirmBlur} />)}
+                <Input style={{ width: '100%' }} placeholder="深圳华南城网科技有限公司" onBlur={this.handleConfirmBlur} maxLength="30" />)}
             </FormItem>
           </Col>
 
