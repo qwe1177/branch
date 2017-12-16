@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types'
 
-import QueryFrom from './QueryFrom';
+import QueryForm from './QueryForm';
 import './layout.css';
 import { Modal, Table,Form,Button,Tag  } from 'antd';
 
@@ -17,7 +17,8 @@ class PersonSelector extends React.Component {
         onCancel:PropTypes.func.isRequired, //选择人canel之后的问题
         title:PropTypes.string,
         visible: PropTypes.bool.isRequired,
-        type:PropTypes.string,  // single 单选 multiple 多选
+        type:PropTypes.string,  // single 单选 multiple 多选 默认单选
+        dataArea:PropTypes.string  // all 所有人  underling 下属  默认下属
     }
     constructor(props) {
         super(props);
@@ -87,7 +88,9 @@ class PersonSelector extends React.Component {
         }
         params = _.omitBy(params, _.isUndefined); //删除undefined参数
         this.setState({ isFetching: true});
-        axios.get(connect_cas + '/api/user/searchUserList', { params: params }).then((res)=>{
+        var dataArea = this.props.dataArea?this.props.dataArea:'underling'; //默认全部取下属的
+        var searchUrl = dataArea=='underling'?'/api/user/getFollowUserPage':'/api/user/searchUserList';
+        axios.get(connect_cas + searchUrl, { params: params }).then((res)=>{
             if(res.data.code=='0'){
                 var original = res.data.data.rows;
                 var data = this.formateDataWithChecked(checkedList,original);
@@ -135,12 +138,12 @@ class PersonSelector extends React.Component {
 		 return formatTree(items, parentId);
     }
     queryData =()=>{
-		// var token = getLoginInfo()['token'];  //获取token　登录用
-		axios.get(connect_cas + '/api/user/getAllDepartment').then((res) => {
+        var dataArea = this.props.dataArea?this.props.dataArea:'underling'; //默认全部取下属的
+        var deptUrl = dataArea=='underling'?'/api/user/getFollowDepartment':'/api/user/getAllDepartment';
+		axios.get(connect_cas + deptUrl).then((res) => {
 			if(res.data.code=='0'){
 				var d  = res.data.data;
 				var treeData =this.getTree(d,'');
-				// console.log(treeData);
 				this.setState({treeData})
 			}
 		}).catch((e) => {
@@ -230,12 +233,13 @@ class PersonSelector extends React.Component {
         }];
 
 
-        const WrappedQueryFrom = Form.create()(QueryFrom);
+        const WrappedQueryForm = Form.create()(QueryForm);
         const type = this.props.type?this.props.type:'single';
+        
         var title = (this.props.title?this.props.title:'选择负责人') + (type=='single'?'(单选)':'(多选)');
         return (
             <Modal title={title} visible={visible}
-                onOk={this.handleOk} onCancel={this.handleCancel}
+                onOk={this.handleOk} onCancel={this.handleCancel} className='person-selector'
             >
                 <div className='person-selector-tagswrap'>
                 {checkedList.map((tag, index)=>{
@@ -244,7 +248,7 @@ class PersonSelector extends React.Component {
                     </Tag>)
                 })}
                 </div>
-                <WrappedQueryFrom  onQuery={this.onQuery.bind(this)} query={this.state.query} treeData={this.state.treeData}  />
+                <WrappedQueryForm  onQuery={this.onQuery.bind(this)} query={this.state.query} treeData={this.state.treeData}  />
                 <Table bordered className='person-selector-tablewrap' columns={columns} dataSource={dataSource} rowKey={record => record.userId}  //数据中已key为唯一标识
                     pagination={pagination}
                     loading={isFetching}

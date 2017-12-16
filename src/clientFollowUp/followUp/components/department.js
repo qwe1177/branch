@@ -8,7 +8,7 @@ import { doInitList, doQueryFollow} from '../actions/index.js';
 
 
 @connect(
-    state => ({ AllFollowUP: state.AllFollowUP}),
+    state => ({ FollowUP: state.FollowUP}),
     dispatch => bindActionCreators({doInitList, doQueryFollow},dispatch)
 )
 
@@ -34,10 +34,10 @@ class Department extends React.Component {
         if(info.node.props.type == '11') {
             const userList = []
             userList.push(selectedKeys);
-            this.props.doQueryFollow({query:this.props.AllFollowUP.query,pagination:this.props.AllFollowUP.pagination},userList);
+            this.props.doQueryFollow({query:this.props.FollowUP.query,pagination:this.props.FollowUP.pagination},userList);
         }else if(info.node.props.dataRef&&info.node.props.dataRef != ''){
             const userList = _this.getUser(info.node.props.dataRef.children);
-             this.props.doQueryFollow({query:this.props.AllFollowUP.query,pagination:this.props.AllFollowUP.pagination},userList);
+             this.props.doQueryFollow({query:this.props.FollowUP.query,pagination:this.props.FollowUP.pagination},userList);
         }
       }
     componentWillMount() {
@@ -58,7 +58,7 @@ class Department extends React.Component {
   
   render() {
   
-    const {departmentList} = this.props.AllFollowUP;
+    const {departmentList} = this.props.FollowUP;
     // 改变获取的数据结构
     function getTreeStruc(arrRead) {
         var treeData = [];

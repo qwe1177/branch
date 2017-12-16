@@ -14,6 +14,7 @@ function tablemodel(state = {
         categoryName: {name: 'categoryName', message: '请输入所属类目', placeholder: '请输入所属类目',required: true,},
         specParams: {name: 'specParams', message: '请输入规格型号', placeholder: '请输入规格型号',required: true,},
         unit: {name: 'unit', message: '请输入单位', placeholder: '请输入单位',required: true,},
+        minQuantity: {name: 'minQuantity' , message: '请输入最小起订量', placeholder: '请输入最小起订量', required: false,},
         price: {name: 'price', message: '请输入进价(元)', placeholder: '请输入进价(元)', required: true,},
         taux: {name: 'taux', message: '请输入税点', placeholder: '请输入税点',required: true,},
         invoice: {name: 'invoice', message: '请输入发票', placeholder: '请输入发票',required: true,},

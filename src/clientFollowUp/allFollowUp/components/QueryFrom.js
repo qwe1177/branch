@@ -10,11 +10,11 @@ const CheckboxGroup = Checkbox.Group;
 const dateFormat = 'YYYY/MM/DD';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { doResetQuery,doAnnotate, doQueryFollow } from '../actions/index.js';
+import { doResetQuery, doQueryFollow } from '../actions/index.js';
 
 @connect(
     state => ({ AllFollowUP: state.AllFollowUP }),
-    dispatch => bindActionCreators({ doResetQuery,doAnnotate, doQueryFollow }, dispatch)
+    dispatch => bindActionCreators({ doResetQuery, doQueryFollow }, dispatch)
 )
 
 class QueryFrom extends React.Component {
@@ -22,15 +22,6 @@ class QueryFrom extends React.Component {
 		// To disabled submit button at the beginning.
 		this.props.form.validateFields();
 	}
-	// 	checkName = (rule, value, callback) => {
-	// 	const form = this.props.form;
-	// 	var name  = form.getFieldValue('companyName');
-	// 	if (!name || ''== form.getFieldValue('companyName')) {
-	// 		callback('企业名称必须填写!');
-	// 	} else {
-	// 		callback();
-	// 	}
-	// }
 	handleSubmit = (e) => {
 		e.preventDefault();
 		this.props.form.validateFields((err, values) => {
@@ -48,6 +39,7 @@ class QueryFrom extends React.Component {
 	componentDidMount() {
 		//setFieldsValue方法必须在getFieldDecorator之后，getFieldDecorator在render生命周期中定义id来进行表单双向绑定
 		let form = this.props.AllFollowUP.query;
+		form = _.pick(form,['companyName','contactWay','finishData','followupType']);
 		let data ={};
 		for(let key in form){  //过滤空字符串
 			if(form[key]!=''){
@@ -67,24 +59,32 @@ class QueryFrom extends React.Component {
 		});
 	}
     render() {
-      const { getFieldDecorator } = this.props.form;
-      const formItemLayout = {  //form中的label和内容各自占用多少
-        labelCol: { span: 9 },
-        wrapperCol: { span: 15 },
-			};
-			const checkItemLayoutFirst = { 
-        labelCol: { span: 3 },
-        wrapperCol: { span: 21 },
-			};
+		const { getFieldDecorator } = this.props.form;
+		const formItemLayout = {  //form中的label和内容各自占用多少
+			labelCol: { span: 10 },
+			wrapperCol: { span: 14 },
+		};
+		const formItemLayout1 = {  //form中的label和内容各自占用多少
+				labelCol: { span: 5 },
+				wrapperCol: { span: 16},
+		};
+		const formItemLayout2 = {  //form中的label和内容各自占用多少
+			labelCol: { span: 11 },
+			wrapperCol: { span: 13},
+		};
+		const checkItemLayoutFirst = { 
+			labelCol: { span: 4 },
+			wrapperCol: { span: 20 },
+		};
 		const plainOptions = [
-				{label: '供应商', value: '2'},
-				{label: '线索', value: '1'},
-			];
+			{label: '供应商', value: '2'},
+			{label: '线索', value: '1'},
+		];
       return (
         <Form layout="horizontal" onSubmit={this.handleSubmit}>
 			<Row gutter={16}>
-				<Col span={4}>
-					<FormItem {...formItemLayout} label="企业名称">
+				<Col span={8}>
+					<FormItem {...formItemLayout1} label="企业名称">
 						{getFieldDecorator('companyName', {
 							rules: [{validator: this.checkName}],
 						})(
@@ -92,8 +92,8 @@ class QueryFrom extends React.Component {
 						)}
 					</FormItem>
 				</Col>
-				<Col span={6}>
-					<FormItem {...formItemLayout} label="跟进方式">
+				<Col span={4}>
+					<FormItem {...formItemLayout2} label="跟进方式">
 						{getFieldDecorator('contactWay')(
 							<Select  style={{ width: '100%' }} placeholder="请选择">
 								<Option value="1">电话</Option>
@@ -107,7 +107,7 @@ class QueryFrom extends React.Component {
 									)}
 					</FormItem>
 				</Col>
-				<Col span={9}>
+				<Col span={8}>
 					<FormItem {...formItemLayout} label="计划完成日期">
 						{getFieldDecorator('finishData')(
 						<RangePicker />
@@ -115,14 +115,13 @@ class QueryFrom extends React.Component {
 					</FormItem>
 				</Col>
 				<Col span={4} >
-						<span className="rangeButton" onClick={this.changeToToday}>今天</span>
-						&nbsp;
-							<span className="rangeButton" onClick={this.changeToLastSeven}>近7天</span>
+					<span className="rangeButton" onClick={this.changeToToday}>今天</span>&nbsp;
+					<span className="rangeButton" onClick={this.changeToLastSeven}>近7天</span>
 				</Col>
 			</Row>
 			<Row gutter={16} className="followType">
 							
-				<Col span={12} style={{ textAlign: 'left' }}>
+				<Col span={10} style={{ textAlign: 'left' }}>
 					<FormItem {...checkItemLayoutFirst} label="跟进类型">
 						{getFieldDecorator('followupType')(
 							<CheckboxGroup options={plainOptions} />

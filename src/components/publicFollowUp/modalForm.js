@@ -27,7 +27,7 @@ class ModalForm extends React.Component {
 		const nextSelectedTags = checked ?
 				[...followUpFlag, tag] :
 				followUpFlag.filter(t => t !== tag);
-				this.props.EditModal.pform.followUpFlag = nextSelectedTags;
+		this.props.EditModal.pform.followUpFlag = nextSelectedTags;
 		this.setState({ selectedTags: nextSelectedTags });
 	  }
 	handleSubmit = (e) => {
@@ -36,7 +36,7 @@ class ModalForm extends React.Component {
 			if (!err) {
 				// var initdata=this.props.EditModal.selectedTags;
 				var initdata=this.props.EditModal.pform.followUpFlag;
-				values.followUpFlag= initdata!=undefined?initdata.join(',') : '';
+				values.followUpFlag= (initdata!=''&&initdata!=undefined)?initdata.join(',') : '';
 				var url = this.props.url;
 				var promise = this.props.doEffectFlow(url,{pform:values});
 				promise.then((res)=>{
@@ -66,19 +66,42 @@ class ModalForm extends React.Component {
 		this.props.doCancelForm();
 	  }
 	 
+	isNode = (rule,value, callback) => {
+		const form = this.props.form;
+		var type = form.getFieldValue('followupType');
+		var name  = form.getFieldValue('followUpNode');
+		if ((type==1)&&(!name || ''== form.getFieldValue('followUpNode'))) {
+			callback('请选择跟进节点!');
+		}else {
+			callback();
+		}
+	}
+	required = (rule,value, callback) => {
+		const form = this.props.form;
+		var name  = form.getFieldValue('followUpTheContent');
+		if (!name || ''== form.getFieldValue('followUpTheContent')) {
+			callback('请选择跟进内容!');
+		}else  {
+			callback();
+		}
+	}
 	render() {
 		const { getFieldDecorator } = this.props.form;
 		const formItemLayout = {  //form中的label和内容各自占用多少
-			labelCol: { span:8 },
+			labelCol: { span:7 },
 			wrapperCol: { span: 12 }
+		};
+		const formItemLayout0 = {  //form中的label和内容各自占用多少
+			labelCol: { span:12 },
+			wrapperCol: { span: 10}
 		};
 		const formItemLayout1 = {  //form中的label和内容各自占用多少
-			labelCol: { span:9 },
-			wrapperCol: { span: 12 }
+			labelCol: { span:11},
+			wrapperCol: { span: 13 }
 		};
 		const formItemLayout2 = {  //form中的label和内容各自占用多少
-			labelCol: { span:9 },
-			wrapperCol: { span: 9 }
+			labelCol: { span:10 },
+			wrapperCol: { span: 10 }
 		};
 		const formItemLayout3 = {  //form中的label和内容各自占用多少
 			labelCol: { span: 3 },
@@ -88,13 +111,19 @@ class ModalForm extends React.Component {
 			labelCol: { span: 5 },
 			wrapperCol: { span: 19 }
 		};
+		const {pform} = this.props.EditModal;
 		const selectedTags = this.state.selectedTags.length != 0 ? this.state.selectedTags:(this.props.EditModal.pform.followUpFlag!=undefined?this.props.EditModal.pform.followUpFlag:[]);
-		const className = this.props.type==2 ?'editModal':'editModal xiansuo';
+		const className = pform.followupType == 2 ?'editModal':'editModal xiansuo';
+		const isMustName = selectedTags.length != 0 ? 'noMust' : 'must';
+	
 		return (
 				<Form layout="horizontal" hideRequiredMark onSubmit={this.handleSubmit} className={className}>
 				<Row gutter={16}>
 					<Col  className="marginStyle">	
 						{getFieldDecorator('supplierId')(
+							<Input type="hidden" />
+						)}
+						{getFieldDecorator('modalType')(
 							<Input type="hidden" />
 						)}
 						{getFieldDecorator('followupType')(
@@ -112,17 +141,17 @@ class ModalForm extends React.Component {
 					</Col>
 				</Row>
 				<Row>
-					<Col span={6}>
+					<Col span={8}>
 						<FormItem {...formItemLayout} label="联系人">
 							{getFieldDecorator('contactPersonnel')(
 								<Input />
 							)}
 						</FormItem>
 					</Col>
-					<Col span={9}>
-						<FormItem {...formItemLayout} label="主动联系方">
+					<Col span={7}>
+						<FormItem {...formItemLayout0} label="主动联系方">
 							{getFieldDecorator('activeContact',{
-								rules: [{ required: true, message: '主动联系方必填' }],
+								rules: [{ required: true, message: '请选择主动联系方' }],
 							})(
 								<Select  style={{ width: '100%' }} placeholder="请选择" >
 									<Option value="1">客户</Option>
@@ -132,9 +161,9 @@ class ModalForm extends React.Component {
 						</FormItem>
 					</Col>
 					 <Col span={9}>
-						<FormItem {...formItemLayout} label="联络方式">
+						<FormItem {...formItemLayout0} label="联络方式">
 							{getFieldDecorator('contactWay',{
-								rules: [{ required: true, message: 'Please input your username!' }],
+								rules: [{ required: true, message: '请选择联络方式' }],
 							})(
 								<Select  style={{ width: '100%' }} placeholder="请选择" >
 									<Option value="1">电话</Option>
@@ -150,9 +179,11 @@ class ModalForm extends React.Component {
 					</Col>
 				</Row> 
 				<Row gutter={16}>
-					<Col span={10}>
+					<Col span={9}>
 						<FormItem {...formItemLayout1} label="本次联络时间">
-							{getFieldDecorator('thisContactTime')(
+							{getFieldDecorator('thisContactTime',{
+								rules: [{ required: true, message: '请选择本次联络时间' }],
+							})(
 								<DatePicker/>
 							)}
 						</FormItem>
@@ -173,13 +204,16 @@ class ModalForm extends React.Component {
 											{tag}
 										</CheckableTag>
 										))}
+						<div className={isMustName}>请选择跟进标签！</div>
 						</FormItem>
 					</Col>
 				</Row>
 				<Row className='followup-node'>
 					<Col>
 						<FormItem label="跟进节点" className="tagsWrap">
-						{getFieldDecorator('followUpNode')(
+						{getFieldDecorator('followUpNode',{
+							rules: [{validator: this.isNode}],
+						})(
 							 <RadioGroup  size="large">
 								<RadioButton value="暂无兴趣">暂无兴趣</RadioButton>
 								<RadioButton value="待联系">待联系</RadioButton>
@@ -197,14 +231,16 @@ class ModalForm extends React.Component {
 				<Row gutter={16}>
 					<Col span={24}>
 						<FormItem {...formItemLayout3} label="跟进内容" className="marginLeft">
-							{getFieldDecorator('followUpTheContent')(
+							{getFieldDecorator('followUpTheContent',{
+								rules: [{ validator: this.required}],
+							})(
 								<Input type="textarea" rows={2} />
 							)}
 						</FormItem>
 					</Col>
 				</Row>
 				<Row gutter={16}>
-					<Col span={13}>
+					<Col span={12}>
 						<FormItem {...formItemLayout2} label="计划下次跟进时间">
 							{getFieldDecorator('planNextContactTime')(
 								<DatePicker />

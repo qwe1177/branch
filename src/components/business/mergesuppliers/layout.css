@@ -32,3 +32,14 @@
 .step2 .step2-wrap .step2-label span {
    margin: 0 4px;
 }
+
+.merge-suppliers  .ant-btn-primary{
+    background-color: #6699cc;
+    border-color: #6699cc;
+    border-radius:0; 
+}
+
+.merge-suppliers .ant-pagination-item-active {
+    background-color: #6699cc;
+    border-color: #6699cc;
+}

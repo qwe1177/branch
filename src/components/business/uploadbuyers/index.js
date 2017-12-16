@@ -6,7 +6,7 @@ import './layout.css';
 import { Modal, Table,Form,Button,Tag,Radio } from 'antd';
 import { getLoginInfo ,getUrlParams} from '../../../util/baseTool';
 import { connect_url,crmnew_url } from '../../../util/connectConfig';
-import axios from 'axios';
+import axios from '../../../util/axios'
 const RadioGroup = Radio.Group;
 export default class BrandSelector extends React.Component {
     static propTypes = { //声明prop中属性变量
@@ -76,9 +76,6 @@ export default class BrandSelector extends React.Component {
     }
     fetch =(queryParams)=>{
         //console.log(queryParams);
-        var token = getLoginInfo()['token'];  //获取token　登录用
-        var urlParams = getUrlParams();
-        //var moduleId = urlParams['moduleId']?urlParams['moduleId']:'';
         this.setState({ isFetching: true});
 
         var {query,pagination,checkedList} =this.state;
@@ -91,7 +88,7 @@ export default class BrandSelector extends React.Component {
             query = _.omitBy(queryParams.query, _.isUndefined); //删除undefined参数
         }
         
-        var params = {...query,page:pagination.current,pageSize:pagination.pageSize,token: token};
+        var params = {...query,page:pagination.current,pageSize:pagination.pageSize};
         axios.get(crmnew_url + '/api/purchaser/searchPurchaserList', {params: params }).then((res)=>{
             var data = res.data.data.rows;
             var pageSize=parseInt(res.data.data.pageSize);

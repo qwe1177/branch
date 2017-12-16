@@ -1,6 +1,6 @@
 import {combineReducers} from 'redux'
 import {
-    BASEINFO, MODALMODEL_INFO,INIT_INFO, TABLEMODEL1_INFO, TABLEMODEL2_INFO
+    BASEINFO, MODALMODEL_INFO,INIT_INFO, TABLEMODEL1_INFO, TABLEMODEL2_INFO,RESETTABLEMODEL1_INFO
 } from '../actions'
 
 /**上传图标相关 */
@@ -33,9 +33,8 @@ function modalmodel(state = {
     }
 }
 
-
 /**产品报价 */
-function tablemodel1(state = {
+const defaultState = {
     data1: [{
         key: '1',
         No: '1',
@@ -49,13 +48,17 @@ function tablemodel1(state = {
     }],
     count: 1,
 }
-    , action) {
+
+/**产品报价 */
+function tablemodel1(state =defaultState, action) {
     switch (action.type) {
         case TABLEMODEL1_INFO:
             return {
                 ...state,
                 ...action.payload,
             };
+        case RESETTABLEMODEL1_INFO:
+            return {...defaultState};
         default:
             return state;
     }

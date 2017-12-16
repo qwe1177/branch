@@ -38,12 +38,12 @@ class FollowUpShower extends React.Component {
     }
 
     render() {
-        const WrappedQueryForm = Form.create()(QueryForm);
+        const WrappedQueryFrom = Form.create()(QueryForm);
         return (
             <Spin spinning={this.props.followupShower.isFetching} >
             <div className='followup-shower'>
                 <div className="query-wrap">
-                    <WrappedQueryForm />
+                    <WrappedQueryFrom />
                 </div>
                 <div className="tabel-wrap">
                     <MainList />

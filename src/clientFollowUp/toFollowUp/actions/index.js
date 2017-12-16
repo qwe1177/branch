@@ -1,10 +1,8 @@
 import axios from 'axios';
 import moment from 'moment'
 import { getLoginInfo} from '../../../util/baseTool.js';
-import { connect_url } from '../../../util/connectConfig.js';
 import {connect_srm} from '../../../util/connectConfig.js';
 import _ from 'lodash';
-
 export const INIT_QUERY = 'INIT_QUERY' //初始化查询条件 重置查询条件的时候也用这个
 export const RESET_QUERY = 'RESET_QUERY' //重置查询条件
 export const SET_QUERY = 'SET_QUERY' //设置查询条件
@@ -81,7 +79,7 @@ export const setQueryFrom = data => (dispatch, getState) => {
 //使用async/await方式
 export const queryTableData = (data) => async(dispatch, getState) => {
     try {
-        await dispatch(requestSupplier(data));
+        // await dispatch(requestSupplier());
         var token = getLoginInfo()['token'];  //获取token　登录用
         var queryform = data.queryform;
         var pagination = data.pagination;
@@ -93,8 +91,7 @@ export const queryTableData = (data) => async(dispatch, getState) => {
         var params = { ...queryform, ...paramPagination,token};
         params.finishData = undefined
         params = _.omitBy(params, _.isUndefined); //删除undefined参数
-        // console.log(params)
-        let res = await axios.get('http://10.10.10.29:9407/v1/supplier/queryFollowupList.do', { params: params });
+        let res = await axios.get(connect_srm+'/supplier/viewFollowupPlanList.do', { params: params });
         var pageSize=parseInt(res.data.data.pageSize);
         return await dispatch(receiveSupplier({
             tableData: res.data.data.supplierFollowupPlanList,

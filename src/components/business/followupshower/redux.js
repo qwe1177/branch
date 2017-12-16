@@ -1,9 +1,7 @@
 import { connect_srm } from '../../../util/connectConfig';
 import { getLoginInfo ,getUrlParams} from '../../../util/baseTool';
-// import axios from 'axios';
 import axios from '../../../util/axios';
 import _ from 'lodash';
-// const xiaowenwu_url = 'http://10.10.10.114:8080/v1';
 
 
 
@@ -36,9 +34,10 @@ const changeQuery = data => ({
     data
 })
 
-const deleteFollowMessage = data => ({
+const deleteFollowMessage = (followUpId, commentId) => ({
     type: COMPANYSHOWER_DELETE_FOLLOW_MESSAGE,
-    data
+    followUpId,
+    commentId
 })
 
 const modifiyFollowInfo = data => ({
@@ -55,8 +54,8 @@ const showCommentForm = data => ({
 
 
 
-export const doDeleteFollowMessage = data => (dispatch, getState) => {
-    return dispatch(deleteFollowMessage(data));
+export const doDeleteFollowMessage = (followUpId, commentId) => (dispatch, getState) => {
+    return dispatch(deleteFollowMessage(followUpId, commentId));
 }
 
 export const doModifiyFollowInfo = data => (dispatch, getState) => {
@@ -71,7 +70,6 @@ export const doQueryFollow = (queryParams) => async (dispatch, getState) => {
     try {
         await dispatch(changeQuery(queryParams));
         var urlParams = getUrlParams();
-        var url = urlParams['url']?urlParams['url']:'';
         var moduleUrl = urlParams['moduleUrl'] ? urlParams['moduleUrl'] : '';
         var supplierId = urlParams['supplierId']?urlParams['supplierId']:'';
 
@@ -88,7 +86,7 @@ export const doQueryFollow = (queryParams) => async (dispatch, getState) => {
         }
         
         //pageSize  offset 后台的名字意义是代表当前第几页和偏移
-        var params ={...query,pageNo:pagination.current,offset:pagination.pageSize,supplierId,moduleUrl,url}
+        var params ={...query,pageNo:pagination.current,offset:pagination.pageSize,supplierId,moduleUrl}
         await dispatch(requestData());
         var res = await axios.get(connect_srm + '/management/viewSupplierDetailsFollowupList.do', { params: params});
         if(res.data.code =='1'){
@@ -117,15 +115,13 @@ export const doQueryFollow = (queryParams) => async (dispatch, getState) => {
 // * @param offset 当前显示条数
 export const doFirstQueryFollow = (queryParams) => async (dispatch, getState) => {
     try {
-
         var urlParams = getUrlParams();
-        var url = urlParams['url']?urlParams['url']:'';
         var moduleUrl = urlParams['moduleUrl'] ? urlParams['moduleUrl'] : '';
         var supplierId = urlParams['supplierId']?urlParams['supplierId']:'';
 
         var {query, pagination} = queryParams
 
-        var params ={...query,pageSize:pagination.pageSize,pageNo:pagination.current,supplierId,moduleUrl,url}
+        var params ={...query,pageSize:pagination.pageSize,pageNo:pagination.current,supplierId,moduleUrl}
         await dispatch(requestData());
         var res = await axios.get(connect_srm + '/management/viewSupplierDetailsFollowupList.do', { params: params});
         if(res.data.code =='1'){
@@ -195,19 +191,18 @@ const followupShower = function (state = defaultState, action = {}) {
             var {query,pagination} = action.data;
             return { ...state, query: query, pagination: pagination };
         case COMPANYSHOWER_DELETE_FOLLOW_MESSAGE:
-            var {listKey,messkey} = action.data; //要删除的
+            var {followUpId,commentId} =action;
             var {list} = state;
             var index1 = list.findIndex((o)=>{
-                return o.key == listKey;
+                return o.id == followUpId;
             })
-            
             if(index1!=-1){
-                var index2 = list[index1].message.findIndex((o)=>{
-                    return o.key == messkey;
+                var comments = list[index1].supplierFollowupPostilDTOs;
+                var index2 = comments.findIndex((o)=>{
+                    return o.id == commentId;
                 })
-
                 if(index2!=-1){
-                    list[index1].message.splice(index2,1);
+                    comments.splice(index2,1);
                 }
             }
             return { ...state ,list:list};

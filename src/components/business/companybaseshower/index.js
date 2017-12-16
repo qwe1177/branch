@@ -7,7 +7,7 @@ import 'antd/dist/antd.css';
 import { Form,Modal} from 'antd';
 
 import './layout.css';
-import EffectFrom from './EffectFrom';
+import EffectForm from './EffectForm';
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -38,7 +38,7 @@ class CompanyBaseShower extends React.Component {
 
     render() {
         const { data, editTagVisible } = this.props.supplierDetailMain;
-        const WrappedEffectFrom = Form.create()(EffectFrom);
+        const WrappedEffectForm = Form.create()(EffectForm);
         const tag =data.partnership?<span className="company-tag">{data.partnership}</span>:'';
         return (
             <div className='company-base-shower'>
@@ -46,7 +46,7 @@ class CompanyBaseShower extends React.Component {
                 <div className="title-2">联系地址</div>
                 <div className="content-1">{data.address}</div>
                 <Modal title='修改合作关系' visible={editTagVisible} onCancel={this.handleCancel} footer={null} >
-                    <WrappedEffectFrom />
+                    <WrappedEffectForm />
                 </Modal >
             </div>
         );

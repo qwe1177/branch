@@ -48,7 +48,31 @@ class UserForm extends Component {
             title: '企业名称',
             dataIndex: 'companyName',
             width: 160,
-            render: text=>text,
+            render: (text, record, index) => {
+                let path='';
+                switch(record.type)
+                {
+                    case 'my':
+                        path='myClueDetail';
+                        break;
+                    case 'underling':
+                        path='underlingClueDetail';
+                        break;
+                    case 'all':
+                        path='allClueDetail';
+                        break;
+                    case 'theHighSeas':
+                        path='publicClueDetail';
+                        break;
+                    default:
+                        path='allClueDetail'
+                }
+
+                const url=`${config.connect_wwwsrm}/${path}/?supplierId=${record.supplierId}`
+                return path!='allClueDetail'?(<a target="_blank" href={url}>{text}</a>):<span>{text}</span>
+
+            }
+
         }, {
             title: '来源',
             className: '',
@@ -110,10 +134,10 @@ class UserForm extends Component {
                 dataIndex: 'Operation',
                 render: (text, record, index) => {
                     var value = []
-                    if (record.flag == '1') {
+                    if (record.type == 'my'||record.tye == 'underling') {
                         value = [<p key={`${index}`} style={{marginBottom: '5px'}}>移入公海</p>,
                             <p key={`_${index}`}>分配负责人</p>]
-                    } else if (record.userId == "0") {
+                    } else if (record.type == "theHighSeas") {
                         value = [<p key={`${index}`}>加入我的</p>]
                     }
                     return (
@@ -194,11 +218,12 @@ class UserForm extends Component {
             if (response.status == 200) {
                 if (response.data.code == 1) {
                     message.success(`${response.data.msg}`);
-                    const newdata = data.filter(o=>actkey.every(j=>o.key != j))
+                    //const newdata = data.filter(o=>actkey.every(j=>o.key != j))
                     this.props.tablemodelaction({selectedRowKeys: [], actkey: []});
                     this.props.modalmodelaction({ModalText: '提交中···', confirmLoading: true,})
+                    this.props.fetchPosts({key: 'data', value: {isPass: 'no', markToDistinguish: 'all'}})
                     setTimeout(() => {
-                        this.props.tablemodelaction({data: newdata,});
+                        //this.props.tablemodelaction({data: newdata,});
                         this.props.modalmodelaction({
                             visible: false,
                             confirmLoading: false,

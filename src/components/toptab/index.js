@@ -4,11 +4,11 @@ import './layout.css';
 import { Menu, Dropdown, Icon } from 'antd';
 import _ from 'lodash'
 import 'antd/dist/antd.css';
-var querystring = require('querystring');
-import axios from 'axios';
+import querystring  from 'querystring';
+import url from 'url';
 
 import { connect_cas } from '../../util/connectConfig';
-import { getUrlParams } from '../../util/baseTool';
+import { getUrlParams,getOneUrlParams } from '../../util/baseTool';
 
 class TopTab extends React.Component {
   static propTypes = {
@@ -22,23 +22,50 @@ class TopTab extends React.Component {
     if(!data || data.length==0){
       return [];
     }
-    var urlParams = getUrlParams(location.href);
-    var systemId = urlParams['systemId'] ? urlParams['systemId'] : '';
-    var hasSystemId =false;
-    var menu = data.map((o) => {
-      var temp =_.omit(o, ['son']);
-      if(temp.systemId ==systemId){ 
-        temp['actived'] = true;
-        hasSystemId = true;
+    var pathname = location.pathname;
+    var isMatched = false;
+    var systemId = getOneUrlParams('systemId');
+    
+    if(systemId==''){//没有传入systemId,使用url匹配
+      for(var o of data){
+        var son = o.son;
+        if(son && son.length>0){
+          for(var item of son){
+            var son2 = item.son;
+            if(son2 && son2.length>0){
+              for(var childItem of son2){
+                if(url.parse(childItem.url).pathname ==pathname){   
+                    isMatched = true;
+                    break;
+                }
+              }
+            }else{
+              if(url.parse(item.url).pathname ==pathname){   
+                  isMatched = true;
+                  break;
+              }
+            }
+          }
+        }
+        if(isMatched){
+          o['actived'] = true;
+          break;
+        }
       }
-      return temp;
-    });
-    if(!hasSystemId){ //如果没有systemId匹配，默认第一个选中
-      // var index = 1 //默认打开第几个tab
-      var index = 0 //默认打开第几个tab
-      menu[index]['actived'] = true;
+    }else{          //一些非菜单页面需要用systemId匹配
+      for(var o of data){
+        if(o.systemId ==systemId){ 
+          o['actived'] = true;
+          isMatched = true;
+          break;
+        }
+      }
     }
-    return menu;
+    
+    if(!isMatched){
+      data[0]['actived'] = true; //都没有匹配的时候默认选中第一个
+    }
+    return data;
   }
   joinUrl = (o) => {
     var params = _.pick(o, ['systemId', 'moduleId']);

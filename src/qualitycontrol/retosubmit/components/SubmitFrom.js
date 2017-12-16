@@ -19,11 +19,8 @@ import { bindActionCreators } from 'redux';
 import actions from '../actions'
 import {fetchInitInfo} from '../actions'
 
-
-import axios from 'axios'
-axios.defaults.timeout = 30000;                        //响应时间
-axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8';           //配置请求头
-
+import BrandSelector from '../../../components/business/brandselector/index';
+import axios  from '../../../util/axios'
 
 class SubmitFrom extends React.Component {
     constructor(props) {
@@ -43,7 +40,7 @@ class SubmitFrom extends React.Component {
             className: 'column-money',
             dataIndex: 'brankName',
             width: 160,
-            render: this.addinputdata,
+            render: this.addinputdata2,
         }, {
             title: '品牌类型',
             dataIndex: 'brankType',
@@ -81,10 +78,8 @@ class SubmitFrom extends React.Component {
             dataIndex: 'Operation',
             render: (text, record, index) => {
                 return (
-                    this.props.tablemodel1.data1.length > 1 ?
-                        (
-                            <div><a onClick={this.Modalshow(index)}>{text}</a>
-                            </div>) : null
+                    <div><a onClick={this.Modalshow(index)} >删除</a>
+                    </div>
                 );
             },
         }
@@ -155,8 +150,27 @@ class SubmitFrom extends React.Component {
                 width: 100
             }
         ];
+        this.state ={
+            brandSelectorVisible: false,
+            brankName:'',
+            brankId:'',
+        }
     }
-
+    handleOpenChoose = (name,id) => ()=>{
+        this.setState({brandSelectorVisible: true,brankName:name,brankId:id});
+    }
+    handleChoosed = (ids, labels) => {
+        this.props.form.setFieldsValue({[this.state.brankName]: labels, [this.state.brankId]: ids});
+        this.setState({brandSelectorVisible: false});
+    }
+    handleCancel = () => {
+        this.setState({brandSelectorVisible: false});
+    }
+    getLastSelectBrand = () => {
+        var labelstr = this.props.form.getFieldValue(this.state.brankName);
+        var idstr = this.props.form.getFieldValue(this.state.brankId);
+        return {labelstr, idstr}
+    }
     formItemLayout = {
         labelCol: { span: 5 },
         wrapperCol: { span: 19 }
@@ -179,6 +193,13 @@ class SubmitFrom extends React.Component {
         e.preventDefault();
         this.props.form.validateFieldsAndScroll((err, values) => {
             if (!err) {
+               //测试环境上传报价单有问题，暂时屏蔽
+                var quotationLen = this.props.tablemodel2.data2.length;
+                if(quotationLen==0){
+                    message.error('请至少上传1条报价单!');
+                    return;
+                }
+
                 console.log('Received values of form: ', values);
                 const params = {}
                 const newarrobj = this.objToarrsort(values)
@@ -229,20 +250,19 @@ class SubmitFrom extends React.Component {
                         }
                     }
                 }
-                // newparams.supplierId = this.props.Infos.supplierId,
-                var token = getLoginInfo()['token'];  //获取token　登录用
-                var urlParams = getUrlParams();
-                var supplierId = urlParams['supplierId']?urlParams['supplierId']:'';
-                newparams['supplierId'] = supplierId;
+           
 
                 console.log(newparams)
                 //只提交基础信息和联系人资料和企业规模
                 var filteFields = ['supplierId', 'creditNumber', 'province', 'city', 'deadline', 'organization', 'corporation', 'corporationGender', 'creditNumber',
-                    'idcard', 'card1', 'card2', 'license', 'qualification', 'authorizationBus', 'undertaking', 'officespace', 'workshop', 'brankName',
+                    'idcard', 'idcards', 'license', 'qualification', 'authorizationBus', 'undertaking', 'officespace', 'workshop', 'brankName',
                     'brankType', 'authorization', 'registration', 'certification','otherAptitude', 'remark'];
                 newparams = _.pick(newparams, filteFields);
-                newparams['token'] = token;
-
+                var moduleUrl = location.pathname;
+                var supplierId = getOneUrlParams("supplierId");
+                newparams['moduleUrl'] = moduleUrl;
+                newparams['supplierId'] = supplierId;
+                
                 var data = qs.stringify(newparams);
                 axios.post(`${config.connect_srm}/qualityControl/addQualityControl.do`, data)
                     .then(response => {
@@ -279,6 +299,28 @@ class SubmitFrom extends React.Component {
                 <Input placeholder={placeholder} style={{ width: '100%' }} />
                 )}
         </FormItem>)
+     addinputdata2 = ({name, message, placeholder = '', initialValue = ['',''], required = false, type = 'string',}) => (
+        <FormItem style={{width: '100%'}} {...{
+            ...this.formItemLayout, ...{
+                wrapperCol: {
+                    span: 24,
+                }
+            }
+        }}>
+
+            {this.props.form.getFieldDecorator(name.replace(/Name/g,'Id'),{initialValue: initialValue[1]})(
+                <Input type='hidden'/>
+            )}
+            {this.props.form.getFieldDecorator(name,{
+                rules: [{required: required, message: message, type: type}, {
+                    validator: name.match(/^mobile/g) ? this.telphonevalid : null,
+                }], initialValue: initialValue[0]
+            })(
+                <Input onClick={this.handleOpenChoose(name,name.replace(/Name/g,'Id'))} readOnly style={{width: '100%'}}
+                       placeholder="点击选择经营品牌"/>
+            )}
+
+        </FormItem>)
     /*下拉控件*/
     addselectdata = ({ name, message, placeholder = '',initialValue = '' }) => (<FormItem>
         {this.props.form.getFieldDecorator(name, {
@@ -309,7 +351,7 @@ class SubmitFrom extends React.Component {
                 getValueFromEvent: this.normFile,
                 initialValue: initialValue,
             })(
-                <Upload {...this.uploadsprops2} beforeUpload={this.beforeUpload}>
+                <Upload {...this.uploadsprops2} beforeUpload={this.beforeUpload} listType="picture-card">
                     {this.uploadicon(name, num)}
                 </Upload>
             )}
@@ -406,10 +448,14 @@ class SubmitFrom extends React.Component {
     ModalhandleOk = () => {
         const data1 = [...this.props.tablemodel1.data1];
         const delkey = this.props.tablemodel1.delkey;
-        data1.splice(delkey, 1);
         this.props.modalmodelaction({ ModalText: '删除中···', confirmLoading: true, })
         setTimeout(() => {
-            this.props.tablemodelaction({ data1: data1 });
+            if(data1.length==1){ //只有1条的时候清空
+                this.props.resettablemodelaction();
+            }else{
+                data1.splice(delkey, 1);
+                this.props.tablemodelaction({ data1: data1 });
+            }
             this.props.modalmodelaction({
                 visible: false,
                 confirmLoading: false
@@ -438,7 +484,7 @@ class SubmitFrom extends React.Component {
                             No: v.key,
                             brankName: {
                                 name: `brankName${v.key}`,
-                                initialValue: v.brankName,
+                                initialValue: [v.brankName,v.brankId],
                                 message: '请输入品牌名称',
                                 placeholder: '品牌名称',
                             },
@@ -503,8 +549,11 @@ class SubmitFrom extends React.Component {
                 }
                 this.props.baseInfoForm(allcitys);
 
-                var newdeadline = deadline.split(',');
-                newdeadline = newdeadline.length ? [moment(newdeadline[0]), moment(newdeadline[1])] : [];
+                 var newdeadline =[];
+                if(deadline !=''){
+                    newdeadline = deadline.split(',');
+                    newdeadline = newdeadline.length ? [moment(newdeadline[0]), moment(newdeadline[1])] : [];
+                }
                 var newidcards = this.fileListhanddle(idcards);
                 var newlicense = this.fileListhanddle(license)
                 var newqualification = this.fileListhanddle(qualification)
@@ -583,7 +632,7 @@ class SubmitFrom extends React.Component {
         // const citysarr = citys ? citys.map((v, i, a) => (<Option key={v['id']}>{v['name']}</Option>)) : [];
         const registAddressCitysarr = registAddressCitys ? registAddressCitys.map((v, i, a) => (
             <Option key={v['id']}>{v['name']}</Option>)) : [];
-
+        const choosedKeys = this.getLastSelectBrand();
 
         return (
             <Form layout="horizontal" onSubmit={this.handleSubmit}>
@@ -707,7 +756,7 @@ class SubmitFrom extends React.Component {
 
                                 })(
                                     <Upload {...this.uploadsprops2}
-                                        beforeUpload={this.beforeUpload}>
+                                        beforeUpload={this.beforeUpload} listType="picture-card">
                                         {this.uploadicon('idcards', 2)}
                                     </Upload>
                                     )}
@@ -724,7 +773,7 @@ class SubmitFrom extends React.Component {
                                     getValueFromEvent: this.normFile,
                                 })(
                                     <Upload {...this.uploadsprops2}
-                                        beforeUpload={this.beforeUpload}>
+                                        beforeUpload={this.beforeUpload} listType="picture-card">
                                         {this.uploadicon('license', 1)}
                                     </Upload>
                                     )}
@@ -744,7 +793,7 @@ class SubmitFrom extends React.Component {
                                     getValueFromEvent: this.normFile,
                                 })(
                                     <Upload {...this.uploadsprops2}
-                                        beforeUpload={this.beforeUpload}>
+                                        beforeUpload={this.beforeUpload}  listType="picture-card">
                                         {this.uploadicon('qualification', 1)}
                                     </Upload>
                                     )}
@@ -763,7 +812,7 @@ class SubmitFrom extends React.Component {
                                     getValueFromEvent: this.normFile,
                                 })(
                                     <Upload {...this.uploadsprops2}
-                                        beforeUpload={this.beforeUpload}>
+                                        beforeUpload={this.beforeUpload} listType="picture-card">
                                         {this.uploadicon('authorizationBus', 1)}
                                     </Upload>
                                     )}
@@ -783,7 +832,7 @@ class SubmitFrom extends React.Component {
                                     getValueFromEvent: this.normFile,
                                 })(
                                     <Upload {...this.uploadsprops2}
-                                        beforeUpload={this.beforeUpload}>
+                                        beforeUpload={this.beforeUpload} listType="picture-card">
                                         {this.uploadicon('undertaking', 1)}
                                     </Upload>
                                     )}
@@ -802,7 +851,7 @@ class SubmitFrom extends React.Component {
 
                                 })(
                                     <Upload {...this.uploadsprops2}
-                                        beforeUpload={this.beforeUpload}>
+                                        beforeUpload={this.beforeUpload} listType="picture-card">
                                         {this.uploadicon('officespace', 1)}
                                     </Upload>
                                     )}
@@ -822,7 +871,7 @@ class SubmitFrom extends React.Component {
                                     getValueFromEvent: this.normFile,
                                 })(
                                     <Upload {...this.uploadsprops2} beforeUpload={this.beforeUpload}
-                                        multiple={true}>
+                                        multiple={true} listType="picture-card">
                                         {this.uploadicon('workshop', 3)}
                                     </Upload>
                                     )}
@@ -853,6 +902,10 @@ class SubmitFrom extends React.Component {
                         }}
                             onOk={this.ModalhandleOk} confirmLoading={this.props.modalmodel.confirmLoading}
                             onCancel={this.ModalhandleCancel('visible')} />
+                         <BrandSelector onChoosed={this.handleChoosed}
+                            visible={this.state.brandSelectorVisible}
+                            choosedKeys={choosedKeys}
+                            onCancel={this.handleCancel}/>  
                     </div>
                 </div>
                 <div className="tabel-wrap">

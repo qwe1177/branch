@@ -2,9 +2,6 @@ import { connect_srm } from '../../../util/connectConfig';
 import { getLoginInfo ,getUrlParams} from '../../../util/baseTool';
 import axios from 'axios';
 import _ from 'lodash';
-const xiaowenwu_url = 'http://10.10.10.114:8080/v1';
-//  const xiaowenwu_url = 'http://10.10.10.214:9503/srm-app/v1';
-
 
 export const GET_HEAD_FIRST = 'GET_HEAD_FIRST'  //获取公共头1的数据
 export const GET_HEAD_SECOND = 'GET_HEAD_SECOND' //获取公共投2的数据

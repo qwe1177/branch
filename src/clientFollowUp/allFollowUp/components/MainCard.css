@@ -28,7 +28,7 @@
     padding: 20px;
     background-color: #f4f4f4;
 }
-.myFollowUp .ant-card {
+.allFollowUp .ant-card {
     margin-bottom: 15px;
 }
 /* 设置每行文字的间距 */
@@ -42,53 +42,30 @@
     margin-top: 20px;
     margin-bottom: 15px;
 }
-/* 添加批注和删除批注 */
-.delete-follow {
-    display: block;
-}
-.add-follow {
-    display: none;
-}
-.pizhu .delete-follow {
-    display: none;
-}
-.pizhu .add-follow {
-    display: block;
-}
-/* 添加批注 */
-.add-follow .region-tool {
-    padding: 0;
-}
-.add-follow .card-option {
-    position: relative;
-    right: -30px;
-    bottom: -58px;;
-}
-.add-follow  input {
-    padding: 10px 15px;
-    border: none;
-    outline: none;
-    width: 100%;
-    height: 100%;
-}
-.myFollowUp .label{
-    color: #333333;
-    font-weight: bold;
+
+.card-date{
+    color:#999;
+    margin-left: 6px;
 }
 
-.myFollowUp .value{
-    margin-left:4px; 
-}
-
-/* 删除批注的样式 */
-.delete-follow .card-option{
+.card-option{
     text-align: right;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+    position: relative;
 }
 
 .card-option .remove-btn{
     color: #6699cc;
+    position: absolute;
+    bottom: 0;
+    right: 0;
     cursor: pointer;
 }
+
+.card-edit{
+    text-align: right;
+}
+
+.card-edit .anticon-edit{
+    cursor: pointer;
+}
+

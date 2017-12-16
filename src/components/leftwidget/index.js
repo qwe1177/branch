@@ -4,8 +4,8 @@ import './layout.css';
 import { Menu, Dropdown, Icon } from 'antd';
 import 'antd/dist/antd.css';
 import _ from 'lodash'
-var querystring = require('querystring');
-import axios from 'axios';
+import querystring  from 'querystring';
+import url from 'url';
 
 import { getUrlParams } from '../../util/baseTool';
 const SubMenu = Menu.SubMenu;
@@ -26,47 +26,76 @@ class Sider extends React.Component {
   onSelect = (item, key, selectedKeys) => {
     this.setState({ selectedKeys });
   }
-  setDatafromProp = (data)=>{
-    if(!data || data.length==0){
+  setDatafromProp = (data) => {
+    if (!data || data.length == 0) {
       return;
     }
     var urlParams = getUrlParams(location.href);
     var systemId = urlParams['systemId'] ? urlParams['systemId'] : '', moduleId = urlParams['moduleId'] ? urlParams['moduleId'] : '';
-    var targetData = this.getTargetData(data, systemId, 1); //第3个参数mock使用,表示默认打开第几个菜单
-    var d = this.getDefault(targetData, moduleId); //获取展开的的选中的菜单key
+    var targetData = this.getTargetMenuData(data, systemId, 0); //第3个参数,表示默认打开第几个菜单
+    var d = this.getMenuOpenAndSelected(targetData, moduleId); //获取展开的的选中的菜单key
     this.setState({ openKeys: d.openKeys, selectedKeys: d.selectedKeys, data: targetData });
   }
-  componentWillMount(){
+  componentWillMount() {
     this.setDatafromProp(this.props.data);
   }
-  componentWillReceiveProps(nextProps){
+  componentWillReceiveProps(nextProps) {
     this.setDatafromProp(nextProps.data);
   }
-  //从所有菜单数据中提取需要的左侧菜单数据
-  getTargetData = (data, systemId, index) => {
+  getTargetMenuByUrl =(data)=>{
+    var isMatched = false;
     var targetData = [];
-    if (index) {
-      targetData = data[index].son;//默认使用供应商模拟数据
-    } else {
-      if (systemId == '') {
-        targetData = data[0].son;//登录后进入首页默认拿第一个menu的数据
-      } else {
-        for (let o of data) {
-          if (o.systemId == systemId) {
-            targetData = o.son;
-            break;
+    var pathname = location.pathname;
+    for(var o of data){
+      var son = o.son;
+      if(son && son.length>0){
+        for(var item of son){
+          var son2 = item.son;
+          if(son2 && son2.length>0){
+            for(var childItem of son2){
+              if(url.parse(childItem.url).pathname ==pathname){   
+                  isMatched = true;
+                  break;
+              }
+            }
+          }else{
+            if(url.parse(item.url).pathname ==pathname){   
+                isMatched = true;
+                break;
+            }
           }
+        }
+      }
+      if(isMatched){
+        targetData = son;
+        break;
+      }
+    }
+    return targetData;
+  }
+  //从所有菜单数据中提取需要的左侧菜单数据
+  getTargetMenuData = (data, systemId, index) => {
+    var targetData = [];
+    if (systemId == '') {
+      targetData = this.getTargetMenuByUrl(data);
+      if(targetData.length==0){ //通过url未匹配到
+        targetData = data[index].son;//登录后进入首页默认拿第一个menu的数据
+      }
+    } else {
+      for (let o of data) {
+        if (o.systemId == systemId) {
+          targetData = o.son;
+          break;
         }
       }
     }
     return targetData;
   }
   //获取导航菜单的展开值和选中值
-  getDefault = (targetData, moduleId) => {
-    if(!targetData || targetData.length==0){
+  getMenuOpenAndSelected = (targetData, moduleId) => {
+    if (!targetData || targetData.length == 0) {
       return { openKeys: [], selectedKeys: [] };
     }
-
     var getFirst = (targetData) => {
       var openKey = targetData[0].moduleId;
       var selectedKey = '';
@@ -79,39 +108,51 @@ class Sider extends React.Component {
     }
 
     var openKeys = [], selectedKeys = [];
-    if (moduleId == '') {  //登录后进入首页默认拿第一个menu的第一个model,默认打开第一个menu
-      var obj = getFirst(targetData);
-      openKeys = obj.openKeys, selectedKeys = obj.selectedKeys;
-    } else {
-      var isSearched = false;
-      for (let o of targetData) {
+    var isMatched = false;
+    var pathname = location.pathname;
+    if (moduleId == '') {  //未传入moduleId的时候
+      // var obj = getFirst(targetData);
+      // openKeys = obj.openKeys, selectedKeys = obj.selectedKeys;
+      for(var o of targetData){
         var son = o.son;
         if(son && son.length>0){
+          for(var item of son){
+            if(url.parse(item.url).pathname ==pathname){   
+                openKeys.push(o.moduleId);
+                selectedKeys.push(item.moduleId);
+                isMatched = true;
+                break;
+            }
+          }
+        }
+        if(isMatched){
+          break;
+        }
+      }
+    } else {
+      for (let o of targetData) {
+        var son = o.son;
+        if (son && son.length > 0) { //有二级菜单
           for (let p of son) {  //左侧链接点击去可以匹配到子菜单
             if (p.moduleId == moduleId) {
               openKeys.push(o.moduleId);
               selectedKeys.push(p.moduleId);
-              isSearched = true;
+              isMatched = true;
               break;
             }
           }
-        }else{
+        } else {  //无二级菜单
           if (o.moduleId == moduleId) {
-            if(son && son.length>0){  //点击顶部tab进入，取不到具体子菜单，取第一个
-              openKeys.push(o.moduleId);
-              selectedKeys.push(son[0].moduleId);
-            }else{  //如首页类似的无子页面，只设置select
-              selectedKeys.push(o.moduleId);
-            }
-            isSearched = true;
+            selectedKeys.push(o.moduleId);
+            isMatched = true;
           }
         }
-        if (isSearched) {
+        if (isMatched) {
           break;
         }
       }
 
-      if (!isSearched) {
+      if (!isMatched) {
         var obj = getFirst(targetData);
         openKeys = obj.openKeys, selectedKeys = obj.selectedKeys;
       }
@@ -132,11 +173,11 @@ class Sider extends React.Component {
     var result = this.state.data.map((o) => {
       var className = o.className == '' ? 'pdl5' : 'pdl5 ' + o.className;
       var title = o.son.length == 0 ? <a className={className} href={this.joinUrl(o)}>{o.name}</a> : <span className={className} href={this.joinUrl(o)}>{o.name}</span>;
-      if(o.son.length== 0){
+      if (o.son.length == 0) {
         return <Menu.Item key={o.moduleId}>{title}</Menu.Item>
-      }else{
+      } else {
         return <SubMenu key={o.moduleId} title={title}>
-        {addChild(o)}
+          {addChild(o)}
         </SubMenu>
       }
     })
@@ -170,10 +211,10 @@ class LeftWidget extends React.Component {
           <span className="sp2">CRM</span>
         </div>
         <div className="switch">
-        <div className='system'>奇智SRM系统</div><div className='switch-wrap'><a href='http://crm.csc86.com' className='switch-icon'>CRM</a></div>
+          <div className='system'>奇智SRM系统</div><div className='switch-wrap'><a href='http://crm.csc86.com' className='switch-icon'>CRM</a></div>
         </div>
         <div>
-          <Sider data={this.props.data}/>
+          <Sider data={this.props.data} />
         </div>
       </div>
     )

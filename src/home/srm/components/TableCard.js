@@ -19,15 +19,21 @@ const mock = [
 ];
 
 class MainTable extends React.Component {
-  state = {
-    pagination: {
-      total: 0,
-      current: 1,
-      pageSize: 6
-    },
-    tableData: mock,
-    isFetching: false
-  }
+  constructor(props, context) {
+		super(props, context);
+		this.state = {
+      pagination: {
+        total: 0,
+        current: 1,
+        pageSize: 6
+      },
+      tableData: mock,
+      isFetching: false
+    }
+    var urlParams = getUrlParams();
+    this.moduleId = urlParams['moduleId']?urlParams['moduleId']:'';
+    this.systemId = urlParams['systemId']?urlParams['systemId']:'';
+	}
   componentWillMount() {
     this.queryData();
   }
@@ -43,7 +49,7 @@ class MainTable extends React.Component {
     }
     var { pageSize ,current} = pagination;
     var params = {moduleId,pageSize,pageNo:current};
-    axios.get(connect_srm + '/supplier/queryFollowupList.do', { params: params ,timeout:20000}).then((res) => {
+    axios.get(connect_srm + '/supplier/viewFollowupPlanList.do', { params: params ,timeout:20000}).then((res) => {
       if (res.data.code == '1') {
         var newPagination = { ...pagination, total: res.data.data.rowCount };
         this.setState({ tableData: res.data.data.supplierFollowupPlanList, pagination: newPagination, isFetching: false });
@@ -55,11 +61,24 @@ class MainTable extends React.Component {
       this.setState({ isFetching: false });
     });
   }
+  buildUrl =(text,record)=>{
+    var url = '';
+    if(record.followupType==1){
+      url = '/suppliermanage/cuedetail/?systemId'+this.systemId+'&moduleId='+this.moduleId+'&moduleUrl=/suppliermanage/allsupplierdetail/';
+    }else{
+      url = '/suppliermanage/allsupplierdetail/?systemId'+this.systemId+'&moduleId='+this.moduleId+'&moduleUrl=/suppliermanage/allsupplierdetail/';
+    }
+    url +='&supplierId='+record.supplierId;
+    return <a href={url}>{text}</a>
+  }
   render() {
     const columns = [{
       title: '客户名称',
       dataIndex: 'companyName',
-      key: 'companyName'
+      key: 'companyName',
+      render: (text, record) => (
+        this.buildUrl(text, record)
+      )
     }, {
       title: '计划内容',
       dataIndex: 'planNextContent',

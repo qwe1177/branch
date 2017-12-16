@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import { connect_cas } from '../../util/connectConfig';
 import { getLoginInfo ,setLoginAccount} from '../../util/baseTool';
-import axios from 'axios';
+import axios from '../../util/axios';
 import data from './mock';
 
 export default class PlatformComponent extends Component {
@@ -29,19 +29,17 @@ export default class PlatformComponent extends Component {
     this.setState({ platformMenu:data }); //默认设置mock数据为了开发
     var loginInfo = getLoginInfo(); //从localstorage得到platformId,token 如果没有使用mock
     var platformId = loginInfo.platformId;//srm默认的platformId
-    var token = loginInfo.token; //用户和权限记录
-    axios.get(connect_cas + '/api/menu/getPlatformMenu', { params: { platformId: platformId, token: token } }).then((res) => {
+    axios.get(connect_cas + '/api/menu/getPlatformMenu', { params: { platformId } }).then((res) => {
         if (res.data.code == '0') {
-          // console.log(JSON.stringify(res.data.data.menu));
           this.setState({platformMenu:res.data.data.menu});
         }
       });
   }
   getLoginAcct=()=>{
     var loginInfo = getLoginInfo(); //从localstorage得到platformId,token 如果没有使用mock
-    var platformId = loginInfo.platformId;//srm默认的platformId
-    var token = loginInfo.token; //用户和权限记录
-    axios.get(connect_cas + '/api/login/chack', { params: { token: token } }).then((res) => {
+    // var platformId = loginInfo.platformId;//srm默认的platformId
+    // var token = loginInfo.token; //用户和权限记录
+    axios.get(connect_cas + '/api/login/chack', { params: {} }).then((res) => {
       if (res.data.code == '0') {
         setLoginAccount(res.data.data);
         this.setState({ loginAcct: res.data.data});

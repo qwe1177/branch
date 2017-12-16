@@ -114,7 +114,7 @@ export default class CategorySelector extends React.Component {
 
         return (
             <Modal title='选择类目' visible={visible} 
-                onOk={this.handleOk} onCancel={this.handleCancel}
+                onOk={this.handleOk} onCancel={this.handleCancel} className='category-selector'
             >
                 <Table bordered className='category-selector-tablewrap' columns={columns} dataSource={dataSource} rowKey={record => record.cid}  //数据中已key为唯一标识
                      rowSelection={rowSelection}

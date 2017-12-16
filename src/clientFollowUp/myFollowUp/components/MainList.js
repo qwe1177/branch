@@ -26,9 +26,8 @@ class MainTable extends React.Component {
     paginationObj.pageSize = size;
     this.props.doQueryFollow({query:this.props.MyFollowUP.query,pagination:paginationObj});
   }
-  showModal = (key,id  )=> {
+  showModal = (key,id )=> {
     this.props.doFormEdit(key,id);
-    this.props.EditModal.modalType = 2;
   }
   handleEditSucess = () =>{
     var {query,pagination} = this.props.MyFollowUP;
@@ -43,7 +42,7 @@ class MainTable extends React.Component {
               {cardData==null ?  <div></div> : cardData.map((o)=>{
                   return <MainCard  onEdit={this.showModal.bind(this)} data={o} key={o.id} />
               })}
-              <PublicModal  type = {cardData!=null ?cardData.followupType:'' } onSuccess={this.handleEditSucess.bind(this)}/>
+              <PublicModal onSuccess={this.handleEditSucess.bind(this)}/>
             </div>
             <div className='pagination-wrap'>
               <Pagination current={pagination.current} total={pagination.total} 

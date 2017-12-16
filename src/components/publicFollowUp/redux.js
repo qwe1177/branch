@@ -1,7 +1,7 @@
 import axios from 'axios';
 // import { combineReducers } from 'redux';
 import { getLoginInfo} from '../../util/baseTool.js';
-import { connect_url } from '../../util/connectConfig.js';
+import { connect_srm } from '../../util/connectConfig.js';
 import _ from 'lodash';
 
 import moment from 'moment';
@@ -51,7 +51,7 @@ export const doFormEdit = (supplierId,id) => async(dispatch, getState) => {
     var token = getLoginInfo()['token'];  //获取token　登录用
     var params = {supplierId,id,token};
     params = _.omitBy(params, _.isUndefined); //删除undefined参数
-      let res = await axios.get('http://10.10.10.29:9407/v1/supplier/querySupplierFollowupRecordsInfo.do',{ params: params }); //添加提交请求
+      let res = await axios.get(connect_srm+'/supplier/viewSupplierFollowupRecordsInfo.do',{ params: params }); //添加提交请求
       if(res.data.data.planNextContactTime&&res.data.data.planNextContactTime != "") {
         res.data.data.planNextContactTime=moment(res.data.data.planNextContactTime)
       }  
@@ -61,7 +61,7 @@ export const doFormEdit = (supplierId,id) => async(dispatch, getState) => {
       if(res.data.data.followUpFlag) {
         res.data.data.followUpFlag = res.data.data.followUpFlag.split(",");
       }
- 
+      res.data.data.modalType = 2;
       return await dispatch(formEdit(res.data.data));   
   } catch (error) {
     console.log('error: ', error)
@@ -79,7 +79,10 @@ export const doFormAdd = (data) => (dispatch, getState) => {
     followUpTheContent: '',
     planNextContactTime: '',
     planNextContent: '',
-
+    companyName: data.companyName,
+    supplierId: data.supplierId,
+    followupType: data.followupType,
+    modalType:data.modalType
   }
   return dispatch(formAdd(initForm));
 } 
@@ -105,7 +108,7 @@ export const doEffectFlow = (url,data) => async (dispatch, getState) => {
     }
     var params = {...pform,token};
     params = _.omitBy(params, _.isUndefined); //删除undefined参数
-      let res = await axios.get(url, { params: params }); //添加提交请求
+      let res = await axios.get(connect_srm+url, { params: params }); //添加提交请求
      if(res.data.code =='1') {
         await dispatch(receiveSuccess());
         return res;
@@ -123,7 +126,6 @@ const defaultState={
   visible:false,
   isFetching:false,
   pform:{},
-  modalType:1,
 }
 const EditModal = function (state = defaultState, action = {}) {
   switch (action.type) {
@@ -131,14 +133,14 @@ const EditModal = function (state = defaultState, action = {}) {
     let pform = {...state.pform,...action.data}
       return { ...state, pform: pform, visible: true};
     case EDITFOLLOWUP_FORM_EDIT:
-      let p = _.pick(action.data,['supplierId','followupType','id','companyName','contactPersonnel','activeContact','contactWay','thisContactTime','followUpFlag','followUpNode','followUpTheContent','planNextContactTime','planNextContent']);
+      let p = _.pick(action.data,['supplierId','followupType','id','companyName','contactPersonnel','activeContact','contactWay','thisContactTime','followUpFlag','followUpNode','followUpTheContent','planNextContactTime','planNextContent','modalType']);
       return { ...state, pform: p, visible: true};
     case EDITFOLLOWUP_CANCEL_FORM:
       return { ...state, visible: false };
     case EDITFOLLOWUP_REQUEST_EFFECT_ITEM:
       return { ...state, isFetching: true};
     case EDITFOLLOWUP_RECEIVE_SUCCESS:
-      return { ...state, isFetching: false,visible: false };
+      return { ...state, isFetching: false,visible: false,pform:{} };
     case EDITFOLLOWUP_RECEIVE_FAIL:
       return { ...state, isFetching: false,visible: false };
     default:

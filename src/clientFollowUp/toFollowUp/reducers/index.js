@@ -21,6 +21,8 @@ const mainQueryData = (state = defaultStateOne, action) => {
       return action.data
     case RESET_QUERY:
       return { queryform: initQueryform }
+    case INIT_QUERY:
+      return defaultStateOne
     default:
       return state       //INIT_QUERY   都取默认值
   }
@@ -36,7 +38,6 @@ const initTableData = {
     total: 1,
     current: 1,
     pageSize: 10,
-    // defaultPageSize: '',
     showTotal: total => `共 ${total} 条`
   }
 }

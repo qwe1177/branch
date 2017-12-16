@@ -57,7 +57,7 @@ export const doRequest = data => async (dispatch, getState) => {
     var paramPagination = {pageNo :pagination.current,pageSize:pagination.pageSize};
     var params = {...query, ...paramPagination,token, moduleId};
     query = _.omitBy(query, _.isUndefined);  //删除undefined参数
-    let res = await axios.get('http://10.10.10.29:9407/v1/clue/viewCompanyList.do',{ params: params }); //提交请求
+    let res = await axios.get(connect_srm+'/clue/getCompanyList.do',{ params: params }); //提交请求
     var pageSize=parseInt(res.data.data.pageSize);
     return await dispatch(receiveSuccess({  tableData: res.data.data, pagination: {...pagination,pageSize:pageSize,total:res.data.data.rowCount}})); 
   } catch (error) {
@@ -77,7 +77,7 @@ const defaultState={
     showSizeChanger: true,
     total: 1,
     current: 1,
-    pageSize: 10,
+    pageSize: 5,
     showTotal: total => `共 ${total} 条`
 },
   tableData:[]
@@ -94,7 +94,7 @@ const AddModal = function (state = defaultState, action = {}) {
       let newPagination = {...state.pagination,...action.data.pagination};
       return { ...state,tableData, pagination:newPagination,isFetching:false };
     case ADDFOLLOWUP_CANCEL_FORM:
-      return { ...state, visible: false,isFetching: false };
+      return { ...state, visible: false,isFetching: false};
     case ADDFOLLOWUP_RECEIVE_FAIL:
       return { ...state, isFetching: false,visible: false };
     default:

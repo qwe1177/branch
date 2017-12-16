@@ -40,3 +40,8 @@
     font-weight: lighter;
     cursor: pointer;
 }
+
+.company-base-shower  .ant-btn-primary{
+    background-color: #6699cc;
+    border-color: #6699cc;
+}

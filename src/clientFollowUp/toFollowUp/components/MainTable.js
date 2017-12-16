@@ -1,13 +1,13 @@
 import React from 'react';
 import axios from 'axios';
-import { connect_srm } from '../../../util/connectConfig.js';
+import { connect_srm ,connect_wwwsrm} from '../../../util/connectConfig';
+import { getUrlParams} from '../../../util/baseTool.js';
 import PropTypes from 'prop-types'
-import { Table,Button,Modal } from 'antd';
+import { Table,Button,Modal,message } from 'antd';
 import './MainTable.css';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import {queryTableData,initSupplierTable,setQueryFrom,doChangeMainCheck} from '../actions';
-
 
 @connect(
   state =>  ({mainQueryData: state.mainQueryData,mainTableData:state.mainTableData}),
@@ -34,9 +34,9 @@ class MainTable extends React.Component {
     let {key} = this.state;
     let _this = this;
     console.log(key)
-    axios.get(connect_srm+ '/v1/supplier/deleteSupplierFollowupRecords.do',{
+    axios.get(connect_srm+ '/supplier/delSupplierFollowupRecords.do',{
       params: {
-        ids:  key.length > 0  ?  key.join(',') : key 
+        ids:  key.length > 0  ?  key.join(',') : key ,
       } 
     })
     .then(function (response) {
@@ -44,6 +44,7 @@ class MainTable extends React.Component {
       let {pagination,isFetching} = _this.props.mainTableData;
       let {queryform} =  _this.props.mainQueryData;
       _this.props.queryTableData({queryform:queryform,pagination:pagination})
+      message.success('移除成功!');
     })
     .catch(function (error) {
       console.log(error);
@@ -79,13 +80,16 @@ class MainTable extends React.Component {
     }
   }
   render() {
-  
+    var urlParams = getUrlParams();
+    var moduleId = urlParams['moduleId']?urlParams['moduleId']:'';
+    var systemId = urlParams['systemId']?urlParams['systemId']:'';
+    var detailUrl ='/suppliermanage/allsupplierdetail/?systemId'+systemId+'&moduleId='+moduleId+'&moduleUrl=/suppliermanage/allsupplierdetail/';
     const columns = [{
       title: '企业名称',
       dataIndex: 'companyName',
       key:'companyName',
-      render: (text, record) => (
-        <a href={'http://10.10.10.114:8080/srm-app/v1/management/viewSupplierDetails.do?supplierId='+record.supplierId}>{text}</a>
+      render: (text,record) => (
+        <a href={(record.followupType == '2' ? detailUrl+'&' : '/underlingClueDetail/?')+'supplierId='+record.supplierId}>{text}</a>
       )
     } , {
       title: '计划内容',
@@ -101,7 +105,7 @@ class MainTable extends React.Component {
       key:'option',
       render: (text, record) => (
         <div className="tabel-extend-option">
-            <a href={'http://10.10.10.114:8080/srm-app/v1/management/viewSupplierDetails.do?supplierId='+record.supplierId}>去跟进</a>
+            <a href={detailUrl+'&supplierId='+record.supplierId}>去跟进</a>
             <span onClick={(key) => this.showModal(record.id)}>移出</span>
         </div>
       )

@@ -32,7 +32,6 @@ class MainTable extends React.Component {
 
   showModal = (key, id) => {
     this.props.doFormEdit(key, id);
-    this.props.EditModal.modalType = 2;
   }
   handleEditSucess = () => {
     var { query, pagination } = this.props.followupShower;
@@ -46,7 +45,7 @@ class MainTable extends React.Component {
           {list.map((o) => {
             return <MainCard onEdit={this.showModal.bind(this)} data={o} key={o.id} />
           })}
-          <PublicModal type={2} onSuccess={this.handleEditSucess.bind(this)} />
+          <PublicModal onSuccess={this.handleEditSucess.bind(this)} />
         </div>
         <div className='pagination-wrap'>
           <Pagination defaultCurrent={1} current={pagination.current} total={pagination.total}

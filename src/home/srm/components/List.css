@@ -95,6 +95,9 @@
     margin-right: 12px;
 }
 
+.table-card-wrap .ant-table-body a{
+    color: #5489bf;
+}
 
 .list-card-wrap .pagination-wrap{
     height: 58px;
@@ -120,4 +123,13 @@
     color: #417ab3;
     border: solid 1px #417ab3;
     padding: 4px 8px;
+}
+.list-card-wrap .ant-btn-primary{
+    background-color: #5489bf;
+    border-color: #5489bf;
+}
+
+.list-card-wrap .ant-pagination-item-active ,.table-card-wrap .ant-pagination-item-active {
+    background-color: #5489bf;
+    border-color: #5489bf;
 }

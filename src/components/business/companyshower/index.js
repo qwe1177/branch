@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types'
 
-
+import * as config  from '../../../util/connectConfig'
 
 import 'antd/dist/antd.css';
 import { Icon } from 'antd';
@@ -44,6 +44,23 @@ class CompanyShower extends React.Component {
         const { data, isExpand } = this.props.supplierDetailMain;
         // const { data, isExpand } = this.props.companyShower;
         const mainClassName = isExpand ? 'company-shower extend' : 'company-shower collapse';
+const idcards=data.supplierBusiness?data.supplierBusiness.idcards?data.supplierBusiness.idcards.split('@').map((v,i,a)=>(<a key={i} target="_blank" href={config.connect_img+v}>
+    <img   style={{width:'100%'}} src={config.connect_img+'/'+v} /></a>)):'':'';
+        const license=data.supplierBusiness?data.supplierBusiness.license?data.supplierBusiness.license.split('@').map((v,i,a)=>(<a key={i} target="_blank" href={config.connect_img+v}>
+            <img   style={{width:'100%'}} src={config.connect_img+'/'+v} /></a>)):'':'';
+
+       const qualification=data.supplierBusiness?data.supplierBusiness.qualification?data.supplierBusiness.qualification.split('@').map((v,i,a)=>(<a key={i} target="_blank" href={config.connect_img+v}>
+            <img   style={{width:'100%'}} src={config.connect_img+'/'+v} /></a>)):'':'';
+
+        const authorization=data.supplierBusiness?data.supplierBusiness.authorization?data.supplierBusiness.authorization.split('@').map((v,i,a)=>(<a key={i} target="_blank" href={config.connect_img+v}>
+            <img   style={{width:'100%'}} src={config.connect_img+'/'+v} /></a>)):'':'';
+
+        const undertaking=data.supplierBusiness?data.supplierBusiness.undertaking?data.supplierBusiness.undertaking.split('@').map((v,i,a)=>(<a key={i} target="_blank" href={config.connect_img+v}>
+            <img   style={{width:'100%'}} src={config.connect_img+'/'+v} /></a>)):'':'';
+
+        const workshop=data.supplierBusiness?data.supplierBusiness.workshop?data.supplierBusiness.workshop.split('@').map((v,i,a)=>(<a key={i} target="_blank" href={config.connect_img+v}>
+            <img   style={{width:'100%'}} src={config.connect_img+'/'+v} /></a>)):'':'';
+
         return (
 
             <div className={mainClassName}>
@@ -80,18 +97,20 @@ class CompanyShower extends React.Component {
                         <div><span className='title-2'>企业法人</span><span className='content-1'>{data.supplierBusiness?data.supplierBusiness.corporation:''}</span></div>
                         <div><span className='title-2'>身份证号码</span><span className='content-1'>{data.supplierBusiness?data.supplierBusiness.idcard:''}</span></div>
                         <div><span className='title-2'>法人省份证(复印件)</span>
-                            <span className='content-1' dangerouslySetInnerHTML={{ __html: data.supplierBusiness?data.supplierBusiness.idcards:'' }}></span>
+                            <span style={{display:'block'}} className='content-1'>{idcards}</span>
                         </div>
                         <div><span className='title-2'>营业执照(三证合一)</span>
-                            <span className='content-1' dangerouslySetInnerHTML={{ __html: data.supplierBusiness?data.supplierBusiness.license:'' }}></span>
+                            <span style={{display:'block'}} className='content-1'>{license}</span>
                         </div>
                     </div>
                 </div>
                 <div className='more-info'>
-                    <div><span className='title-2'>一般纳税人资质</span><span className='content-1'>{data.supplierBusiness?data.supplierBusiness.qualification:''}</span></div>
-                    <div><span className='title-2'>法人授权书/代理人授权书</span><span className='content-1'>{data.supplierBusiness?data.supplierBusiness.authorization:''}</span></div>
-                    <div><span className='title-2'>廉洁承诺书</span><span className='content-1'>{data.supplierBusiness?data.supplierBusiness.undertaking:''}</span></div>
-                    <div><span className='title-2'>生成车间/仓库</span><span className='content-1'>{data.supplierBusiness?data.supplierBusiness.workshop:''}</span></div>
+                    <div><span className='title-2'>一般纳税人资质</span>
+                        <span style={{display:'block'}} className='content-1'>{qualification}</span>
+                    </div>
+                    <div><span className='title-2'>法人授权书/代理人授权书</span><span className='content-1'>{authorization}</span></div>
+                    <div><span className='title-2'>廉洁承诺书</span><span className='content-1'>{undertaking}</span></div>
+                    <div><span className='title-2'>生成车间/仓库</span><span className='content-1'>{workshop}</span></div>
                     <div><span className='title-2'>授权品牌/自有品牌</span><span className='content-1'></span></div>
                     <div><span className='title-2'>品牌授权书</span><span className='content-1'></span></div>
                     <div><span className='title-2'>自有品牌注册/商标注册书</span><span className='content-1'></span></div>

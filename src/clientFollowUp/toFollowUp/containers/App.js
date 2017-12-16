@@ -5,9 +5,25 @@ import './App.css';
 import vueAxios from 'axios';
 import QueryFrom from '../components/QueryFrom';
 import MainTable from '../components/MainTable';
-import { Form,Button } from 'antd';
+import { Form } from 'antd';
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
+import {queryTableData} from '../actions';
 
+@connect(
+  state =>  ({mainQueryData: state.mainQueryData,mainTableData:state.mainTableData}),
+  dispatch => bindActionCreators({queryTableData}, dispatch)
+)
 class App extends Component {
+	constructor(props) {
+        super(props);
+    }
+    componentWillMount() {
+        let {pagination} = this.props.mainTableData;
+		let {queryform} =  this.props.mainQueryData;
+		this.props.queryTableData({queryform:queryform,pagination:pagination})
+    }
+
 	render() {
 		const WrappedQueryFrom = Form.create()(QueryFrom);
 		return (
@@ -24,7 +40,7 @@ class App extends Component {
 					</div>
 					<div className="statistics">
 						<div>
-							<Button size="large" type="primary" style={{ width: 236 }}>添加跟进</Button>
+							跟进统计
 						</div>
 					</div>  
 				</div>

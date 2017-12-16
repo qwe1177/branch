@@ -23,3 +23,11 @@
     cursor: pointer;
 }
 .resetButton{ margin-left:8px;}
+
+.table-options-wrap{
+    text-align: center;
+}
+
+.table-options-wrap .last-link{
+   margin-left: 6px;
+}

@@ -36,13 +36,9 @@ class ModalForm extends React.Component {
 			this.props.form.setFieldsValue(data);
         }
         
-	addShowModal = (key,value,type) => {
+	addShowModal = (supplierId,companyName,followupType) => {
         this.props.doCancelForm();
-        this.props.EditModal.pform.companyName = value;
-        this.props.EditModal.pform.supplierId = key;
-        this.props.EditModal.pform.followupType = type;
-        this.props.EditModal.modalType = 1;
-        this.props.doFormAdd();
+        this.props.doFormAdd({supplierId,companyName,followupType,modalType:'1'});
       }
       handleAddSuccess =()=>{
 		var {query,pagination} = this.props.MyFollowUP;
@@ -50,19 +46,13 @@ class ModalForm extends React.Component {
 	}
     addShow = (e) => {
         this.props.doAdd();
+        var queryParams =  this.props.AddModal;
+        queryParams = _.pick(queryParams,['query','pagination']);
+		this.props.doRequest(queryParams)
       }
     handleCancel = () => {
         this.props.doCancelForm();
 	  }
-	//   checkName = (rule, value, callback) => {
-	// 	const form = this.props.form;
-	// 	var name  = form.getFieldValue('companyName');
-	// 	if (!name || ''== form.getFieldValue('companyName')) {
-	// 		callback('企业名称必须填写!');
-	// 	} else {
-	// 		callback();
-	// 	}
-	// }
 	handleSubmit = (e) => {
 		e.preventDefault();
 		this.props.form.validateFields((err, values) => {
@@ -126,7 +116,7 @@ class ModalForm extends React.Component {
                     key:'option',
                     render: (text, record) => (
                          <div className="tabel-extend-option">
-                            <Tag onClick={(key,value,type) => this.addShowModal(record.supplierId,record.companyName,record.followupType)}>选择</Tag>
+                            <Tag onClick={() => this.addShowModal(record.supplierId,record.companyName,record.followupType)}>选择</Tag>
                          </div>
                 )}];
         return (
@@ -159,7 +149,7 @@ class ModalForm extends React.Component {
                         pagination={pagination} 
                         onChange={this.handlePageChange}/>  
                 </Modal>
-                <PublicModal type = {this.props.EditModal.pform.followupType} onSuccess={this.handleAddSuccess.bind(this)}/>
+                <PublicModal onSuccess={this.handleAddSuccess.bind(this)}/>
             </div>
         )
     }

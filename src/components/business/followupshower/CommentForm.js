@@ -35,7 +35,7 @@ class CommentForm extends React.Component {
                 }
                 var recordsId = this.props.recordsId;
                 params['recordsId'] = recordsId;
-                axios.get(connect_srm + '/supplier/saveSupplierFollowupPostil.do', { params: params }).then((res) => {
+                axios.get(connect_srm + '/supplier/addSupplierFollowupPostil.do', { params: params }).then((res) => {
                     if (res.data.code == '1') {
                         message.success('提交成功!');
                         var { query, pagination } = this.props.followupShower;
@@ -66,7 +66,7 @@ class CommentForm extends React.Component {
                                 )}
                         </FormItem>
                     </Col>
-                    <Col span={4}>
+                    <Col span={4}　className="my-submit">
                         <FormItem>
                             <Button
                                 type="primary"

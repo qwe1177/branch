@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types'
 
 import moment from 'moment'
+import { levelOptions } from '../../../util/options';
 
 // import './QueryFrom.css';
 import { Form, Input, Tooltip, Icon, Select, Row, Col, Checkbox, Button, DatePicker } from 'antd';
@@ -32,10 +33,10 @@ import { doDeleteFollowMessage, doFirstQueryFollow, doQueryFollow ,doModifiyFoll
 )
 
 
-class QueryFrom extends React.Component {
+class QueryForm extends React.Component {
 	componentDidMount() {
 		// To disabled submit button at the beginning.
-		this.props.form.validateFields();
+		// this.props.form.validateFields();
 	}
 	handleSubmit = (e) => {
 		e.preventDefault();
@@ -72,8 +73,8 @@ class QueryFrom extends React.Component {
 			wrapperCol: { span: 12 },
 		};
 		const checkItemLayoutFirst = {
-			labelCol: { span: 3 },
-			wrapperCol: { span: 21 },
+			labelCol: { span: 2 },
+			wrapperCol: { span: 22},
 		};
 
 		return (
@@ -84,11 +85,16 @@ class QueryFrom extends React.Component {
 							<Input type='hidden'  />
 						)}
 						<FormItem {...formItemLayout} label="跟进方式">
-							{getFieldDecorator('followUpWay', { initialValue: '全部' })(
+							{getFieldDecorator('followUpWay', { initialValue: '' })(
 								<Select style={{ width: '100%' }}  >
-									<Option value="">全部</Option>
-									<Option value="商机">商机</Option>
-									<Option value="线索">线索</Option>
+								{levelOptions('跟进方式').map(item => {
+									return (
+										<Option key={item.value} value={item.value}
+										>
+											{item.label}
+										</Option>
+									)
+								})}
 								</Select>
 							)}
 						</FormItem>
@@ -130,4 +136,4 @@ class QueryFrom extends React.Component {
 	}
 }
 
-export default QueryFrom;
+export default QueryForm;

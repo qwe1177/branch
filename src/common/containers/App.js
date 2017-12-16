@@ -19,7 +19,7 @@ class App extends PlatformComponent {
 	}
 	render() {
 		const { isExpand, platformMenu ,loginAcct} = this.state;
-		const mainClassName = isExpand ? 'crm_inx' : 'crm_inx collapse';
+		const mainClassName = isExpand ? 'crm_inx' : 'crm_inx collapse2';
 		return (
 			<div className={mainClassName}>
 				<div className="g-fl lfwh"><Leftwidget data={platformMenu} /></div>

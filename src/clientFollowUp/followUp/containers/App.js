@@ -7,15 +7,26 @@ import vueAxios from 'axios';
 import QueryFrom from '../components/QueryFrom';
 import MainList from '../components/MainList';
 import Department from '../components/department'
-import { Form,Button,Spin } from 'antd';
+import { Form,Button } from 'antd';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import {  doQueryFollow } from '../actions/index.js';
+
 @connect(
-    state => ({ AllFollowUP: state.AllFollowUP }),
+    state => ({ FollowUP: state.FollowUP }),
+    dispatch => bindActionCreators({ doQueryFollow }, dispatch)
 )
 class App extends Component {
+	constructor(props) {
+        super(props);
+    }
+	componentWillMount() {
+		var queryParams =  this.props.FollowUP;
+        queryParams = _.pick(queryParams,['query','pagination']);
+		this.props.doQueryFollow(queryParams)
+    }
 	render() {
 		const WrappedQueryFrom = Form.create()(QueryFrom);
-		const {isFetching} = this.props.AllFollowUP;
 		return (
 			<div>
 						<h3 className="page-title">下属的跟进</h3>
@@ -27,9 +38,7 @@ class App extends Component {
 										<Department/>
 								</div>  							
 								<div className="card-wrap">
-									<Spin spinning={isFetching} delay={1000}>
 										<MainList/>
-									</Spin>
 								</div>					
 						</div>
 					</div>

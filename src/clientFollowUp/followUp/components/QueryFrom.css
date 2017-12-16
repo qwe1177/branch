@@ -41,6 +41,7 @@
 .ant-checkbox-inner:after {
   width: 6px;
   height: 12px;
+  left:7px;
 }
 /* 时间的筛选 */
 .rangeButton{

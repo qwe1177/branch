@@ -48,7 +48,10 @@ class UserForm extends Component {
             title: '企业名称',
             dataIndex: 'companyName',
             width: 160,
-            render: text=>text,
+            render: (text, record, index) => {
+                const url=`${config.connect_wwwsrm}/publicClueDetail/?supplierId=${record.supplierId}`
+                return (<a target="_blank" href={url}>{text}</a>)
+            }
         }, {
             title: '来源',
             className: '',
@@ -109,8 +112,10 @@ class UserForm extends Component {
                 width: 120,
                 dataIndex: 'Operation',
                 render: (text, record, index) => {
-                    var value = record.userId.length > 1 ? [<p key={`${index}`} style={{marginBottom: '5px'}}>移入公海</p>,
-                        <p key={`_${index}`}>分配负责人</p>] : [<p key={`${index}`}>加入我的</p>]
+                    var value = []
+                    if(record.type == "theHighSeas") {
+                        value = [<p key={`${index}`}>加入我的</p>]
+                    }
                     return (
                         (
                             <div><a onClick={this.Modalshow(text, record, index)}>{value}</a>

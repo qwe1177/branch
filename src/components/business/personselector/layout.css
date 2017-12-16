@@ -6,3 +6,13 @@
 .person-selector-tagswrap{
     margin-bottom:6px; 
 }
+.person-selector .ant-btn-primary{
+    background-color: #6699cc;
+    border-color: #6699cc;
+    border-radius:0; 
+}
+
+.person-selector .ant-pagination-item-active {
+    background-color: #6699cc;
+    border-color: #6699cc;
+}

@@ -5,8 +5,8 @@ import QueryFrom from './QueryFrom';
 import './layout.css';
 import { Modal, Table,Form,Button,Tag,Radio } from 'antd';
 import { getLoginInfo ,getUrlParams} from '../../../util/baseTool';
-import { connect_url } from '../../../util/connectConfig';
-import axios from 'axios';
+import { connect_srm } from '../../../util/connectConfig';
+import axios from '../../../util/axios'
 const RadioGroup = Radio.Group;
 export default class BrandSelector extends React.Component {
     static propTypes = { //声明prop中属性变量
@@ -104,9 +104,7 @@ export default class BrandSelector extends React.Component {
     }
     fetch =(queryParams)=>{
         //console.log(queryParams);
-        var token = getLoginInfo()['token'];  //获取token　登录用
-        var urlParams = getUrlParams();
-        var moduleId = urlParams['moduleId']?urlParams['moduleId']:'';
+      
         this.setState({ isFetching: true});
         var {query,pagination,checkedList} =this.state;
         if(queryParams &&　queryParams.pagination){ //解释分页查询条件
@@ -116,10 +114,9 @@ export default class BrandSelector extends React.Component {
         if(queryParams &&　queryParams.query){ //解析form表单查询条件
             query = _.omitBy(queryParams.query, _.isUndefined); //删除undefined参数
         }
-        var params = {...query,pageNo:pagination.current,pageSize:pagination.pageSize,token: token,moduleId:moduleId};
 
-        axios.get(connect_url + '/v1/clue/viewCompanyList.do', {params: params }).then((res)=>{
-            //console.log(res);
+        var params = {...query,pageNo:pagination.current,pageSize:pagination.pageSize};
+        axios.get(connect_srm + '/clue/getCompanyList.do', {params: params }).then((res)=>{
             var data = res.data.data.resultList;
             var pageSize=parseInt(res.data.data.pageSize);
             this.setState({dataSource: data,pagination:{...pagination,pageSize:pageSize,total:res.data.data.rowCount},isFetching: false});
@@ -138,45 +135,7 @@ export default class BrandSelector extends React.Component {
             return d;
         });
     }
-    // handleRowClick =(record, index, event)=>{
-    //     // console.log(event.target);
-    //     var className = event.target.getAttribute("class");
-    //     if(className.indexOf('js-checked')==-1 && className.indexOf('js-precheck')==-1){
-    //         return;
-    //     }
 
-    //     var {checkedList,dataSource} = this.state;
-    //     var i = checkedList.findIndex((d)=>{
-    //         if(d.key ==record.key){
-    //             return d;
-    //         }
-    //     });
-    //     var isChecked = record.isChecked;
-    //     if(i==-1){ //不存在
-    //         checkedList.push(record);
-    //     }else{
-    //         checkedList.splice(i,1);
-    //     }
-    //     dataSource[index].isChecked = !isChecked;
-    //     this.setState({checkedList: checkedList, dataSource: dataSource});
-    // }
-    // handleClose =(tag)=>{
-    //     var key = tag.key;
-    //     var {checkedList,dataSource} = this.state;
-    //     var i = checkedList.findIndex((d)=>{
-    //         if(d.key ==key){
-    //             return d;
-    //         }
-    //     });
-    //     checkedList.splice(i,1);
-    //     for(let i= 0,len=dataSource.length;i<len;i++){
-    //         if(dataSource[i].key==key){
-    //             dataSource[i].isChecked = false;
-    //             break;
-    //         }
-    //     }
-    //     this.setState({checkedList: checkedList, dataSource: dataSource});
-    // }
     radioonChange=(e) => {
         this.setState({reaiomoren: e.target.value});
     }

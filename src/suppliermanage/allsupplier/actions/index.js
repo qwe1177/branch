@@ -86,7 +86,7 @@ export const queryTableData = (data) => async (dispatch, getState) => {
         var moduleId = urlParams['moduleId']?urlParams['moduleId']:'';
         var queryform = data.queryform;
         var pagination = data.pagination;
-        var paramPagination = {pageSize :pagination.current,offset:pagination.pageSize};
+        var paramPagination = {pageNo :pagination.current,pageSize:pagination.pageSize};
 
         if (queryform.createdate && queryform.createdate.length > 0) {
             queryform.startTime = queryform.createdate[0].format("YYYY-MM-DD");

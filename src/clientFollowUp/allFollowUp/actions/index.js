@@ -1,7 +1,7 @@
 import axios from 'axios';
 // import { combineReducers } from 'redux';
 import { getLoginInfo} from '../../../util/baseTool.js';
-import { connect_url } from '../../../util/connectConfig.js';
+import { connect_srm } from '../../../util/connectConfig.js';
 import {connect_cas} from '../../../util/connectConfig'
 import _ from 'lodash';
 
@@ -12,8 +12,7 @@ const ALLFOLLOWUP_RECEIVE_DATA = 'ALLFOLLOWUP/RECEIVE_DATA'; //获取查询信�
 const ALLFOLLOWUP_RESET_QUERY = 'ALLFOLLOWUP/RESET_QUERY' //重置查询条件
 const ALLFOLLOWUP_RECEIVE_DATA_FAIL = 'ALLFOLLOWUP/RECEIVE_DATA_FAIL'; //查选失败
 const ALLFOLLOWUP_CHANGE_QUERY = 'ALLFOLLOWUP/CHANGE_QUERY'; //改变查询条件
-const ALLFOLLOWUP_ANNOTATE = 'ALLFOLLOWUP_ANNOTATE'; //添加批注
-const ALLFOLLOWUP_DELETE_FOLLOW_MESSAGE = 'ALLFOLLOWUP_FOLLOW_MESSAGE'; //删除更进记录
+const ALLFOLLOWUP_SHOW_COMMENT_FORM = 'ALLFOLLOWUP/SHOW_COMMENT_FORM'; //显示添加批注
 const initList = data =>( {
     type: ALLFOLLOWUP_INIT_LIST,
     data
@@ -42,13 +41,8 @@ const changeQuery = data => ({
     data
 })
 
-const annotate = data => ({
-    type: ALLFOLLOWUP_ANNOTATE,
-    data
-})
-
-const deleteFollowMessage = data => ({
-    type: ALLFOLLOWUP_DELETE_FOLLOW_MESSAGE,
+const showCommentForm = data => ({
+    type: ALLFOLLOWUP_SHOW_COMMENT_FORM,
     data
 })
 
@@ -58,37 +52,22 @@ export const doInitList = (data) => async (dispatch, getState) => {
         var params = {token};
         params = _.omitBy(params, _.isUndefined); //删除undefined参数
         let res = await axios.get(connect_cas+'/api/user/getAllDepartmentUser', { params: params })
-        console.log(res.data.data)
         return await dispatch(initList({departmentList:res.data.data}));
     } catch (error) {
         console.log('error: ', error)
     }
 }
-export const doDeleteFollowMessage = (id) => async (dispatch, getState) => {
-    try {
-        var token = getLoginInfo()['token'];  //获取token　登录用
-        var params = {id,token};
-        params = _.omitBy(params, _.isUndefined); //删除undefined参数
-        let res = await axios.get('http://10.10.10.29:9407/v1/supplier/deleteSupplierFollowupPostil.do', { params: params });
-        return await dispatch(deleteFollowMessage());
-    } catch (error) {
-        console.log('error: ', error)
-    }
+
+export const showOneCommentForm= (list,id) => async (dispatch, getState) => {
+    var newList = list.map((o)=>{
+        if(o.id ==id){
+            o['showCommentForm'] = true;
+        }
+        return o;
+    })
+    dispatch(showCommentForm(newList));
 }
 
-export const doAnnotate= (recordsId,value) => async (dispatch, getState) => {
-    try {
-        var token = getLoginInfo()['token'];  //获取token　登录用
-        var postilContent = value;
-        var params = {recordsId,postilContent,token};
-        params = _.omitBy(params, _.isUndefined); //删除undefined参数
-        let res = await axios.get('http://10.10.10.29:9407/v1/supplier/saveSupplierFollowupPostil.do', { params: params });
-        return await dispatch(annotate());
-    } catch (error) {
-        console.log('error: ', error)
-    }
-   
-}
 export const doResetQuery= data => (dispatch, getState) => {
     return dispatch(resetQuery(data));
 }
@@ -96,12 +75,12 @@ export const doResetQuery= data => (dispatch, getState) => {
  * 点击查询或者分页进行查询
  * @param {*} data 
  */
-export const doQueryFollow = (data,userList) => async (dispatch, getState) => {
+export const doQueryFollow = (queryParams,userList) => async (dispatch, getState) => {
     try {
-        await dispatch(requestData(data));
+        await dispatch(requestData(queryParams));
         var token = getLoginInfo()['token'];  //获取token　登录用
-        var query = data.query;
-        var pagination = data.pagination;
+         /**直接修改prop中的值，会导致修改redux值，拷贝一份 */
+        var {query, pagination} = _.cloneDeep(queryParams);
         if(userList!=undefined) {
             userList= userList.join(',');
         }
@@ -110,13 +89,13 @@ export const doQueryFollow = (data,userList) => async (dispatch, getState) => {
             query.startTime = query.finishData[0].format("YYYY-MM-DD");
             query.endTime = query.finishData[1].format("YYYY-MM-DD");
         } 
-        if( query.followupType && typeof query.followupType != 'string') {
-            query.followupType = query.followupType.join(',');
+        if(query.followupType &&  query.followupType .length>0) {
+            query.followupType = query.followupType.toString();
         }
         var params = {...query,...paramPagination,token,userList};
         params.finishData = undefined
         params = _.omitBy(params, _.isUndefined); //删除undefined参数
-        let res = await axios.get('http://10.10.10.29:9407/v1/supplier/querySupplierFollowupAll.do', { params: params });
+        let res = await axios.get(connect_srm+'/supplier/viewSupplierFollowupAll.do', { params: params });
         var pageSize=parseInt(res.data.data.pageSize);
         return await dispatch(receiveData({ list: res.data.data.data,pagination: { ...pagination,pageSize:pageSize,total:res.data.data.rowCount}}));
     } catch (error) {
@@ -149,7 +128,7 @@ const AllFollowUP = function (state = defaultState, action = {}) {
     switch (action.type) {
         case ALLFOLLOWUP_INIT_LIST:
             let {departmentList} = action.data;
-            return { ...state, departmentList: departmentList }
+            return { ...state, departmentList: departmentList,isFetching: true }
         case ALLFOLLOWUP_REQUEST_DATA:
             let {query} = action.data;
             return { ...state, query: query,isFetching: true }
@@ -159,13 +138,11 @@ const AllFollowUP = function (state = defaultState, action = {}) {
             return { ...state, list,pagination:Pagination, isFetching: false };
         case ALLFOLLOWUP_RECEIVE_DATA_FAIL:
             return { ...state, isFetching: false };
+        case ALLFOLLOWUP_SHOW_COMMENT_FORM:
+            return {...state, list:action.data};
         case ALLFOLLOWUP_CHANGE_QUERY:
             var {query,pagination} = action.data;
             return { ...state, query: query, pagination: pagination };
-        case ALLFOLLOWUP_DELETE_FOLLOW_MESSAGE:
-            return { ...state};
-        case ALLFOLLOWUP_ANNOTATE:
-            return { ...state};
         default:
             return state
     }

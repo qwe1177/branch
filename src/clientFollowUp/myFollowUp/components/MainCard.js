@@ -24,7 +24,7 @@ class MainCard extends React.Component{
         // selectedList:PropTypes.array, //表格中选择多选状态
          pagination:PropTypes.object //表格中的分页
     }
-    showModal = (key,id)=>(e) => {
+    showModal = (key,id) => {
         this.props.onEdit(key,id)
       }
     render() {
@@ -71,6 +71,7 @@ class MainCard extends React.Component{
                     {data.supplierFollowupPostilDTOs.map((o) => {
                     return <Row key={o.id} className="region-tool" type="flex" justify="space-between">
                         <Col span={20}>
+                            <span className='label'>{o.realName}:&nbsp;</span>
                             <span className='value'>{o.postilContent}</span>
                         </Col>
                         <Col span={4} className='card-option'>
@@ -80,7 +81,7 @@ class MainCard extends React.Component{
                 })}
                     <Row type="flex" justify="end">
                          <Col >
-                            <Icon  type="edit" onClick={this.showModal(data.supplierId,data.id)} className="editStyle"></Icon>
+                            <Icon  type="edit"  onClick={()=>{this.showModal(data.supplierId,data.id)}} className="editStyle"></Icon>
                         </Col>
                     </Row>
                 </Card>  

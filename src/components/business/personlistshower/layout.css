@@ -6,19 +6,24 @@
 
 .personlist-shower .list-wrap{
     position: absolute;
+    top: 30px;
+    left: 0;
+    width: 100%;
+    height: 180px;
+	    overflow-y: hidden;
+}
+
+.personlist-shower .personlist-label{
+    color: #666666;
+    margin: 8px 0;
+    text-align: right;
+    cursor: pointer;
+    z-index: 1;
+    position: absolute;
     top: 0;
     left: 0;
-    padding-top: 24px;
-    width: 100%;
-    height: 100%;
 }
-
-.personlist-shower .content-wrap{
-    width: 100%;
-    height: 100%;
-    overflow-x: hidden;
-}
-
+.personlist-shower .list-wrap .nk{ position: relative;width: 100%; height: 100%; overflow-y: auto;}
 .personlist-shower .add-wrap{
     color: #6492c1;
     margin: 8px 0;
@@ -54,9 +59,11 @@
     width: 60%;
     cursor: pointer;
     padding: 0 6px;
+    min-height: 35px;
+    vertical-align: top;
 }
 
-.personlist-shower .phone-wrap .anticon-right {
+.personlist-shower .phone-wrap .anticon-double-right {
     float: right;
     line-height: 30px;
     margin-right: 3px;
@@ -82,4 +89,9 @@
 
 .personlist-shower .hasScroll{
     overflow-y: scroll;
+}
+
+.personlist-shower-modal .ant-btn-primary{
+    background-color: #6699cc;
+    border-color: #6699cc;
 }

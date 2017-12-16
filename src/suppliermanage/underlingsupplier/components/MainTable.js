@@ -132,7 +132,7 @@ class MainTable extends React.Component {
     var urlParams = getUrlParams();
     var moduleId = urlParams['moduleId']?urlParams['moduleId']:'';
     var systemId = urlParams['systemId']?urlParams['systemId']:'';
-    var detailUrl ='/suppliermanage/allsupplierdetail/?systemId'+systemId+'&moduleId='+moduleId+'&moduleUrl=/suppliermanage/allsupplierdetail/';
+    var detailUrl ='/suppliermanage/allsupplierdetail/?systemId='+systemId+'&moduleId='+moduleId+'&moduleUrl=/suppliermanage/allsupplierdetail/';
 
     const columns = [{
       title: '企业名称',
@@ -145,11 +145,13 @@ class MainTable extends React.Component {
       title: '来源',
       dataIndex: 'source',
       key:'source'
-    }, {
-      title: '级别',
-      dataIndex: 'clueLevel',
-      key:'clueLevel'
-    }, {
+    }
+    // , {
+    //   title: '级别',
+    //   dataIndex: 'clueLevel',
+    //   key:'clueLevel'
+    // }
+    , {
       title: '企业性质',
       dataIndex: 'enterpriseType',
       key:'enterpriseType'
@@ -163,12 +165,18 @@ class MainTable extends React.Component {
       key:'mainBrand'
     }, {
       title: '联系人信息',
-      dataIndex: 'fullname',
-      key:'fullname'
+      dataIndex: 'contacts',
+      key:'contacts',
+      render: (text, record) => (
+        <div>
+          <div>{record.fullname}</div>
+          <div>{record.mobile}</div>
+        </div>
+      )
     },{
       title: '创建时间',
-      dataIndex: 'reateTime1',
-      key:'reateTime1'
+      dataIndex: 'createTime1',
+      key:'createTime1'
     },{
       title: '负责人',
       dataIndex: 'realName',
@@ -190,8 +198,8 @@ class MainTable extends React.Component {
 
     const {tableData,pagination,isFetching} =this.props.mainTableData; 
     return (
-      <div>
-        <div className="tabel-extend-option"><span onClick={this.handleRefresh}>刷新列表</span>  
+      <div className='main-table'>
+        <div className="tabel-extend-option"><span onClick={this.handleRefresh} className='refresh'>刷新列表</span>  
         <span onClick={this.openToHighSeaConfirm}>移入公海</span> 
         <span onClick={this.handleOpenChoose}>分配负责人</span>
          </div>

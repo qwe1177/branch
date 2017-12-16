@@ -2,7 +2,7 @@ import React, {Component} from 'react'
 import './UploadFrom.css';
 import axios from '../../../util/axios'
 import {getLoginInfo, getUrlParams} from '../../../util/baseTool';
-import {connect_url, crmnew_url} from '../../../util/connectConfig';
+import {connect_srm, crmnew_url} from '../../../util/connectConfig';
 
 import Modalmodel  from '../../components/Modalmodel'
 import {
@@ -55,7 +55,7 @@ class UploadFrom2 extends React.Component {
     };
 
     componentDidMount() {
-        axios.get(connect_url + '/v1/queryCategoryList.do').then((res)=> {
+        axios.get(connect_srm + '/queryCategoryList.do').then((res)=> {
             var data = res.data.data;
             this.setState({catNamelist: data});
         }).catch((e)=> {
@@ -97,6 +97,11 @@ class UploadFrom2 extends React.Component {
             className: 'column-money',
             render: this.addinputdata
         }, {
+            title: '最小起订量',
+            dataIndex: 'minQuantity',
+            className: 'column-money',
+            render: this.addinputdata
+        },{
             title: '进价(元)',
             dataIndex: 'price',
             className: 'column-money',
@@ -150,7 +155,7 @@ class UploadFrom2 extends React.Component {
     uploads = {
         name: 'file',
         //onChange: this.onchangdata,
-        action: `${connect_url}/v1/quotation/uploadExcelQuotation.do?token=${getLoginInfo()['token']}`,
+        action: `${connect_srm}/quotation/uploadExcelQuotation.do?token=${getLoginInfo()['token']}`,
         onChange:(info)=> {
           const status = info.file.status;
           
@@ -162,10 +167,11 @@ class UploadFrom2 extends React.Component {
             const {count, data} = this.props.tablemodel;
             //console.log(_.pick(info.file.response.data,['id','specCode','pName','brand','categoryName','specParams','unit','price','taux','invoice','deliveryTime','payWay']));
             var respdatas = respdata.map((v)=>{
-              var d1 = _.pick(v,['id','specCode','pName','brand','categoryName','specParams','unit','price','taux','invoice','deliveryTime','payWay']);
+              var d1 = _.pick(v,['id','specCode','pName','brand','categoryName','specParams','unit','minQuantity','price','taux','invoice','deliveryTime','payWay']);
               d1 =_.omitBy(d1, _.isUndefined);
               return d1;
             })
+
             var newrespList = respdatas.map(v=> {
               return ({
                 id: count+v.id+'',
@@ -206,6 +212,12 @@ class UploadFrom2 extends React.Component {
                   initialValue: v.unit,
                   message: '请输入单位',
                   placeholder: '请输入单位', 
+                },
+                minQuantity:{
+                    name: `minQuantity` + (count+v.id),
+                    initialValue: v.minQuantity,
+                    message: '请输入最小起订量',
+                    placeholder: '请输入最小起订量', 
                 },
                 price:{
                   name: `price` + (count+v.id),
@@ -258,14 +270,15 @@ class UploadFrom2 extends React.Component {
             specCode: {name: 'specCode' + count, message: '请输入规格编码', placeholder: '请输入规格编码', required: true},
             pName: {name: 'pName' + count, message: '请输入名称', placeholder: '请输入名称',},
             brand: {name: 'brand' + count, message: '请输入品牌', placeholder: '请输入品牌', required: true},
-            categoryName: {name: 'categoryName' + count, message: '请输入所属类目', placeholder: '请输入所属类目',},
+            categoryName: {name: 'categoryName' + count, message: '请选择所属类目', placeholder: '请选择所属类目',},
             specParams: {name: 'specParams' + count, message: '请输入规格型号', placeholder: '请输入规格型号',},
             unit: {name: 'unit' + count, message: '请输入单位', placeholder: '请输入单位',},
+            minQuantity: {name: 'minQuantity' + count, message: '请输入最小起订量', placeholder: '请输入最小起订量', required: false,},
             price: {name: 'price' + count, message: '请输入进价(元)', placeholder: '请输入进价(元)', required: false,},
             taux: {name: 'taux' + count, message: '请输入税点', placeholder: '请输入税点',},
-            invoice: {name: 'invoice' + count, message: '请输入发票', placeholder: '请输入发票',},
+            invoice: {name: 'invoice' + count, message: '请选择发票类型', placeholder: '请选择发票类型',},
             deliveryTime: {name: 'deliveryTime' + count, message: '请输入交期', placeholder: '请输入交期',},
-            payWay: {name: 'payWay' + count, message: '请输入付款方式', placeholder: '请输入付款方式',},
+            payWay: {name: 'payWay' + count, message: '请选择付款方式', placeholder: '请选择付款方式',},
             Operation: '删除',
         };
         this.props.dispatch(tablemodelaction({data: [...data, newData], count: count + 1,}))
@@ -364,7 +377,7 @@ class UploadFrom2 extends React.Component {
         var token = getLoginInfo()['token'];
         //var urlParams = getUrlParams();
         //var moduleId = urlParams['moduleId']?urlParams['moduleId']:'';
-        window.location.href = connect_url + '/v1/quotation/downloadQuotationTemplate.do?token=' + token;
+        window.location.href = connect_srm + '/quotation/downloadQuotationTemplate.do?token=' + token;
     }
     addinputdata = ({name, message, placeholder = '', initialValue = '', required = false, type = 'string'}) => (<FormItem>
         {this.props.form.getFieldDecorator(name, {
@@ -504,7 +517,7 @@ class UploadFrom2 extends React.Component {
           newparams.purchaseId=BuyersList.id;
           newparams.purchaseName=BuyersList.name;
           const data = this.objTodata(newparams)
-          axios.post(connect_url + '/v1/quotation/addQuotationSku.do', data).then((res)=> {
+          axios.post(connect_srm + '/quotation/addQuotationSku.do', data).then((res)=> {
               if(res.data.code==1)
               {
                 const args = {

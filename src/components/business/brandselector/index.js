@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types'
 import _ from 'lodash';
-import QueryFrom from './QueryFrom';
+import QueryForm from './QueryForm';
 import './layout.css';
 import { Modal, Table,Form,Button,Tag  } from 'antd';
 
@@ -41,10 +41,12 @@ export default class BrandSelector extends React.Component {
         this.setState({visible: false,checkedList:[],dataSource:[]}); //重置数据
     }
     doInit =(props)=>{
+        console.log(props)
         if(props.visible){ //显示的时候
             if(props.choosedKeys && props.choosedKeys.labelstr && props.choosedKeys.idstr  ){
-                var ids = props.choosedKeys.idstr.split(',');
-                var labels = props.choosedKeys.labelstr.split(',');
+                var ids = props.choosedKeys.idstr.split('、');
+                var labels = props.choosedKeys.labelstr.split('、');
+
                 if(ids.length>0 && ids.length === labels.length){
                     var checkedList = ids.map((o,index)=>{
                         return {id:o,brand_name_ch:labels[index]};
@@ -70,8 +72,8 @@ export default class BrandSelector extends React.Component {
 		var ids = checkedList.map((o)=>{
 			return o.id;
         });
-        this.props.onChoosed(ids.toString(),labels.toString());
-        //this.restDefault();
+        this.props.onChoosed(ids.join('、'),labels.join('、'));
+        this.restDefault();
     }
     handleCancel = (e) => {
         this.props.onCancel();
@@ -189,7 +191,7 @@ export default class BrandSelector extends React.Component {
             }
         }
         ];
-        const WrappedQueryFrom = Form.create()(QueryFrom);
+        const WrappedQueryForm = Form.create()(QueryForm);
         return (
             <Modal title='选择品牌' visible={visible} className='brand-selector'
                 onOk={this.handleOk} onCancel={this.handleCancel}
@@ -202,7 +204,7 @@ export default class BrandSelector extends React.Component {
                     </Tag>)
                 })}
                 </div>
-                <WrappedQueryFrom  onQuery={this.onQuery} query={this.state.query} />
+                <WrappedQueryForm  onQuery={this.onQuery} query={this.state.query} />
                 <Table bordered className='person-selector-tablewrap' columns={columns} dataSource={dataSource} 
                 rowKey={record => record.id}  //数据中已key为唯一标识
                     pagination={pagination}

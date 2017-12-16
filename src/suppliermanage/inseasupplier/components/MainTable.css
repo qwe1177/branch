@@ -1,18 +1,36 @@
-.tabel-extend-option{
+.tabel-extend-option {
     line-height: 50px;
- }
- .tabel-extend-option span{
+}
+
+.tabel-extend-option span {
     cursor: pointer;
     margin-right: 6px;
- }
- .tabel-extend-option span:hover{
+}
+
+.tabel-extend-option span:hover {
     color: #6699cc;
- }
+}
 
- .table-options-wrap{
-     text-align: center;
- }
+.tabel-extend-option .refresh {
+    color: #5489bf;
+}
 
- .table-options-wrap .last-link{
+
+.table-options-wrap {
+    text-align: center;
+}
+
+.table-options-wrap .last-link {
     margin-left: 6px;
+}
+
+
+.main-table .ant-table-tbody a {
+    color: #5489bf;
+}
+
+
+.main-table .ant-pagination-item-active {
+    background-color: #6699cc;
+    border-color: #6699cc;
 }

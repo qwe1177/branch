@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { Modal, Table, Form, Button, Icon ,message ,Spin} from 'antd';
 
 import './layout.css';
-import EffectFrom from './EffectFrom';
+import EffectForm from './EffectForm';
 import { getOneUrlParams,getLoginAccount} from '../../../util/baseTool';
 
 import {connect} from 'react-redux';
@@ -27,7 +27,6 @@ import {doPreEdit,doPreAdd,doEffectFlow,doCancelForm,fetchListData} from './redu
 
 class PersonListshower extends React.Component {
     static propTypes = { //声明prop中属性变量
-        requestId: PropTypes.string.isRequired //供应商,采购商id等，用于查选联系人
     }
     componentWillMount(){
         // this.props.doReceiveList();
@@ -54,31 +53,34 @@ class PersonListshower extends React.Component {
     }
     render() {
         const {title} = this.state
-        const WrappedEffectFrom = Form.create()(EffectFrom);
+        const WrappedEffectForm = Form.create()(EffectForm);
         const {personList,visible} = this.props.personListShower;
-        const mainClassName = personList.length>5?'content-wrap hasScroll':'content-wrap';
+        const mainClassName = personList.length>3?'content-wrap hasScroll':'content-wrap';
         return (
             <div className='personlist-shower'>
+                <div className='personlist-label'>联系人</div>
                 <div className='add-wrap' onClick={() => this.effect()} ><Icon type="plus-circle" className='add'   />新增联系人</div>
                 <div className='list-wrap'> 
+                 <div className="nk">
                     <Spin spinning={this.props.personListShower.islistFetching}>
-                    <div className={mainClassName}>
+                    <div className='content-wrap'>
                         {personList.map((o, index) => {
                             return (
                             <div className='item' key={o.id} >
                             <div className='name-wrap'>{o.fullname}</div>
                                 <div className='phone-wrap' onClick={() => this.effect(o)}>
                                     <div className='phone-el'>{o.mobile}</div>
-                                    <Icon type="right" />
+                                    <Icon type="double-right" />
                                 </div>
                         </div>)
                         })}
                     </div>
                     </Spin>
                 </div>
+				</div>
                 <Modal className='personlist-shower-modal' title={title} visible={visible} onCancel={this.handleCancel} footer={null} >
                     <Spin spinning={this.props.personListShower.isFetching} >
-                    <WrappedEffectFrom />
+                    <WrappedEffectForm />
                     </Spin>
                 </Modal >
             </div>

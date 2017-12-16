@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import './App.css';
 import vueAxios from 'axios';
 import 'antd/dist/antd.css';
-import QueryFrom from '../components/QueryFrom';
+import QueryForm from '../components/QueryForm';
 import MainTable from '../components/MainTable';
 
 import { Form } from 'antd';
@@ -12,13 +12,13 @@ import { Form } from 'antd';
 class App extends Component {
 
 	render() {
-		const WrappedQueryFrom = Form.create()(QueryFrom);
+		const WrappedQueryForm = Form.create()(QueryForm);
 		return (
 			<div>
 				<h3 className="page-title">下属的供应商</h3>
 				<div className='page-main'>
 					<div className="query-wrap">
-						<WrappedQueryFrom />
+						<WrappedQueryForm />
 					</div>
 					<div className="tabel-wrap">
 						<MainTable />

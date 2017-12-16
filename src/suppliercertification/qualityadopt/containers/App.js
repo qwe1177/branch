@@ -39,7 +39,7 @@ class App extends Component {
 		const RankFromWrap = Form.create()(RankFrom);
 		const RankFrom2Wrap= Form.create()(RankFrom2);
 		return (
-			<div className="main">
+			<div>
 				<h3 className="page-title">品控通过</h3>
 				
 				<div className="query-wrap">

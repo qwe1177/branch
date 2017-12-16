@@ -3,9 +3,7 @@ import { getLoginInfo ,getUrlParams,getOneUrlParams} from '../../../util/baseToo
 import axios from 'axios';
 import _ from 'lodash';
 import qs from 'qs';
-// const xiaowenwu_url = 'http://10.10.10.114:8080/v1';
 
-// import querystring  from 'querystring';
 
 import moment from 'moment';
 

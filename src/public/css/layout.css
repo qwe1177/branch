@@ -29,11 +29,11 @@ body{
 .lfwh{width: 240px; height: 100%; overflow-y:auto; overflow-x:hidden; }
 .rgwh{position: absolute; left: 240px; right:0;width: auto;height: 100%; }
 
-.collapse .lfwh{
+.collapse2 .lfwh{
   width: 0;
 }
 
-.collapse .rgwh{
+.collapse2 .rgwh{
   left: 0;
 }
 

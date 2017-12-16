@@ -7,6 +7,10 @@ const FormItem = Form.Item;
 const { MonthPicker, RangePicker } = DatePicker;
 const Option = Select.Option;
 const CheckboxGroup = Checkbox.Group;
+const plainOptions = [
+	{label: '供应商', value: '2'},
+	{label: '线索', value: '1'},
+];
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { doResetQuery, doQueryFollow ,doEditFollowInfo} from '../actions/index.js';
@@ -20,6 +24,7 @@ class QueryFrom extends React.Component {
 	componentDidMount() {
 		//setFieldsValue方法必须在getFieldDecorator之后，getFieldDecorator在render生命周期中定义id来进行表单双向绑定
 		let form = this.props.MyFollowUP.query;
+		form = _.pick(form,['companyName','contactWay','finishData','followupType']);
 		let data ={};
 		for(let key in form){  //过滤空字符串
 			if(form[key]!=''){
@@ -44,64 +49,39 @@ class QueryFrom extends React.Component {
 		this.props.doQueryFollow();  
 	}
 	
-	// checkName = (rule, value, callback) => {
-	// 	const form = this.props.form;
-	// 	var name  = form.getFieldValue('companyName');
-	// 	if (!name || ''== form.getFieldValue('companyName')) {
-	// 		callback('企业名称必须填写!');
-	// 	} else {
-	// 		callback();
-	// 	}
-	// }
-	
-	// checkWay = (rule, value, callback) => {
-	// 	const form = this.props.form;
-	// 	var name  = form.getFieldValue('contactWay');
-	// 	if (!name || ''== form.getFieldValue('contactWay')) {
-	// 		callback('跟进方式必须填写!');
-	// 	} else {
-	// 		callback();
-	// 	}
-	// }
-	
-	// checkData = (rule, value, callback) => {
-	// 	const form = this.props.form;
-	// 	var name  = form.getFieldValue('finishData');
-	// 	if (!name || '' == form.getFieldValue('finishData')) {
-	// 		callback('计划完成日期必须填写!');
-	// 	} else {
-	// 		callback();
-	// 	}
-	// }
-
     render() {
       	const { getFieldDecorator } = this.props.form;
-     	 const formItemLayout = {  //form中的label和内容各自占用多少
-			labelCol: { span: 9 },
-			wrapperCol: { span: 15 },
+		const formItemLayout = {  //form中的label和内容各自占用多少
+			labelCol: { span: 8 },
+			wrapperCol: { span: 16 },
 		};
-	 	const checkItemLayoutFirst = { 
+		const formItemLayout1 = {  //form中的label和内容各自占用多少
+				labelCol: { span: 7 },
+				wrapperCol: { span: 17},
+		};
+		const formItemLayout2 = {  //form中的label和内容各自占用多少
+			labelCol: { span: 11 },
+			wrapperCol: { span: 13},
+		};
+		const checkItemLayoutFirst = { 
 			labelCol: { span: 4 },
 			wrapperCol: { span: 20 },
 		};
-		const plainOptions = [
-			{label: '供应商', value: '2'},
-			{label: '线索', value: '1'},
-		];
+	 
+		
+
       return (
         <Form layout="horizontal" onSubmit={this.handleSubmit}>
 			<Row gutter={16}>
-				<Col span={7}>
-					<FormItem {...formItemLayout} label="企业名称">
-						{getFieldDecorator('companyName', {
-							rules: [{validator: this.checkName}],
-						})(
+				<Col span={8}>
+					<FormItem {...formItemLayout1} label="企业名称">
+						{getFieldDecorator('companyName')(
 							<Input  style={{ width: '100%' }}  onBlur={this.handleConfirmBlur} />
 						)}
 					</FormItem>
 				</Col>
 				<Col span={6}>
-					<FormItem {...formItemLayout} label="跟进方式">
+					<FormItem {...formItemLayout2} label="跟进方式">
 						{getFieldDecorator('contactWay',{
 							rules: [{validator: this.checkWay}],
 						})(
@@ -117,18 +97,16 @@ class QueryFrom extends React.Component {
 									)}
 					</FormItem>
 				</Col>
-				<Col span={11}>
+				<Col span={10}>
 					<FormItem {...formItemLayout} label="计划完成日期">
-						{getFieldDecorator('finishData',{
-							// rules: [{validator: this.checkData}],
-						})(
+						{getFieldDecorator('finishData')(
 						<RangePicker />
 						)}
 					</FormItem>
 				</Col>
 			</Row>
 			<Row gutter={16} className="followType">			
-				<Col span={16} style={{ textAlign: 'left' }}>
+				<Col span={14} style={{ textAlign: 'left' }}>
 					<FormItem {...checkItemLayoutFirst} label="跟进类型">
 						{getFieldDecorator('followupType')(
 							<CheckboxGroup options={plainOptions} />)}

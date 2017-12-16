@@ -9,13 +9,12 @@ import { queryTableData, initSupplierTable, setQueryFrom, doChangeMainCheck } fr
 import { connect_srm, connect_cas } from '../../../util/connectConfig';
 import { getLoginInfo, getUrlParams, getLoginAccount, getOneUrlParams } from '../../../util/baseTool';
 import axios from 'axios';
-import EffectFrom from './EffectFrom';
+import EffectForm from './EffectForm';
 
 import { fetchToHighSea, fetchSetContacts } from '../../../components/common/publicrequest/index';
 
 import PersonSelector from '../../../components/business/personselector';
 
-const xiaowenwu_url = 'http://10.10.10.114:8080/v1';
 
 @connect(
   state => ({ mainQueryData: state.mainQueryData, mainTableData: state.mainTableData }),
@@ -133,7 +132,12 @@ class MainTable extends React.Component {
     this.setState({ cooperationModalVisible: false });
   }
   handleOpenCooperationModal = () => {
-    this.setState({ cooperationModalVisible: true });
+    var selectedList = this.props.mainTableData.selectedList;
+    if (selectedList.length == 0) {
+      message.warning('请选择要修改合作关系的供应商');
+    } else {
+      this.setState({ cooperationModalVisible: true });
+    }
   }
   handleChangeCooperationModal = (partnership) => {
     this.setState({ cooperationModalVisible: false });
@@ -141,7 +145,7 @@ class MainTable extends React.Component {
     var moduleId = getOneUrlParams('moduleId'); //使用moduleId验证权限
     var selectedList = this.props.mainTableData.selectedList;
     var supplierId = selectedList.map(o => o.supplierId).toString();
-    axios.get(xiaowenwu_url + '/management/editSupplierPartnership.do', { params: { supplierId, partnership, token, moduleId }, timeout: 20000 }).then((res) => {
+    axios.get(connect_srm + '/management/editSupplierPartnership.do', { params: { supplierId, partnership, token, moduleId }, timeout: 20000 }).then((res) => {
       if (res.data.code == '1') {
         this.queryWithDefault();
         message.success('修改成功!');
@@ -156,7 +160,7 @@ class MainTable extends React.Component {
     var urlParams = getUrlParams();
     var moduleId = urlParams['moduleId'] ? urlParams['moduleId'] : '';
     var systemId = urlParams['systemId'] ? urlParams['systemId'] : '';
-    var detailUrl = '/suppliermanage/allsupplierdetail/?systemId' + systemId + '&moduleId=' + moduleId + '&moduleUrl=/suppliermanage/allsupplierdetail/';
+    var detailUrl = '/suppliermanage/allsupplierdetail/?systemId=' + systemId + '&moduleId=' + moduleId + '&moduleUrl=/suppliermanage/allsupplierdetail/';
 
     const columns = [{
       title: '企业名称',
@@ -169,11 +173,13 @@ class MainTable extends React.Component {
       title: '来源',
       dataIndex: 'source',
       key: 'source'
-    }, {
-      title: '级别',
-      dataIndex: 'clueLevel',
-      key: 'clueLevel'
-    }, {
+    }
+    // , {
+    //   title: '级别',
+    //   dataIndex: 'clueLevel',
+    //   key: 'clueLevel'
+    // }
+    , {
       title: '企业性质',
       dataIndex: 'enterpriseType',
       key: 'enterpriseType'
@@ -187,12 +193,18 @@ class MainTable extends React.Component {
       key: 'mainBrand'
     }, {
       title: '联系人信息',
-      dataIndex: 'fullname',
-      key: 'fullname'
-    }, {
+      dataIndex: 'contacts',
+      key:'contacts',
+      render: (text, record) => (
+        <div>
+          <div>{record.fullname}</div>
+          <div>{record.mobile}</div>
+        </div>
+      )
+    },{
       title: '创建时间',
-      dataIndex: 'reateTime1',
-      key: 'reateTime1'
+      dataIndex: 'createTime1',
+      key:'createTime1'
     }, {
       title: '负责时间',
       dataIndex: 'responsibleTime',
@@ -208,10 +220,10 @@ class MainTable extends React.Component {
       key: 'option'
     }];
     const { tableData, pagination, isFetching } = this.props.mainTableData;
-    const WrappedEffectFrom = Form.create()(EffectFrom);
+    const WrappedEffectForm = Form.create()(EffectForm);
     return (
-      <div>
-        <div className="tabel-extend-option"><span onClick={this.handleRefresh}>刷新列表</span>
+      <div className='main-table'>
+        <div className="tabel-extend-option"><span onClick={this.handleRefresh} className='refresh'>刷新列表</span>
           <span onClick={this.openToHighSeaConfirm}>移入公海</span>
           <span onClick={this.handleOpenChoose}>分配负责人</span>
           <span onClick={this.handleOpenCooperationModal}>修改合作关系</span>
@@ -233,7 +245,7 @@ class MainTable extends React.Component {
           是否将此线客户入公海?
         </Modal>
         <Modal title='修改合作关系' visible={this.state.cooperationModalVisible} onCancel={this.handleCooperationModalCancel} footer={null} >
-          <WrappedEffectFrom onChoosed={this.handleChangeCooperationModal} />
+          <WrappedEffectForm onChoosed={this.handleChangeCooperationModal} />
         </Modal >
         <PersonSelector onChoosed={this.handleChoosed.bind(this)}
           onCancel={this.handlePersonCancel.bind(this)}

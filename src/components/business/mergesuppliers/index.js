@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types'
 import _ from 'lodash';
-import QueryFrom from './QueryFrom';
+import QueryForm from './QueryForm';
 import './layout.css';
 import { Modal, Table, Form, Button, Tag } from 'antd';
 
@@ -9,8 +9,6 @@ import { connect_srm } from '../../../util/connectConfig';
 import { getLoginInfo, getUrlParams } from '../../../util/baseTool';
 import axios from 'axios';
 
-//联调叶群丽，上线后去掉
-const xiaowenwu_url = 'http://10.10.10.114:8080/v1';
 
 export default class MergeSuppliers extends React.Component {
     static propTypes = { //声明prop中属性变量
@@ -65,17 +63,7 @@ export default class MergeSuppliers extends React.Component {
     componentWillReceiveProps(nextProps) {
         this.doInit(nextProps);
     }
-    // handleOk = (e) => {
-    //     var { checkedList } = this.state;
-    //     var labels = checkedList.map((o) => {
-    //         return o.brand_name_ch;
-    //     });
-    //     var ids = checkedList.map((o) => {
-    //         return o.id;
-    //     });
-    //     this.props.onChoosed(ids.toString(), labels.toString());
-    //     //this.restDefault();
-    // }
+
     handleCancel = (e) => {
         this.props.onCancel();
         this.restDefault();
@@ -101,7 +89,7 @@ export default class MergeSuppliers extends React.Component {
             query = _.omitBy(queryParams.query, _.isUndefined); //删除undefined参数
         }
         var params = { ...query, page: pagination.current, limit: pagination.pageSize, token: token, moduleId: moduleId };
-        axios.get(xiaowenwu_url + '/clue/viewIntoSupplierList.do', { params: params, timeout: 10000 }).then((res) => {
+        axios.get(connect_srm + '/clue/getIntoSupplierList.do', { params: params, timeout: 10000 }).then((res) => {
             if (res.data.code = '1') {
                 var original = res.data.data.supplierList;
                 var data = this.formateDataWithChecked(checkedList, original);
@@ -184,7 +172,7 @@ export default class MergeSuppliers extends React.Component {
         var toSupplierId  = this.props.supplierId;
 
         var params = { supplierId,toSupplierId, token,moduleId};
-        axios.get(xiaowenwu_url + '/clue/editIntoSupplierClue.do', { params: params, timeout: 10000 }).then((res) => {
+        axios.get(connect_srm + '/clue/editIntoSupplierClue.do', { params: params, timeout: 10000 }).then((res) => {
             if (res.data.code = '1') {
                 this.props.onComfirm(true);
             }else{
@@ -220,7 +208,7 @@ export default class MergeSuppliers extends React.Component {
             }
         }
         ];
-        const WrappedQueryFrom = Form.create()(QueryFrom);
+        const WrappedQueryForm = Form.create()(QueryForm);
         var mainClassName = this.state.step == '1' ? 'merge-suppliers step1' : 'merge-suppliers step2';
         var title = this.state.step == '1' ? '并入客户' : '确认合并';
         return (
@@ -236,7 +224,7 @@ export default class MergeSuppliers extends React.Component {
                             </Tag>)
                         })}
                     </div>
-                    <WrappedQueryFrom onQuery={this.onQuery} query={this.state.query} />
+                    <WrappedQueryForm onQuery={this.onQuery} query={this.state.query} />
                     <Table bordered columns={columns} dataSource={dataSource}
                         rowKey={record => record.id}  //数据中已key为唯一标识
                         pagination={pagination}

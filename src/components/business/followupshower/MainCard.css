@@ -64,6 +64,7 @@
 .card-edit .anticon-edit{
     cursor: pointer;
 }
+.followup-card{margin-bottom: 10px;}
 
 .followup-card .label{
     color: #333333;

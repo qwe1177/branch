@@ -9,7 +9,23 @@ import MainList from '../components/MainList';
 
 import AddModal from '../components/AddModal'
 import { Form,Button } from 'antd';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { doQueryFollow } from '../actions/index.js';
+
+@connect(
+    state => ({ MyFollowUP: state.MyFollowUP }),
+    dispatch => bindActionCreators({doQueryFollow}, dispatch)
+)
 class App extends Component {
+	constructor(props) {
+        super(props);
+    }
+    componentWillMount() {
+		var queryParams =  this.props.MyFollowUP;
+        queryParams = _.pick(queryParams,['query','pagination']);
+		this.props.doQueryFollow(queryParams)
+    }
 	render() {
 		const WrappedQueryFrom = Form.create()(QueryFrom);
 		return (

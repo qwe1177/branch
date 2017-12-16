@@ -1,7 +1,7 @@
 import axios from 'axios';
 // import { combineReducers } from 'redux';
 import { getLoginInfo} from '../../../util/baseTool.js';
-import { connect_url } from '../../../util/connectConfig.js';
+import { connect_srm } from '../../../util/connectConfig.js';
 import _ from 'lodash';
 
 
@@ -44,25 +44,24 @@ export const doResetQuery= data => (dispatch, getState) => {
 }
 
 
-export const doQueryFollow = (data) => async (dispatch, getState) => {
+export const doQueryFollow = (queryParams) => async (dispatch, getState) => {
     try {
-        await dispatch(requestData(data));
+        await dispatch(requestData(queryParams));
         var token = getLoginInfo()['token'];  //获取token　登录用
-        var query = data.query;
-        var pagination = data.pagination;
+         /**直接修改prop中的值，会导致修改redux值，拷贝一份 */
+        var {query, pagination} = _.cloneDeep(queryParams);
         var paramPagination = {pageNo :pagination.current,pageSize:pagination.pageSize};
         if (query.finishData && query.finishData.length > 0) {
             query.startTime = query.finishData[0].format("YYYY-MM-DD");
             query.endTime = query.finishData[1].format("YYYY-MM-DD");
         } 
-        if(query.followupType && typeof query.followupType != 'string') {
-            query.followupType = query.followupType.join(',');
+        if(query.followupType &&  query.followupType .length>0) {
+            query.followupType = query.followupType.toString();
         }
         var params = {...query,...paramPagination,token};
         params.finishData = undefined
         query = _.omitBy(query, _.isUndefined); //删除undefined参数
-        // var params = { ...query,token, moduleId}; //查询条件和分页条件传入
-        let res = await axios.get('http://10.10.10.29:9407/v1/supplier/queryFollowupListByName.do', { params: params });
+        let res = await axios.get(connect_srm+'/supplier/viewFollowupListByName.do', { params: params });
         var pageSize=parseInt(res.data.data.pageSize);
         return await dispatch(receiveData({ cardData: res.data.data.data,   pagination: { ...pagination,pageSize:pageSize,total:res.data.data.rowCount}}));
     } catch (error) {

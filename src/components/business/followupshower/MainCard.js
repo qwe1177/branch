@@ -1,9 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types'
-import { Card, Tag, Row, Col, Button, Icon } from 'antd';
+import { Card, Tag, Row, Col, Button, Icon, message} from 'antd';
 
 import CommentForm from './CommentForm';
 import './MainCard.css';
+import { connect_srm } from '../../../util/connectConfig';
+import axios from '../../../util/axios';
+
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -17,11 +20,17 @@ import { doDeleteFollowMessage, doFirstQueryFollow, doQueryFollow, doModifiyFoll
 
 
 class MainCard extends React.Component {
-
-    removeOneMess = (listKey, messkey) => {
-        console.log('listKey=' + listKey);
-        console.log('messkey=' + messkey);
-        this.props.doDeleteFollowMessage({ listKey: listKey, messkey: messkey });
+    removeOneMess = (followUpId, commentId) => {
+        axios.get(connect_srm + '/supplier/delSupplierFollowupPostil.do', { params: {id:commentId}}).then((res)=>{
+            if(res.data.code=='1'){
+                this.props.doDeleteFollowMessage(followUpId, commentId);
+                message.success("删除成功!");
+            }else{
+                message.error(res.data.msg);
+            }
+        }).catch((e)=>{
+            message.error(e.message);
+        });
     }
     showModal = (key, id) => {
         this.props.onEdit(key, id)
@@ -32,6 +41,7 @@ class MainCard extends React.Component {
     }
     render() {
         const data = this.props.data;
+        console.log(data)
         const title = <div><span>{data.contactPersonnel}</span><span className='card-date'>{data.thisContactTime}</span></div>;
         var followUpFlag = data.followUpFlag;
         followUpFlag = (followUpFlag == null || !followUpFlag) ? [] : followUpFlag.split(",");
@@ -60,7 +70,7 @@ class MainCard extends React.Component {
                     </Col>
                 </Row>
                 <Row>
-                    <Col span={6}>
+                    <Col span={18}>
                         <span className='label'>下次跟进计划:</span>
                         <span className='value'>{data.planNextContent}</span>
                     </Col>
@@ -80,14 +90,9 @@ class MainCard extends React.Component {
                         </Col>
                     </Row>
                 })}
-                {/* {data.underling=='Y'?
-                <Row>
-                    <Col span={24}>
-                    <CommentForm recordsId={data.id} />
-                    </Col>
-                </Row>:''} */}
+                 {/* 下属是负责人并且打开了from提交框 可以添加 */}
                 {
-                    data.showCommentForm?
+                    (data.underling=='Y' && data.showCommentForm)?
                     <Row>
                     <Col span={24}>
                         <CommentForm recordsId={data.id} />
@@ -98,10 +103,9 @@ class MainCard extends React.Component {
                 <Row>
                     <Col span={24} className='card-edit'>
                         {/* 自己是负责人可以修改 */}
-                        {/* {data.self=='Y'?<Icon type="edit" onClick={this.showModal(data.supplierId,data.id)}/>:''} */}
+                        {data.self=='Y'?<Icon type="edit" onClick={()=>{this.showModal(data.supplierId,data.id)}}/>:''}
                         {/* 下属是负责人可以添加批注 */}
                         {data.underling == 'Y' ? <Icon type="edit" onClick={()=>{this.showFrom(data.id)}} /> : ''}
-                        <Icon type="edit" onClick={()=>{this.showFrom(data.id)}} />
                     </Col>
                 </Row>
             </Card>

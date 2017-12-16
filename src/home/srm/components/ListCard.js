@@ -5,12 +5,6 @@ import { Icon, Button, Spin, Pagination } from 'antd';
 
 
 export default class ListCard extends React.Component {
-  // static propTypes = {
-  //   data: PropTypes.object.isRequired
-  // }
-  // constructor(props) {
-  //   super(props);
-  // }
   state = {
     pagination: {
       total: 2,
@@ -24,11 +18,7 @@ export default class ListCard extends React.Component {
     this.queryData();
   }
   handleTableChange = (pagination, filters, sorter) => {  //点击分页控件调用  比如换页或者换pageSize
-    let { queryform } = this.props.mainQueryData;
-    let paginationObj = this.props.mainTableData.pagination;
-    paginationObj.current = pagination.current;
-    paginationObj.pageSize = pagination.pageSize;
-    // this.props.queryTableData({queryform:queryform,pagination:paginationObj});
+
   }
   queryData = () => {
     const dataSource = [{
@@ -64,9 +54,7 @@ export default class ListCard extends React.Component {
     }
   ];
     this.setState({ listData: dataSource })
-    // axios.get(connect_url + '/buyer/allbuyer/query', { params: params }).then((res)=>{
-    // }).catch((e)=>{
-    // });
+
   }
   render() {
     const { listData, pagination, isFetching } = this.state;
