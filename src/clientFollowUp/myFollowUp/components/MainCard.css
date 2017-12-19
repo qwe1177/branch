@@ -40,6 +40,17 @@
     margin-top: 20px;
     margin-bottom: 15px;
 }
+/* 标题 */
+.ant-card-head-title a {
+    color: #6699cc;
+}
+/* 标题里的时间 */
+.card-date{
+    font-size: 12px;
+    color:#999;
+    margin-left: 20px;
+}
+
 .myFollowUp .label{
     color: #333333;
     font-weight: bold;
@@ -48,10 +59,11 @@
 .myFollowUp .value{
     margin-left:4px; 
 }
-.editStyle {
+/* 编辑按钮 */
+.anticon-edit {
     cursor: pointer;
-    color: #108ee9;
+    color: #6699cc;
 }
-.editStyle:hover {
-    color: #108ee9;
+.anticon-edit:hover {
+    color: #6699cc;
 }

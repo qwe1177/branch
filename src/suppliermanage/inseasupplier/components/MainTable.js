@@ -72,11 +72,15 @@ class MainTable extends React.Component {
   }
   handleRowClick =(record, index, event)=>{
     var className = event.target.getAttribute("class");
-    if(className.indexOf('js-addus')==-1){
-        return;
+    if(className.indexOf('js-addus')==-1 && className.indexOf('js-out')==-1){
+      return;
     }
-    var account =  getLoginAccount();
-    this.handleChoosed(account.userId,account.realName,{name:'加入',data:[record]});
+    if(className.indexOf('js-addus')!=-1){
+      var account =  getLoginAccount();
+      this.handleChoosed(account.userId,account.realName,{name:'加入',data:[record]});
+    }else{
+      this.setState({ personSelectorVisible: true,actionInfo:{name:'分配',data:[record]}});
+    }
   }
   handleChoosed = (ids,labels,actionInfo) => {
     this.setState({ personSelectorVisible: false}); //form重绘需要重置
@@ -94,18 +98,31 @@ class MainTable extends React.Component {
       message.error(messageHeader+'失败!');
     })
   }
-  render() {
+  getDetailUrl =(type,supplierId)=>{
     var urlParams = getUrlParams();
     var moduleId = urlParams['moduleId']?urlParams['moduleId']:'';
     var systemId = urlParams['systemId']?urlParams['systemId']:'';
-    var detailUrl ='/suppliermanage/allsupplierdetail/?systemId='+systemId+'&moduleId='+moduleId+'&moduleUrl=/suppliermanage/allsupplierdetail/';
+    var detailUrl ='/suppliermanage/allsupplierdetail/';
+    if(type=='my'){
+      detailUrl ='/suppliermanage/mysupplierdetail/';
+    }else if(type=='theHighSeas'){
+      detailUrl ='/suppliermanage/inseasupplierdetail/';
+    }else if(type=='underling'){
+      detailUrl ='/suppliermanage/underlingsupplierdetail/';
+    }else{
+      detailUrl ='/suppliermanage/allsupplierdetail/';
+    }
+    detailUrl +='?systemId='+systemId+'&moduleId='+moduleId+'&supplierId='+supplierId;
+    return detailUrl;
+  }
+  render() {
 
     const columns = [{
       title: '企业名称',
       dataIndex: 'companyName',
       key:'companyName',
       render: (text, record) => (
-        <a href={detailUrl+'&supplierId='+record.supplierId}>{text}</a>
+        <a href={this.getDetailUrl(record.type,record.supplierId)}>{text}</a>
       )
     }, {
       title: '来源',
@@ -141,13 +158,13 @@ class MainTable extends React.Component {
       )
     },{
       title: '创建时间',
-      dataIndex: 'createTime1',
-      key:'createTime1'
+      dataIndex: 'createTime2',
+      key:'createTime2'
     },{
       title: '操作',
       dataIndex: 'option',
       render: (text, record) => {
-          return <a href='javascript:;' className='table-options-wrap js-addus'>加入我的</a>  //数据中有checked表示选中
+        return <a href='javascript:;' className='table-options-wrap js-addus'>加入我的</a>  //数据中有checked表示选中
       },
       key:'option'
     }];

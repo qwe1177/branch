@@ -1,12 +1,9 @@
 import React, { Component } from 'react';
 import 'antd/dist/antd.css';
-import './App.css';
 import '../../../public/css/layout.css';
-import vueAxios from 'axios';
-
+import './App.css';
 import QueryFrom from '../components/QueryFrom';
 import MainList from '../components/MainList';
-
 import AddModal from '../components/AddModal'
 import { Form,Button } from 'antd';
 import { connect } from 'react-redux';
@@ -42,6 +39,7 @@ class App extends Component {
 					</div>
 					<div className="statistics">
 						<AddModal/>
+						<div className="statistics-text">跟进统计</div>
 					</div>  
 				</div>
 			</div>

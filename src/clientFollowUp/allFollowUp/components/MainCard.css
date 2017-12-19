@@ -35,24 +35,36 @@
 .marginStyle {
     margin: 5px 0;
 }
+/* 添加批注 */
+.commont-form {
+    margin-top: 15px;
+}
+.commont-form button {
+  margin-top: 40px;
+}
+/* 批注 */
 .region-tool {
     background-color: #fff;
     height: 60px;
     padding: 12px 15px;
     margin-top: 20px;
-    margin-bottom: 15px;
 }
-
+/* 标题 */
+.ant-card-head-title a {
+    color: #6699cc;
+}
+/* 标题里的时间 */
 .card-date{
+    font-size: 12px;
     color:#999;
-    margin-left: 6px;
+    margin-left: 20px;
 }
 
 .card-option{
     text-align: right;
     position: relative;
 }
-
+/* 删除 */
 .card-option .remove-btn{
     color: #6699cc;
     position: absolute;
@@ -64,8 +76,11 @@
 .card-edit{
     text-align: right;
 }
-
-.card-edit .anticon-edit{
+/* 编辑按钮 */
+.anticon-edit {
     cursor: pointer;
+    color: #6699cc;
 }
-
+.anticon-edit:hover {
+    color: #6699cc;
+}

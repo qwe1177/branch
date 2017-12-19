@@ -12,7 +12,7 @@ class App extends Component {
   render() {
     const CancelWrap = Form.create()(CancelFrom);
     return (
-      <div>
+      <div className='suppliercancel'>
         <h3 className="page-title" > 品控取消 </h3>
 
         <div className="query-wrap" >

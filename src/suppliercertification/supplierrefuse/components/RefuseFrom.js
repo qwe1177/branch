@@ -50,7 +50,7 @@ class RefuseFrom extends React.Component {
 	}
 	changeToLastSeven = () => {
 		this.props.form.setFieldsValue({
-			createdate: [moment().subtract(7, "days"), moment()]
+			createdate: [moment().subtract(6, "days"), moment()]
 		});
 	}
 	changeToToday = () => {
@@ -60,7 +60,7 @@ class RefuseFrom extends React.Component {
 	}
 	changeToLastSeven1 = () => {
 		this.props.form.setFieldsValue({
-			refuseDate: [moment().subtract(7, "days"), moment()]
+			refuseDate: [moment().subtract(6, "days"), moment()]
 		});
 	}
 	changeToToday1 = () => {
@@ -106,9 +106,7 @@ class RefuseFrom extends React.Component {
 								)}
 						</FormItem>
 					</Col>
-					<Col span={2}>
-					</Col>
-					<Col span={7}>
+					<Col span={7} >
 						<FormItem {...formItemLayout} label="申请时间">
 							{getFieldDecorator('createdate')(
 								<RangePicker />
@@ -135,7 +133,7 @@ class RefuseFrom extends React.Component {
 						&nbsp;&nbsp;
 							<span className="rangeButton" onClick={this.changeToLastSeven1}>近7天</span>
 					</Col>
-					<Col span={4} className="g-rt">
+					<Col span={5} className="g-rt">
 						<Button type="primary" size="large" htmlType="submit">查询</Button>
 						<Button type="ghost" size="large" className="resetButton" onClick={this.handleReset}>重置</Button>
 					</Col>

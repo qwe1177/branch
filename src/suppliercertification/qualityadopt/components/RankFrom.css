@@ -1,33 +1,89 @@
-.rangeButton{
-    color:#6699cc;
-    line-height: 32px;
+.rangeButton {
+    color: #6699cc;
+    line-height: 36px;
 }
-.pd20{padding: 20px 30px;}
-.tit{color: #666666; font-size: 16px; overflow: hidden;}
-.g-fl{float: left;}
-.g-rt{float:right}
-.ant-table-thead > tr > th{ text-align: center}
+
+.pd20 {
+    padding: 20px 30px;
+}
+
+.tit {
+    color: #666666;
+    font-size: 16px;
+    overflow: hidden;
+}
+
+.g-fl {
+    float: left;
+}
+
+.g-rt {
+    float: right
+}
+
+.ant-table-thead>tr>th {
+    text-align: center
+}
+
 .column-money {
     text-align: center;
-  }
-.ant-form-item-label{
+}
+
+.ant-form-item-label {
     text-align: left;
-  }
+}
 
-.g-mt{margin-top: 20px;}
-.ant-form-item{margin-bottom: 0px;}
+.g-mt {
+    margin-top: 20px;
+}
 
-.rangeButton{
-    color:#6699cc;
-    line-height: 32px;
+.ant-form-item {
+    margin-bottom: 0px;
+}
+
+.rangeButton {
+    color: #6699cc;
+    line-height: 36px;
     cursor: pointer;
 }
-.resetButton{ margin-left:8px;}
 
-.table-options-wrap{
+.resetButton {
+    margin-left: 8px;
+}
+
+.table-options-wrap {
     text-align: center;
 }
 
-.table-options-wrap .last-link{
-   margin-left: 6px;
+.table-options-wrap .last-link {
+    margin-left: 6px;
+}
+
+
+/* 以下为覆盖antd样式 */
+
+.qualityadopt .ant-btn {
+    width: 42%;
+    height: 36px;
+    background-color: #6699cc;
+}
+
+.qualityadopt .ant-btn.resetButton {
+    background-color: #f4f6f8;
+}
+
+.qualityadopt .ant-select-lg .ant-select-selection--single {
+    height: 36px !important;
+}
+
+.qualityadopt .ant-select-lg .ant-select-selection__rendered {
+    line-height: 36px;
+}
+
+.qualityadopt .ant-input-lg {
+    height: 36px;
+}
+
+.qualityadopt .ant-form-item-label {
+    line-height: 36px;
 }

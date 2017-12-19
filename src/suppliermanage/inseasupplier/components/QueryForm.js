@@ -71,7 +71,7 @@ class QueryForm extends React.Component {
 	}
 	changeToLastSeven = () => {
 		this.props.form.setFieldsValue({
-			createdate: [moment().subtract(7, "days"), moment()]
+			createdate: [moment().subtract(6, "days"), moment()]
 		});
 	}
 	changeToToday = () => {
@@ -119,16 +119,9 @@ class QueryForm extends React.Component {
 			wrapperCol: { span: 17 },
 		};
 		const checkItemLayoutFirst = {
-			labelCol: { span: 2 },
-			wrapperCol: { span: 22 },
+			labelCol: { span: 4 },
+			wrapperCol: { span: 20 },
 		};
-
-		const options = [
-			{ label: '有跟进记录', value: 'followupRecords' },
-			{ label: '有上传产品', value: 'hasUpload' },
-			{ label: '有询价单', value: 'hasSheet' },
-			{ label: '能开专票', value: 'hasTicket' }
-		];
 		const choosedKeys = this.getLastSelectBrand();
 		const choosedKeys1 = this.getLastSelectCategory();
 		return (
@@ -282,7 +275,7 @@ class QueryForm extends React.Component {
 					<Col span={16} style={{ textAlign: 'left' }}>
 						<FormItem {...checkItemLayoutFirst} label="其他条件">
 							{getFieldDecorator('other')(
-								<CheckboxGroup options={options} />
+								<CheckboxGroup options={levelOptions('供应商列表其他查询条件')} />
 							)}
 						</FormItem>
 					</Col>

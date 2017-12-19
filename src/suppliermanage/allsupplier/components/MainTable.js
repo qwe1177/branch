@@ -128,19 +128,31 @@ class MainTable extends React.Component {
       message.error(messageHeader+'失败!');
     })
   }
-  render() {
+  getDetailUrl =(type,supplierId)=>{
     var urlParams = getUrlParams();
     var moduleId = urlParams['moduleId']?urlParams['moduleId']:'';
     var systemId = urlParams['systemId']?urlParams['systemId']:'';
+    var detailUrl ='/suppliermanage/allsupplierdetail/';
+    if(type=='my'){
+      detailUrl ='/suppliermanage/mysupplierdetail/';
+    }else if(type=='theHighSeas'){
+      detailUrl ='/suppliermanage/inseasupplierdetail/';
+    }else if(type=='underling'){
+      detailUrl ='/suppliermanage/underlingsupplierdetail/';
+    }else{
+      detailUrl ='/suppliermanage/allsupplierdetail/';
+    }
+    detailUrl +='?systemId='+systemId+'&moduleId='+moduleId+'&supplierId='+supplierId;
+    return detailUrl;
+  }
+  render() {
     var hasPowerForDetail = isEntryVisableByName('列表查询',this.props.power.operate);//获取是否有进入详情页权限
-    var detailUrl ='/suppliermanage/allsupplierdetail/?systemId='+systemId+'&moduleId='+moduleId+'&moduleUrl=/suppliermanage/allsupplierdetail/';
-
     const columns = [{
       title: '企业名称',
       dataIndex: 'companyName',
       key:'companyName',
       render: (text, record) => (
-        <a href={detailUrl+'&supplierId='+record.supplierId}>{text}</a>
+        <a href={this.getDetailUrl(record.type,record.supplierId)}>{text}</a>
       )
     }, {
       title: '来源',
@@ -176,22 +188,22 @@ class MainTable extends React.Component {
       )
     },{
       title: '创建时间',
-      dataIndex: 'createTime1',
-      key:'createTime1'
+      dataIndex: 'createTime2',
+      key:'createTime2'
     },{
       title: '负责人',
       dataIndex: 'realName',
       key:'realName'
     }, {
       title: '操作',
-      dataIndex: 'option',
+      dataIndex: 'option',      
       render: (text, record) => {
-        if( record.userId){  //如已经选择人的直接显示人的名称
-          return <span className='table-options-wrap'>
-          <a href='javascript:;' className='js-out'>分配</a>
-          <a href='javascript:;' className='last-link js-in'>移入</a></span>  //数据中有checked表示选中
+        if(record.type=='theHighSeas'){
+          return <span className='table-options-wrap'><a href='javascript:;' className='js-addus'>加入我的</a></span>;
+        }else if(record.type=='my' || record.type=='underling'){
+          <span className='table-options-wrap'><a href='javascript:;' className='js-out'>分配</a><a href='javascript:;' className='last-link js-in'>移入</a></span>;
         }else{
-          return <a href='javascript:;' className='table-options-wrap js-addus'>加入我的</a>  //数据中有checked表示选中
+          return '';
         }
       },
       key:'option'
@@ -201,8 +213,6 @@ class MainTable extends React.Component {
     return (
       <div className='main-table'>
         <div className="tabel-extend-option"><span onClick={this.handleRefresh} className='refresh'>刷新列表</span>  
-        <span onClick={this.openToHighSeaConfirm}>移入公海</span> 
-        <span onClick={this.handleOpenChoose}>分配负责人</span>
          </div>
         <Table bordered columns={columns}
           rowKey={record => record.supplierId}  

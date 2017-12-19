@@ -4,7 +4,7 @@ import { Form, Input, Row, Col, Button, Select } from 'antd';
 import {
 	tablemodelaction,
 	modalmodelaction
-} from '../../../productdetails/action'
+} from '../../../productdetails/actions'
 
 const FormItem = Form.Item
 const Option = Select.Option

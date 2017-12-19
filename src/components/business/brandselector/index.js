@@ -16,6 +16,7 @@ export default class BrandSelector extends React.Component {
         onChoosed: PropTypes.func.isRequired, //选择之后提交的回调
         onCancel:PropTypes.func.isRequired, //取消之后提交的回调
         visible: PropTypes.bool.isRequired, //属否显示
+        type:PropTypes.string,  // single 单选 multiple 多选 默认单选
         choosedKeys:PropTypes.object      //默认选择的品牌    {labelstr:'xxx,yyy',idstr:'1,2'}  	
     }
     constructor(props) {
@@ -41,7 +42,6 @@ export default class BrandSelector extends React.Component {
         this.setState({visible: false,checkedList:[],dataSource:[]}); //重置数据
     }
     doInit =(props)=>{
-        console.log(props)
         if(props.visible){ //显示的时候
             var checkedList =[];
             if(props.choosedKeys && props.choosedKeys.labelstr && props.choosedKeys.idstr  ){
@@ -133,6 +133,11 @@ export default class BrandSelector extends React.Component {
         }
 
         var {checkedList,dataSource} = this.state;
+        const type = this.props.type?this.props.type:'multiple';
+        if(type=='single'  && checkedList.length==1 && className.indexOf('js-precheck')!=-1){ //单选超过1个之后不能再添加
+            return; 
+        }
+
         var i = checkedList.findIndex((d)=>{
             if(d.id ==record.id){
                 return d;
@@ -196,8 +201,11 @@ export default class BrandSelector extends React.Component {
         }
         ];
         const WrappedQueryForm = Form.create()(QueryForm);
+        const type = this.props.type?this.props.type:'multiple';
+        
+        var title = '选择品牌' + (type=='single'?'(单选)':'(多选)');
         return (
-            <Modal title='选择品牌' visible={visible} className='brand-selector'
+            <Modal title={title} visible={visible} className='brand-selector'
                 onOk={this.handleOk} onCancel={this.handleCancel}
             >
                 <div className='person-selector-tagswrap'>

@@ -14,6 +14,9 @@ import { doInitList, doQueryFollow} from '../actions/index.js';
 
 // ant-tree-node-selected  控制选中的样式
 class Department extends React.Component {
+    state = {
+        defaultExpandAll: true,
+      }
       getUser = (arrRead) => {
         const userList = [];
         (function circle(arrRead,arrWrite) {
@@ -87,6 +90,7 @@ class Department extends React.Component {
     return (
         <div className="department-list">
                 <Tree
+                defaultExpandAll={this.state.defaultExpandAll}
                 onSelect={this.onSelect}
             >
                 {this.renderTreeNodes(a)}

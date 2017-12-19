@@ -3,7 +3,7 @@ import {combineReducers} from 'redux'
 import commonReducer from '../../common/reducers/commonreducer'
 import {
     tablemodelInfo,modalmodelInfo
-} from '../action' // 引入action类型常量名
+} from '../actions' // 引入action类型常量名
 
 function tablemodel(state = {
     data: [],

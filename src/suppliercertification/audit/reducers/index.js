@@ -5,6 +5,7 @@ import {
 
 /**上传图标相关 */
 function Infos(state = { orOut: { name: 'orOut', value: '2' } }, action) {
+    debugger;
     switch (action.type) {
         case BASEINFO:
             return {

@@ -20,7 +20,7 @@ import { levelOptions } from '../../../util/options';
 class CertificationFrom extends React.Component {
   changeToLastSeven = () => {
     this.props.form.setFieldsValue({
-      createdate: [moment().subtract(7, "days"), moment()]
+      createdate: [moment().subtract(6, "days"), moment()]
     });
   }
   changeToToday = () => {
@@ -76,14 +76,14 @@ class CertificationFrom extends React.Component {
                 </Select>)}
             </FormItem>
           </Col>
-          <Col span={6}>
+          <Col span={5}>
             <FormItem>
               {getFieldDecorator('name', { rules: [{ validator: this.checkName }], })(
                 <Input style={{ width: '100%' }} placeholder="深圳华南城网科技有限公司" onBlur={this.handleConfirmBlur} maxLength="30" />)}
             </FormItem>
           </Col>
 
-          <Col span={8}>
+          <Col span={7}>
             <FormItem {...formItemLayout} label="申请时间">
               {getFieldDecorator('createdate')(
                 <RangePicker />)}
@@ -93,7 +93,7 @@ class CertificationFrom extends React.Component {
             <span className="rangeButton" onClick={this.changeToToday}>今天</span> &nbsp;&nbsp;
 						<span className="rangeButton" onClick={this.changeToLastSeven}>近7天</span>
           </Col>
-          <Col span={4}>
+          <Col span={6}>
             <Button type="primary" size="large" htmlType="submit">查询</Button>
             <Button type="ghost" size="large" className="resetButton" onClick={this.handleReset}>重置</Button>
           </Col>

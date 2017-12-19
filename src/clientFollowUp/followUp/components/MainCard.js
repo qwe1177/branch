@@ -116,7 +116,7 @@ showFrom = (id) =>{
                     <Row>
                         <Col span={24} className='card-edit'>
                             {/* 下属是负责人可以添加批注 */}
-                            {data.underling == 'Y' ? <Icon type="edit" onClick={()=>{this.showFrom(data.id)}} /> : ''}
+                            {data.underling == 'Y' ? <Icon type="edit" onClick={()=>{this.showFrom(data.id)}}/> : ''}
                         </Col>
                     </Row>
                    

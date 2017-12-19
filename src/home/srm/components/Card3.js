@@ -2,18 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import './Card.css'
 
-
 export default class Card3 extends React.Component {
-  static propTypes = {
-    data: PropTypes.object.isRequired
-  }
-  constructor(props) {
-    super(props);
-  }
-  componentWillMount() {
-  }
-  componentWillReceiveProps(nextProps) {
-  }
   render() {
     return (
       <div className="briefly-card">

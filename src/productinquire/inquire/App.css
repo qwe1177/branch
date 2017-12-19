@@ -2,12 +2,6 @@
 #root{
   height: 100%;
 }
-.main{
-  background: #edf1f5;  
-  padding: 0 30px;
-  min-height:100%;
-}
-
 .page-title{
   color:#666666;
   font-size: 20px;
@@ -40,9 +34,8 @@
 }
 
 .tabel-wrap{
-  margin-top:20px; 
   background: #fff;
-  padding: 0 6px;
 }
+.g-mt0{margin-top:0px;}
 
 .g-fl{float: left;}

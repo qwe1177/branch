@@ -11,7 +11,7 @@ import { connect } from 'react-redux'
 import {
 	tablemodelaction,
 	modalmodelaction
-} from '../../action'
+} from '../../actions'
 
 //axios.defaults.timeout = 30000;                        //响应时间
 //axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8'; 

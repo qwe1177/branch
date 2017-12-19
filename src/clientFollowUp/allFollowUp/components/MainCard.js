@@ -118,7 +118,7 @@ showFrom = (id) =>{
                             {/* 自己是负责人可以修改 */}
                             {data.self=='Y'?<Icon type="edit" onClick={()=>{this.showModal(data.supplierId,data.id)}}/>:''}
                             {/* 下属是负责人可以添加批注 */}
-                            {data.underling == 'Y' ? <Icon type="edit" onClick={()=>{this.showFrom(data.id)}} /> : ''}
+                            {data.underling == 'Y' ? <Icon type="edit" onClick={()=>{this.showFrom(data.id)}}/> : ''}
                         </Col>
                     </Row>
                 </Card>  

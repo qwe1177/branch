@@ -3,9 +3,9 @@
 }
 
 .briefly-card .header {
-    color: #000;
-    font-size: 20px;
-    line-height: 37px;
+    color: #333;
+    font-size: 18px;
+    line-height: 40px;
     padding: 0 12px;
     font-weight: bold;
 }
@@ -22,7 +22,7 @@
 
 .briefly-card .count {
     color: #5489bf;
-    font-size: 28px;
+    font-size: 30px;
     line-height: 40px;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -40,7 +40,7 @@
 }
 
 .briefly-card .modify-info {
-    color: #797979;
+    color: #999999;
     font-size: 12px;
     line-height: 40px;
     overflow: hidden;

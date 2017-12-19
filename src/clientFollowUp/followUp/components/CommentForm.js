@@ -55,25 +55,22 @@ class CommentForm extends React.Component {
         var name2 = 'postilContent' + recordsId;
 
         return (
-            <Form layout="vertical" onSubmit={this.handleSubmit}>
+            <Form layout="vertical" onSubmit={this.handleSubmit} className= "commont-form">
                 <Row gutter={16} >
                     <Col span={20}>
                         <FormItem>
                             {getFieldDecorator(name2, {
                                 rules: [{ required: true, message: '请填写批注内容!' }],
                             })(
-                                <Input type="textarea" rows={4} />
+                                <Input type="textarea" rows={3} />
                                 )}
                         </FormItem>
                     </Col>
                     <Col span={4}>
                         <FormItem>
-                            <Button
-                                type="primary"
-                                htmlType="submit"
-                            >
-                                提交批注
-                </Button>
+                            <Button type="primary"  htmlType="submit" size= "small">
+                                添加批注
+                            </Button>
                         </FormItem>
                     </Col>
                 </Row>

@@ -81,7 +81,7 @@ class MainCard extends React.Component{
                 })}
                     <Row type="flex" justify="end">
                          <Col >
-                            <Icon  type="edit"  onClick={()=>{this.showModal(data.supplierId,data.id)}} className="editStyle"></Icon>
+                            <Icon  type="edit"  onClick={()=>{this.showModal(data.supplierId,data.id)}}></Icon>
                         </Col>
                     </Row>
                 </Card>  

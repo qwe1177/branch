@@ -200,7 +200,7 @@ class UserForm extends Component {
     }
 
     handleOpenChoose = (name,id) => ()=>{
-        this.setState({brandSelectorVisible: true,brankName:name,brankId:id});
+        this.setState({brandSelectorVisible: true,brankName:name,brankId:id,Selectortype:name!='mainBrand'?'single':'multiple'});
     }
     handleOpenChooseForCategory = () => {
         this.setState({categorySelectorVisible: true});
@@ -236,7 +236,8 @@ class UserForm extends Component {
         numb2: {len: 0, color: ''},
         numb3: {len: 0, color: ''},
         brandSelectorVisible: false,
-        categorySelectorVisible: false
+        categorySelectorVisible: false,
+        Selectortype:'multiple',
     }
 
 
@@ -276,7 +277,7 @@ class UserForm extends Component {
         }
     }
 
-
+    z
     uploadhandleChange = (name)=>(info) => {
         if (info.file.status === 'uploading') {
             this.getBase64(info.file.originFileObj, imageUrl => this.props.baseInfoForm({
@@ -1537,6 +1538,7 @@ class UserForm extends Component {
                                                                visible={this.state.brandSelectorVisible}
                                                                choosedKeys={choosedKeys}
                                                                onCancel={this.handleCancel}
+                                                               type={this.state.Selectortype}
                                                 />
 
                                                 <FormItem

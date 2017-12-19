@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import 'antd/dist/antd.css';
-import './App.css';
 import '../../../public/css/layout.css';
+import './App.css';
 import vueAxios from 'axios';
 
 import QueryFrom from '../components/QueryFrom';

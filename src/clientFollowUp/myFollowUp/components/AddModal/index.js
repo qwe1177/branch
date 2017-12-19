@@ -122,7 +122,7 @@ class ModalForm extends React.Component {
         return (
             <div>
                 <Button size="large" onClick={this.addShow} type="primary" style={{ width: 236 }}>添加跟进</Button>
-                <Modal className="addFollowUp" visible={visible} title={title} onCancel={this.handleCancel} footer={null}>
+                <Modal className="addFollowUp" visible={visible} title={title} onCancel={this.handleCancel} footer={null} width = {'600px'}>
                     <Form layout="horizontal" onSubmit={this.handleSubmit} >
 						<Row type="flex" justify="space-between">
                             < Col span={16}>

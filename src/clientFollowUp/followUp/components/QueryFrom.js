@@ -50,7 +50,7 @@ class QueryFrom extends React.Component {
 	}
 	changeToLastSeven = () => {
 		this.props.form.setFieldsValue({
-			finishData: [moment().subtract(7, "days"), moment()]
+			finishData: [moment().subtract(6, "days"), moment()]
 		});
 	}
 	changeToToday = () => {

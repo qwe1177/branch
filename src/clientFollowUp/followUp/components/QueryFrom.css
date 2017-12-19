@@ -16,12 +16,6 @@
     font-weight: 700;
     line-height: 60px;
   }
-  /* 红色按钮的样式 */
-.ant-btn-danger {
-    background-color: #f04134;
-    border-color: #f04134;
-    color: #fff;
-  }
   /* 让多选狂显示一排 */
   .ant-checkbox-group {
     display: inline-block;
@@ -43,6 +37,10 @@
   height: 12px;
   left:7px;
 }
+.ant-checkbox-checked .ant-checkbox-inner {
+  background-color: #6699cc;
+}
+
 /* 时间的筛选 */
 .rangeButton{
   color:#6699cc;

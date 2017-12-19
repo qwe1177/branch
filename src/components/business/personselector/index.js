@@ -170,7 +170,7 @@ class PersonSelector extends React.Component {
         var {checkedList,dataSource} = this.state;
 
         const type = this.props.type?this.props.type:'single';
-        if(type=='single'  && checkedList.length==1){ //支持单选只能不能超过1
+        if(type=='single'  && checkedList.length==1 && className.indexOf('js-precheck')!=-1){ //单选超过1个之后不能再添加
             return; 
         }
 

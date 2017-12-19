@@ -29,7 +29,7 @@ import _ from 'lodash';
 import {
     tablemodelaction,
     modalmodelaction,
-} from '../../action'
+} from '../../actions'
 import BrandSelector from '../../../components/business/uploadinquire';
 import BrandBuyers from '../../../components/business/uploadbuyers';
 import moment from 'moment'
@@ -461,9 +461,6 @@ class UploadFrom2 extends React.Component {
           const newarrobj = this.objToarrsort(values);
           const newarrobjlen = newarrobj.length;
           var {supplierList,BuyersList} = this.state;
-          //var token = getLoginInfo()['token'];  //获取token　登录用
-          //var urlParams = getUrlParams();
-          //var moduleId = urlParams['moduleId']?urlParams['moduleId']:'';
           for (let i = 0; i < newarrobjlen; i++) {
 
               const re = /\d+$/g;
@@ -560,10 +557,9 @@ class UploadFrom2 extends React.Component {
 
         return (
         <div>
-          <Form layout="horizontal" onSubmit={this.handleSubmit} className="pd20">
-          <div>
+          <Form layout="horizontal" onSubmit={this.handleSubmit}>
+          <div  className="pd20">
             <div className="audit-tit"><div className="g-fl">基础信息</div></div>
-            
               <Row gutter={24} style={{'padding':'8px 0px'}}>
                 <Col span={12}>
                   <FormItem label="供应商名称"  {...formItemLayout} style={{"width":"100%"}}>

@@ -363,6 +363,52 @@ class SubmitFrom extends React.Component {
         </FormItem>)
     }
 
+    identityCodeValid = (rule, value, callback)=>{ 
+        var city={11:"北京",12:"天津",13:"河北",14:"山西",15:"内蒙古",21:"辽宁",22:"吉林",23:"黑龙江 ",31:"上海",32:"江苏",33:"浙江",34:"安徽",35:"福建",36:"江西",37:"山东",41:"河南",42:"湖北 ",43:"湖南",44:"广东",45:"广西",46:"海南",50:"重庆",51:"四川",52:"贵州",53:"云南",54:"西藏 ",61:"陕西",62:"甘肃",63:"青海",64:"宁夏",65:"新疆",71:"台湾",81:"香港",82:"澳门",91:"国外 "};
+        var tip = "";
+        var pass= true;
+
+        if(!value || !/^\d{6}(18|19|20)?\d{2}(0[1-9]|1[12])(0[1-9]|[12]\d|3[01])\d{3}(\d|X)$/i.test(value)){
+            tip = "身份证号格式错误";
+            pass = false;
+        }
+
+       else if(!city[value.substr(0,2)]){
+            tip = "地址编码错误";
+            pass = false;
+        }
+        else{
+            //18位身份证需要验证最后一位校验位
+            if(value.length == 18){
+                value = value.split('');
+                //∑(ai×Wi)(mod 11)
+                //加权因子
+                var factor = [ 7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2 ];
+                //校验位
+                var parity = [ 1, 0, 'X', 9, 8, 7, 6, 5, 4, 3, 2 ];
+                var sum = 0;
+                var ai = 0;
+                var wi = 0;
+                for (var i = 0; i < 17; i++)
+                {
+                    ai = value[i];
+                    wi = factor[i];
+                    sum += ai * wi;
+                }
+                var last = parity[sum % 11];
+                if(parity[sum % 11] != value[17]){
+                    tip = "校验位错误";
+                    pass =false;
+                }
+            }
+        }
+        if(!pass) {
+            callback(tip)
+        } else {
+            callback()
+        }
+    }
+
     handlePreview = (file) => {
         this.props.modalmodelaction({
             previewVisible: true,
@@ -637,7 +683,7 @@ class SubmitFrom extends React.Component {
         const choosedKeys = this.getLastSelectBrand();
 
         return (
-            <Form layout="horizontal" onSubmit={this.handleSubmit}>
+            <Form layout="horizontal" onSubmit={this.handleSubmit} className="main-submit-form">
                 <div className="audit-tit">
                     企业信息
 				</div>
@@ -659,7 +705,7 @@ class SubmitFrom extends React.Component {
                                 {getFieldDecorator('creditNumber', {
                                     rules: [{ required: false, message: '请输入营业执照注册号' }],
                                 })(
-                                    <Input placeholder="营业执照注册号" style={{ "width": "50%" }} />
+                                    <Input placeholder="营业执照注册号" style={{ "width": "50%" }} maxLength="30"/>
                                     )}
                             </FormItem>
                         </Col>
@@ -705,7 +751,7 @@ class SubmitFrom extends React.Component {
                                 {getFieldDecorator('organization', {
                                     rules: [{ required: false, message: '请输入登记机构' }],
                                 })(
-                                    <Input placeholder="登记机构" style={{ "width": "50%" }} />
+                                    <Input placeholder="登记机构" style={{ "width": "50%" }} maxLength="30" />
                                     )}
                             </FormItem>
                         </Col>
@@ -721,7 +767,7 @@ class SubmitFrom extends React.Component {
                                     rules: [{ required: false, message: '请输入企业法人' }],
                                 })(
                                     <Input placeholder="企业法人"
-                                        style={{ width: '60%', 'marginRight': '10px' }} />
+                                        style={{ width: '60%', 'marginRight': '10px' }} maxLength="30" />
                                     )}
                                 {getFieldDecorator('corporationGender', {
                                     rules: [{ required: false, message: '请选择' }],
@@ -737,11 +783,12 @@ class SubmitFrom extends React.Component {
                         </Col>
                         <Col span={12}>
                             <FormItem {...formItemLayout} label="身份证号">
-                                {getFieldDecorator('idcard', {
-                                    rules: [{ required: false, message: '请输入营业执照注册号' }],
+                            {getFieldDecorator('idcard', {
+                                    rules: [{required: false, message: '请输入身份证号'},
+                                    {validator:this.identityCodeValid}],
                                 })(
-                                    <Input placeholder="" style={{ "width": "50%" }} />
-                                    )}
+                                    <Input placeholder="身份证号" style={{ width: '70%'}} maxLength="18"/>
+                                )}
                             </FormItem>
                         </Col>
                     </Row>
@@ -907,7 +954,8 @@ class SubmitFrom extends React.Component {
                          <BrandSelector onChoosed={this.handleChoosed}
                             visible={this.state.brandSelectorVisible}
                             choosedKeys={choosedKeys}
-                            onCancel={this.handleCancel}/>  
+                            onCancel={this.handleCancel}
+                            type='single'  />  
                     </div>
                 </div>
                 <div className="tabel-wrap">
@@ -934,7 +982,7 @@ class SubmitFrom extends React.Component {
                         <Col span={20}>
                             <FormItem {...formItemLayout3} label="备注信息">
                                 {getFieldDecorator('remark')(
-                                    <TextArea rows={4} />
+                                    <TextArea rows={4} maxLength='200' />
                                 )}
                             </FormItem>
                         </Col>

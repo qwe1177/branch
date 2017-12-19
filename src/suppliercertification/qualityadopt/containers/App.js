@@ -5,7 +5,7 @@ import 'antd/dist/antd.css';
 import RankFrom from '../components/RankFrom';
 import RankFrom2 from '../components/RankFrom2';
 
-import {Form, Select, Input, Button, Table, Modal, Progress,Row,Col } from 'antd';
+import { Form, Select, Input, Button, Table, Modal, Progress, Row, Col } from 'antd';
 const Option = Select.Option;
 const FormItem = Form.Item;
 
@@ -21,31 +21,31 @@ class App extends Component {
 		super(props);
 		this.state = {
 			loading: true, //弹层数据加载
-			modalvisible:true,//弹层显示隐藏
-			selectedRows:[] //
+			modalvisible: true,//弹层显示隐藏
+			selectedRows: [] //
 		};
 	}
-	
+
 	handlemodalOk = () => {
 		this.setState({ modalvisible: false });
 	}
 	handlemodalCancel = () => {
 		this.setState({ modalvisible: false });
 	}
-	onMyRowClick =(record, index, event) =>{
+	onMyRowClick = (record, index, event) => {
 		this.setState({ modalvisible: true });
 	}
 	render() {
 		const RankFromWrap = Form.create()(RankFrom);
-		const RankFrom2Wrap= Form.create()(RankFrom2);
+		const RankFrom2Wrap = Form.create()(RankFrom2);
 		return (
-			<div>
+			<div className='qualityadopt'>
 				<h3 className="page-title">品控通过</h3>
-				
+
 				<div className="query-wrap">
 					<RankFromWrap />
 				</div>
-				 <div className="tabel-wrap">
+				<div className="tabel-wrap">
 					<RankFrom2Wrap />
 				</div>
 			</div>

@@ -259,8 +259,8 @@ class ModalForm extends React.Component {
 				</Row>
 				<Row gutter={16}>
 					<FormItem >
-						<Button key="submit" type="primary" htmlType="submit"  size="large"  onClick={this.handleOk}>确认</Button>
-						<Button key="back" size="large" style={{marginRight: 20}} onClick={this.handleCancel}>取消</Button>
+						<Button key="submit" type="primary" size="default" htmlType="submit"  onClick={this.handleOk}>确认</Button>
+						<Button key="back" type="danger" size="default" style={{marginRight: 20}} onClick={this.handleCancel}>取消</Button>
 					</FormItem>
 				</Row>
 				</Form>

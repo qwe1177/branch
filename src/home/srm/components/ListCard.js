@@ -60,7 +60,7 @@ export default class ListCard extends React.Component {
     const { listData, pagination, isFetching } = this.state;
     return (
       <div className='list-card-wrap'>
-        <div className="card-title">待办任务-α(<span className='card-title-number'>22</span>) <a href='#' className='more-link'>more<Icon type="double-right" /></a>  </div>
+        <div className="card-title">待办任务-α<span className='number-wrap'>(<span className='card-title-number'>22</span>)</span> <a href='#' className='more-link'>more<Icon type="double-right" /></a>  </div>
         <Spin spinning={this.state.isFetching}>
           <div className='alignment-wrap'>
 

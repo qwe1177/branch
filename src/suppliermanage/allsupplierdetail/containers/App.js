@@ -49,7 +49,8 @@ class App extends Component {
 		fetchSetContacts(supplierIds ,ids,labels,responsibleSources).then((res)=>{
 		  if(res.data.code=='1'){
 			message.success('分配负责人操作成功!');
-			this.props.doChangeChargeMen(); //分配成功后不显示分配负责人按钮
+			window.opener&&window.opener.location.reload()
+			setTimeout(()=>{location.href=document.referrer;},1000)
 		  }else{
 			message.error('分配负责人操作失败!');
 		  }
@@ -62,12 +63,28 @@ class App extends Component {
 		fetchToHighSea(supplierId).then((res) => {
 			if (res.data.code == '1') {
 				message.success('移入公海成功!');
+				window.opener&&window.opener.location.reload()
+				setTimeout(()=>{location.href=document.referrer;},1000)
 			} else {
 				message.error('移入公海失败!');
 			}
 		}).catch((e) => {
 			message.error('移入公海失败!');
 		})
+	}
+	handleAddToMe =()=>{
+		var account =  getLoginAccount();
+		  fetchSetContacts(this.supplierId ,account.userId,account.realName,'0').then((res)=>{
+			if(res.data.code=='1'){
+			  message.success('加入我的客户成功!');
+			  window.opener&&window.opener.location.reload()
+			  setTimeout(()=>{location.href=document.referrer;},1000)
+			}else{
+			  message.error('加入我的客户失败!');
+			}
+		  }).catch((e)=>{
+			message.error('加入我的客户失败!');
+		  })
 	}
 	showMoreBtn = () => {
 		this.setState({ isBtnExpand: true });
@@ -112,6 +129,7 @@ class App extends Component {
 		const btnClassName = isBtnExpand ? 'botton-wrap all-btns' : 'botton-wrap default-btns';
 		const companyName = this.props.supplierDetailMain.data.companyName?this.props.supplierDetailMain.data.companyName:'';
 		const isSelf = this.props.supplierDetailMain.data.self?(this.props.supplierDetailMain.data.self=='my'):false; //是否本人是负责人
+		const isTheHighSeas =this.props.supplierDetailMain.data.self?(this.props.supplierDetailMain.data.self=='theHighSeas'):false;//
 		return (
 			<div>
 				<h3 className="page-title">供应商详情</h3>
@@ -135,8 +153,8 @@ class App extends Component {
 										{isSelf?<Button type="primary" className='normal' onClick={this.turnToMidify} >编辑供应商</Button>:''}
 										{isSelf?<Button type="primary" className='normal' onClick={this.handleOpenChoose}>分配负责人</Button>:''}
 										{isSelf?<Button type="primary" className='normal' onClick={this.handleFetchToHighSea}>移入公海</Button>:''}
-										{/* <Button type="primary" className='normal'>供应商评分</Button>
-										<Button type="primary" className='normal'>供应商统计</Button> */}
+										{isTheHighSeas?<Button type="primary" className='normal' onClick={this.handleAddToMe}>加入我的客户</Button>:''}
+										{/* <Button type="primary" className='normal'>供应商评分</Button>*/}
 									</div>
 									<Button className='more' onClick={() => this.showMoreBtn()}>更多</Button>
 									<PersonSelector onChoosed={this.handleChoosed.bind(this)} title={'分配负责人'} visible={this.state.personSelectorVisible}

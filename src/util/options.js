@@ -14,42 +14,42 @@ export const levelOptions = (name) => {
         case '客户来源':
             return [
                 { label: '全部', value: '' },
-                { label: '自行开发', value: 'self-developed' },
-                { label: '来电咨询', value: 'toInquire' },
-                { label: '网络推广', value: 'networkPromotion' },
+                { label: '自行开发', value: '自行开发' },
+                { label: '来电咨询', value: '来电咨询' },
+                { label: '网络推广', value: '网络推广' },
                 { label: 'CSC86', value: 'CSC86' },
                 { label: 'buy5j', value: 'buy5j' },
-                { label: '网络爬取', value: 'webCrawl' }
+                { label: '网络爬取', value: '网络爬取' }
             ]
         case '客户级别':
             return [
                 { label: '全部', value: '' },
-                { label: '一星', value: 'one_Star' },
-                { label: '二星', value: 'two_Star' },
-                { label: '三星', value: 'three_Star' },
-                { label: '四星', value: 'four_Star' },
-                { label: '五星', value: 'five_Star' },
+                { label: '一星', value: '一星' },
+                { label: '二星', value: '二星' },
+                { label: '三星', value: '三星' },
+                { label: '四星', value: '四星' },
+                { label: '五星', value: '五星' },
             ]
         case '客户类型':
             return [
                 { label: '全部', value: '' },
-                { label: '一级代理商', value: 'firstLevelAgent' },
-                { label: '厂家', value: 'manufacturer' },
-                { label: '经销商', value: 'dealers' },
+                { label: '一级代理商', value: '一级代理商' },
+                { label: '厂家', value: '厂家' },
+                { label: '经销商', value: '经销商' },
             ]
         case '客户区域':
             return [
                 { label: '全部', value: '' },
-                { label: '城内商户', value: 'merchantsIn' },
-                { label: '城外商户', value: 'merchantsOut' }
+                { label: '城内商户', value: '城内商户' },
+                { label: '城外商户', value: '城外商户' }
             ]
         case '合作关系':
             return [
-                { label: '请选择', value: '' },
-                { label: '战略合作', value: 'strategicCooperation' },
-                { label: '友好合作', value: 'friendlyCooperation' },
-                { label: '普通合作', value: 'commonCooperation' },
-                { label: '终止合作', value: 'stopCooperation' },
+                { label: '全部', value: '' },
+                { label: '战略合作', value: '战略合作' },
+                { label: '友好合作', value: '友好合作' },
+                { label: '普通合作', value: '普通合作' },
+                { label: '终止合作', value: '终止合作' },
             ]
         case '主动联络方':
             return [
@@ -154,6 +154,13 @@ export const levelOptions = (name) => {
                 { label: '客户来访', value: '6' },
                 { label: '其他', value: '7' }
             ]
+        case '供应商列表其他查询条件':
+            return [
+                { label: '有营业执照', value: 'creditNumber' },
+                { label: '有跟进记录', value: 'followupRecords' },
+                { label: '有询价单', value: 'hasSheet' },
+                { label: '有上传产品', value: 'hasUpload' }
+            ];
         default:
             return []
     }

@@ -24,44 +24,42 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file leaf-file-name="App.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/allClueDetail/containers/App.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="285">
-              <caret line="140" column="62" selection-start-line="140" selection-start-column="62" selection-end-line="140" selection-end-column="62" />
-              <folding>
-                <element signature="e#0#41#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="App.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/newClue/containers/App.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="197">
-              <caret line="307" column="87" selection-start-line="307" selection-start-column="73" selection-end-line="307" selection-end-column="87" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="urlaccess.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/util/urlaccess.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="308">
-              <caret line="14" column="0" selection-start-line="14" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
+            <state relative-caret-position="1706">
+              <caret line="207" column="38" selection-start-line="207" selection-start-column="38" selection-end-line="207" selection-end-column="38" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
       <file leaf-file-name="App.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/editClue/containers/App.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-2618">
+              <caret line="223" column="47" selection-start-line="223" selection-start-column="47" selection-end-line="223" selection-end-column="47" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="App.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/myClueDetail/containers/App.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="321">
-              <caret line="128" column="26" selection-start-line="128" selection-start-column="26" selection-end-line="128" selection-end-column="26" />
+            <state relative-caret-position="307">
+              <caret line="127" column="10" selection-start-line="127" selection-start-column="10" selection-end-line="127" selection-end-column="10" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="App.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/allClueDetail/containers/App.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="187">
+              <caret line="173" column="50" selection-start-line="0" selection-start-column="0" selection-end-line="371" selection-end-column="0" />
               <folding>
-                <element signature="e#0#41#0" expanded="true" />
+                <element signature="e#0#39#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -70,23 +68,61 @@
       <file leaf-file-name="App.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/underlingClueDetail/containers/App.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="494">
-              <caret line="149" column="25" selection-start-line="149" selection-start-column="25" selection-end-line="149" selection-end-column="25" />
+            <state relative-caret-position="385">
+              <caret line="184" column="25" selection-start-line="0" selection-start-column="0" selection-end-line="371" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="App.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/publicClueDetail/containers/App.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="528">
+              <caret line="154" column="24" selection-start-line="154" selection-start-column="24" selection-end-line="154" selection-end-column="24" />
               <folding>
-                <element signature="e#0#41#0" expanded="true" />
+                <element signature="e#0#39#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="App.js" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/publicClueDetail/containers/App.js">
+      <file leaf-file-name="redux.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/components/business/personlistshower/redux.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="5126">
-              <caret line="254" column="58" selection-start-line="254" selection-start-column="58" selection-end-line="254" selection-end-column="58" />
-              <folding>
-                <element signature="e#0#41#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="561">
+              <caret line="205" column="44" selection-start-line="205" selection-start-column="44" selection-end-line="205" selection-end-column="44" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="index2.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/components/business/personlistshower/index2.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="560">
+              <caret line="63" column="35" selection-start-line="63" selection-start-column="35" selection-end-line="63" selection-end-column="35" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="index2.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/components/business/companybaseshower/index2.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="493">
+              <caret line="43" column="49" selection-start-line="43" selection-start-column="49" selection-end-line="43" selection-end-column="49" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="EffectFrom2.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/components/business/companybaseshower/EffectFrom2.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="286">
+              <caret line="27" column="65" selection-start-line="27" selection-start-column="65" selection-end-line="27" selection-end-column="65" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -96,13 +132,8 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/productpricing/upload/components/UploadFrom2.js" />
-        <option value="$PROJECT_DIR$/util/baseTool.js" />
-        <option value="$PROJECT_DIR$/../webpack.config.js" />
-        <option value="$PROJECT_DIR$/home/srm/containers/App.js" />
         <option value="$PROJECT_DIR$/allDetail/reducers/index.js" />
         <option value="$PROJECT_DIR$/allDetail/index.js" />
-        <option value="$PROJECT_DIR$/components/business/personlistshower/redux.js" />
         <option value="$PROJECT_DIR$/components/business/mergesuppliers/index.js" />
         <option value="$PROJECT_DIR$/components/business/companybaseshower/layout.css" />
         <option value="$PROJECT_DIR$/util/axios.js" />
@@ -123,30 +154,35 @@
         <option value="$PROJECT_DIR$/common/containers/App.js" />
         <option value="$PROJECT_DIR$/public/css/layout.css" />
         <option value="$PROJECT_DIR$/components/business/personlistshower/index.js" />
-        <option value="$PROJECT_DIR$/components/business/personlistshower/index2.js" />
         <option value="$PROJECT_DIR$/components/publicFollowUp/redux.js" />
         <option value="$PROJECT_DIR$/components/business/followupshower/MainCard.js" />
         <option value="$PROJECT_DIR$/components/common/supplierdetails/redux.js" />
         <option value="$PROJECT_DIR$/newClue/css/css.css" />
         <option value="$PROJECT_DIR$/newClue/reducers/index.js" />
         <option value="$PROJECT_DIR$/components/business/categoryselector/index.js" />
-        <option value="$PROJECT_DIR$/components/business/brandselector/index.js" />
         <option value="$PROJECT_DIR$/allClueDetail/containers/App.css" />
         <option value="$PROJECT_DIR$/myClueDetail/containers/App.css" />
         <option value="$PROJECT_DIR$/publicClueDetail/containers/App.css" />
         <option value="$PROJECT_DIR$/underlingClueDetail/containers/App.css" />
         <option value="$PROJECT_DIR$/util/urlaccess.js" />
         <option value="$PROJECT_DIR$/components/business/personlistshower/layout.css" />
-        <option value="$PROJECT_DIR$/myClueDetail/containers/App.js" />
-        <option value="$PROJECT_DIR$/publicClueDetail/containers/App.js" />
-        <option value="$PROJECT_DIR$/allClueDetail/containers/App.js" />
-        <option value="$PROJECT_DIR$/underlingClueDetail/containers/App.js" />
-        <option value="$PROJECT_DIR$/newClue/containers/App.js" />
-        <option value="$PROJECT_DIR$/editClue/containers/App.js" />
-        <option value="$PROJECT_DIR$/allClue/containers/App.js" />
         <option value="$PROJECT_DIR$/myClue/containers/App.js" />
         <option value="$PROJECT_DIR$/underlingClue/containers/App.js" />
         <option value="$PROJECT_DIR$/publicClue/containers/App.js" />
+        <option value="$PROJECT_DIR$/allClue/containers/App.js" />
+        <option value="$PROJECT_DIR$/components/business/personlistshower/index2.js" />
+        <option value="$PROJECT_DIR$/components/business/personlistshower/redux.js" />
+        <option value="$PROJECT_DIR$/components/business/brandselector/index.js" />
+        <option value="$PROJECT_DIR$/editClue/containers/App.js" />
+        <option value="$PROJECT_DIR$/newClue/containers/App.js" />
+        <option value="$PROJECT_DIR$/components/business/uploadinquire/layout.css" />
+        <option value="$PROJECT_DIR$/components/business/uploaddetails/layout.css" />
+        <option value="$PROJECT_DIR$/components/business/uploadbuyers/layout.css" />
+        <option value="$PROJECT_DIR$/allClue/css/css.css" />
+        <option value="$PROJECT_DIR$/publicClueDetail/containers/App.js" />
+        <option value="$PROJECT_DIR$/underlingClueDetail/containers/App.js" />
+        <option value="$PROJECT_DIR$/allClueDetail/containers/App.js" />
+        <option value="$PROJECT_DIR$/myClueDetail/containers/App.js" />
       </list>
     </option>
   </component>
@@ -193,7 +229,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
+      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -358,7 +394,7 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scratches" />
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -456,20 +492,22 @@
       <workItem from="1513215942802" duration="20596000" />
       <workItem from="1513300809900" duration="22502000" />
       <workItem from="1513387613426" duration="6936000" />
+      <workItem from="1513559869268" duration="8423000" />
+      <workItem from="1513647605048" duration="7950000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="175792000" />
+    <option name="totallyTimeSpent" value="192165000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
+    <frame x="-8" y="-8" width="1936" height="1056" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.13343883" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32934782" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4402174" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.5326087" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -514,60 +552,10 @@
     </PATH>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/../node_modules/axios/index.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/util/baseTool.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="296">
-          <caret line="87" column="13" selection-start-line="87" selection-start-column="13" selection-end-line="87" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/components/business/companybaseshower/index.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="308">
-          <caret line="27" column="6" selection-start-line="27" selection-start-column="6" selection-end-line="27" selection-end-column="6" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/underlingClueDetail/index.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$APPLICATION_HOME_DIR$/plugins/JavaScriptLanguage/lib/JavaScriptLanguage.jar!/com/intellij/lang/javascript/index/predefined/react.d.ts">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="318">
-          <caret line="409" column="18" selection-start-line="409" selection-start-column="12" selection-end-line="409" selection-end-column="18" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/util/connectConfig.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="308">
-          <caret line="14" column="24" selection-start-line="14" selection-start-column="13" selection-end-line="14" selection-end-column="24" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/AttackClue/components/layout.css">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="418">
           <caret line="19" column="23" selection-start-line="19" selection-start-column="23" selection-end-line="19" selection-end-column="23" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/components/business/companybaseshower/index2.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="296">
-          <caret line="27" column="6" selection-start-line="27" selection-start-column="6" selection-end-line="27" selection-end-column="6" />
         </state>
       </provider>
     </entry>
@@ -582,13 +570,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="626">
           <caret line="29" column="6" selection-start-line="29" selection-start-column="6" selection-end-line="29" selection-end-column="6" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/components/business/companybaseshower/EffectFrom2.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-45">
-          <caret line="39" column="64" selection-start-line="39" selection-start-column="64" selection-end-line="39" selection-end-column="64" />
         </state>
       </provider>
     </entry>
@@ -631,13 +612,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="296">
           <caret line="27" column="6" selection-start-line="27" selection-start-column="6" selection-end-line="27" selection-end-column="6" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/components/business/personlistshower/EffectForm.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="97">
-          <caret line="17" column="21" selection-start-line="17" selection-start-column="21" selection-end-line="17" selection-end-column="21" />
         </state>
       </provider>
     </entry>
@@ -738,13 +712,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/components/business/brandselector/index.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="527">
-          <caret line="75" column="8" selection-start-line="75" selection-start-column="8" selection-end-line="75" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/publicClue/css/css.css">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -780,21 +747,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/components/business/personlistshower/index2.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="550">
-          <caret line="35" column="24" selection-start-line="35" selection-start-column="24" selection-end-line="35" selection-end-column="24" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/newClue/reducers/index.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="968">
           <caret line="53" column="74" selection-start-line="53" selection-start-column="74" selection-end-line="53" selection-end-column="74" />
-          <folding>
-            <element signature="e#0#37#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -806,13 +762,75 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/underlingClueDetail/containers/App.js">
+    <entry file="file://$PROJECT_DIR$/myClue/containers/App.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="494">
-          <caret line="149" column="25" selection-start-line="149" selection-start-column="25" selection-end-line="149" selection-end-column="25" />
-          <folding>
-            <element signature="e#0#41#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="351">
+          <caret line="119" column="28" selection-start-line="119" selection-start-column="28" selection-end-line="119" selection-end-column="28" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/underlingClue/containers/App.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="351">
+          <caret line="119" column="28" selection-start-line="119" selection-start-column="28" selection-end-line="119" selection-end-column="28" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/publicClue/containers/App.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1914">
+          <caret line="118" column="28" selection-start-line="118" selection-start-column="28" selection-end-line="118" selection-end-column="28" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/components/business/personlistshower/EffectForm.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="154">
+          <caret line="12" column="94" selection-start-line="12" selection-start-column="94" selection-end-line="12" selection-end-column="94" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/components/business/brandselector/index.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2948">
+          <caret line="143" column="13" selection-start-line="143" selection-start-column="13" selection-end-line="143" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/components/business/uploadinquire/layout.css">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/components/business/uploaddetails/layout.css">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/components/business/uploadbuyers/layout.css">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="44">
+          <caret line="2" column="0" selection-start-line="2" selection-start-column="0" selection-end-line="2" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/allClue/css/css.css">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="660">
+          <caret line="40" column="20" selection-start-line="40" selection-start-column="20" selection-end-line="40" selection-end-column="20" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -824,81 +842,103 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/publicClue/containers/App.js">
+    <entry file="jar://$APPLICATION_HOME_DIR$/plugins/JavaScriptLanguage/lib/JavaScriptLanguage.jar!/com/intellij/lang/javascript/index/predefined/HTML5.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="659">
-          <caret line="400" column="89" selection-start-line="400" selection-start-column="89" selection-end-line="400" selection-end-column="89" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/underlingClue/containers/App.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="307">
-          <caret line="384" column="93" selection-start-line="384" selection-start-column="93" selection-end-line="384" selection-end-column="93" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/allClue/containers/App.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="395">
-          <caret line="418" column="58" selection-start-line="418" selection-start-column="58" selection-end-line="418" selection-end-column="58" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/myClue/containers/App.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="659">
-          <caret line="400" column="89" selection-start-line="400" selection-start-column="89" selection-end-line="400" selection-end-column="89" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/editClue/containers/App.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="285">
-          <caret line="1232" column="22" selection-start-line="1232" selection-start-column="22" selection-end-line="1232" selection-end-column="22" />
+        <state relative-caret-position="264">
+          <caret line="2361" column="0" selection-start-line="2361" selection-start-column="0" selection-end-line="2361" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/newClue/containers/App.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="197">
-          <caret line="307" column="87" selection-start-line="307" selection-start-column="73" selection-end-line="307" selection-end-column="87" />
+        <state relative-caret-position="1706">
+          <caret line="207" column="38" selection-start-line="207" selection-start-column="38" selection-end-line="207" selection-end-column="38" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/allClue/containers/App.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="439">
+          <caret line="351" column="31" selection-start-line="351" selection-start-column="31" selection-end-line="351" selection-end-column="31" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/components/business/personlistshower/redux.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="561">
+          <caret line="205" column="44" selection-start-line="205" selection-start-column="44" selection-end-line="205" selection-end-column="44" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/components/business/personlistshower/index2.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="560">
+          <caret line="63" column="35" selection-start-line="63" selection-start-column="35" selection-end-line="63" selection-end-column="35" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/components/business/companybaseshower/EffectFrom2.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="286">
+          <caret line="27" column="65" selection-start-line="27" selection-start-column="65" selection-end-line="27" selection-end-column="65" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/components/business/companybaseshower/index2.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="493">
+          <caret line="43" column="49" selection-start-line="43" selection-start-column="49" selection-end-line="43" selection-end-column="49" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/editClue/containers/App.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-2618">
+          <caret line="223" column="47" selection-start-line="223" selection-start-column="47" selection-end-line="223" selection-end-column="47" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/publicClueDetail/containers/App.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="528">
+          <caret line="154" column="24" selection-start-line="154" selection-start-column="24" selection-end-line="154" selection-end-column="24" />
+          <folding>
+            <element signature="e#0#39#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/underlingClueDetail/containers/App.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="385">
+          <caret line="184" column="25" selection-start-line="0" selection-start-column="0" selection-end-line="371" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/allClueDetail/containers/App.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="285">
-          <caret line="140" column="62" selection-start-line="140" selection-start-column="62" selection-end-line="140" selection-end-column="62" />
+        <state relative-caret-position="187">
+          <caret line="173" column="50" selection-start-line="0" selection-start-column="0" selection-end-line="371" selection-end-column="0" />
           <folding>
-            <element signature="e#0#41#0" expanded="true" />
+            <element signature="e#0#39#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/myClueDetail/containers/App.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="321">
-          <caret line="128" column="26" selection-start-line="128" selection-start-column="26" selection-end-line="128" selection-end-column="26" />
-          <folding>
-            <element signature="e#0#41#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/publicClueDetail/containers/App.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="5126">
-          <caret line="254" column="58" selection-start-line="254" selection-start-column="58" selection-end-line="254" selection-end-column="58" />
-          <folding>
-            <element signature="e#0#41#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="307">
+          <caret line="127" column="10" selection-start-line="127" selection-start-column="10" selection-end-line="127" selection-end-column="10" />
+          <folding />
         </state>
       </provider>
     </entry>

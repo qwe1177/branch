@@ -156,18 +156,31 @@ class MainTable extends React.Component {
       message.error('修改失败!');
     });
   }
-  render() {
+  getDetailUrl =(type,supplierId)=>{
     var urlParams = getUrlParams();
-    var moduleId = urlParams['moduleId'] ? urlParams['moduleId'] : '';
-    var systemId = urlParams['systemId'] ? urlParams['systemId'] : '';
-    var detailUrl = '/suppliermanage/allsupplierdetail/?systemId=' + systemId + '&moduleId=' + moduleId + '&moduleUrl=/suppliermanage/allsupplierdetail/';
+    var moduleId = urlParams['moduleId']?urlParams['moduleId']:'';
+    var systemId = urlParams['systemId']?urlParams['systemId']:'';
+    var detailUrl ='/suppliermanage/allsupplierdetail/';
+    if(type=='my'){
+      detailUrl ='/suppliermanage/mysupplierdetail/';
+    }else if(type=='theHighSeas'){
+      detailUrl ='/suppliermanage/inseasupplierdetail/';
+    }else if(type=='underling'){
+      detailUrl ='/suppliermanage/underlingsupplierdetail/';
+    }else{
+      detailUrl ='/suppliermanage/allsupplierdetail/';
+    }
+    detailUrl +='?systemId='+systemId+'&moduleId='+moduleId+'&supplierId='+supplierId;
+    return detailUrl;
+  }
+  render() {
 
     const columns = [{
       title: '企业名称',
       dataIndex: 'companyName',
       key: 'companyName',
       render: (text, record) => (
-        <a href={detailUrl + '&supplierId=' + record.supplierId}>{text}</a>
+        <a href={this.getDetailUrl(record.type,record.supplierId)}>{text}</a>
       )
     }, {
       title: '来源',
@@ -203,8 +216,8 @@ class MainTable extends React.Component {
       )
     },{
       title: '创建时间',
-      dataIndex: 'createTime1',
-      key:'createTime1'
+      dataIndex: 'createTime2',
+      key:'createTime2'
     }, {
       title: '负责时间',
       dataIndex: 'responsibleTime',

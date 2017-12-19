@@ -105,8 +105,8 @@ class MainTable extends React.Component {
       key:'option',
       render: (text, record) => (
         <div className="tabel-extend-option">
+            <span onClick={(key) => this.showModal(record.id)}>移除</span>
             <a href={detailUrl+'&supplierId='+record.supplierId}>去跟进</a>
-            <span onClick={(key) => this.showModal(record.id)}>移出</span>
         </div>
       )
     }];
@@ -125,7 +125,10 @@ class MainTable extends React.Component {
           onOk={this.handleOk}
           onCancel={this.handleCancel}
           footer={[
-            <Button key="yes" type="primary" size="large" onClick={this.handleOk}>
+            <Button key="back" type="danger" onClick={this.handleCancel}>
+            取消
+          </Button>,
+            <Button  key="submit" type="primary" onClick={this.handleOk}>
               确认
             </Button>,
           ]}

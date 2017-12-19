@@ -15,7 +15,7 @@ class App extends Component {
 		const CertifFrom = Form.create()(CertificationFrom);
 		const CertifFrom2 = Form.create()(CertificationFrom2);
 		return (
-			<div>
+			<div className="tobeaudited">
 				<h3 className="page-title">待审批</h3>
 
 				<div className="query-wrap">

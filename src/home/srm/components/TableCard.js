@@ -9,15 +9,6 @@ import { connect_cas,connect_srm} from '../../../util/connectConfig';
 import { getLoginInfo,getUrlParams } from '../../../util/baseTool';
 
 
-const mock = [
-  {
-    "id": 12,
-    "planNextContactTime": '2017/11/23',
-    "planNextContent": "计划下次跟进内容666",
-    "supplierName": "广东省深圳市华南城网科技有限"
-  }
-];
-
 class MainTable extends React.Component {
   constructor(props, context) {
 		super(props, context);
@@ -27,7 +18,7 @@ class MainTable extends React.Component {
         current: 1,
         pageSize: 6
       },
-      tableData: mock,
+      tableData: [],
       isFetching: false
     }
     var urlParams = getUrlParams();
@@ -41,7 +32,7 @@ class MainTable extends React.Component {
     this.queryData({pagination});
   }
   queryData = (query) => {
-    var moduleId = getUrlParams()['moduleId']?getUrlParams()['moduleId']:''; //获取moduleId;　权限用
+    var moduleId = this.moduleId;
     this.setState({ isFetching: true });
     var pagination = this.state.pagination;
     if(query && query.pagination){
@@ -61,39 +52,42 @@ class MainTable extends React.Component {
       this.setState({ isFetching: false });
     });
   }
-  buildUrl =(text,record)=>{
+  getDetailUrl =(followupType,supplierId)=>{
     var url = '';
-    if(record.followupType==1){
-      url = '/suppliermanage/cuedetail/?systemId'+this.systemId+'&moduleId='+this.moduleId+'&moduleUrl=/suppliermanage/allsupplierdetail/';
+    if(followupType==1){
+      url = '/suppliermanage/myClueDetail/?systemId'+this.systemId+'&moduleId='+this.moduleId;
     }else{
-      url = '/suppliermanage/allsupplierdetail/?systemId'+this.systemId+'&moduleId='+this.moduleId+'&moduleUrl=/suppliermanage/allsupplierdetail/';
+      url = '/suppliermanage/mysupplierdetail/?systemId'+this.systemId+'&moduleId='+this.moduleId;
     }
-    url +='&supplierId='+record.supplierId;
-    return <a href={url}>{text}</a>
+    url +='&supplierId='+supplierId;
+    return url;
   }
   render() {
     const columns = [{
       title: '客户名称',
       dataIndex: 'companyName',
       key: 'companyName',
+      className:'align-center-column',
       render: (text, record) => (
-        this.buildUrl(text, record)
+        <a href={this.getDetailUrl(record.followupType,record.supplierId)}>{text}</a>
       )
     }, {
       title: '计划内容',
       dataIndex: 'planNextContent',
-      key: 'planNextContent'
+      key: 'planNextContent',
+      className:'align-center-column',
     }, {
       title: '剩余完成时间',
       dataIndex: 'planNextContactTime',
-      key: 'planNextContactTime'
+      key: 'planNextContactTime',
+      className:'align-center-column',
     }];
 
     const { tableData, pagination, isFetching } = this.state;
     return (
       <div className='table-card-wrap'>
-        <div className="card-title">跟进计划(<span className='card-title-number'>{pagination.total}</span>) <a href='/clientFollowUp/toFollowUp/' className='more-link'>more<Icon type="double-right" /></a>  </div>
-        <Table bordered columns={columns}
+        <div className="card-title">跟进计划<span className='number-wrap'>(<span className='card-title-number'>{pagination.total}</span>)</span> <a href='/clientFollowUp/toFollowUp/' className='more-link'>more<Icon type="double-right" /></a>  </div>
+        <Table  columns={columns}
           rowKey={record => record.id}  //数据中已key为唯一标识
           dataSource={tableData}
           pagination={pagination}

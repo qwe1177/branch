@@ -14,16 +14,19 @@ import { doInitList, doQueryFollow} from '../actions/index.js';
 
 // ant-tree-node-selected  控制选中的样式
 class Department extends React.Component {
+    state = {
+        defaultExpandAll: true,
+      }
       getUser = (arrRead) => {
         const userList = [];
         (function circle(arrRead,arrWrite) {
-        for (var i = 0; i < arrRead.length; i++) {
-            if(arrRead[i].type == '11') {
-                arrWrite.push((arrRead[i].key))
-            }
-            if (arrRead[i].children && arrRead[i].children.length !== 0) {
-            circle(arrRead[i].children, arrWrite);
-            }
+            for (var i = 0; i < arrRead.length; i++) {
+                if(arrRead[i].type == '11') {
+                    arrWrite.push((arrRead[i].key))
+                }
+                if (arrRead[i].children && arrRead[i].children.length !== 0) {
+                circle(arrRead[i].children, arrWrite);
+                }
             }
         })(arrRead, userList);
         return userList;
@@ -42,12 +45,13 @@ class Department extends React.Component {
       }
     componentWillMount() {
         this.props.doInitList();
+        
     }
     renderTreeNodes = (data) => {
         return data.map((item) => {
           if (item.children) {
             return (
-              <TreeNode title={item.title} key={item.key} dataRef={item} >
+              <TreeNode showIcon='false' title={item.title} key={item.key} dataRef={item} >
                 {this.renderTreeNodes(item.children)}
               </TreeNode>
             );
@@ -87,6 +91,7 @@ class Department extends React.Component {
     return (
         <div className="department-list">
                 <Tree
+                defaultExpandAll={this.state.defaultExpandAll}
                 onSelect={this.onSelect}
             >
                 {this.renderTreeNodes(treeData)}

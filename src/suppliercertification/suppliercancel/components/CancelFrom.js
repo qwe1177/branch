@@ -19,7 +19,7 @@ const { MonthPicker, RangePicker } = DatePicker;
 class CancelFrom extends React.Component {
 	changeToLastSeven = () => {
 		this.props.form.setFieldsValue({
-			applicationDate: [moment().subtract(7, "days"), moment()]
+			applicationDate: [moment().subtract(6, "days"), moment()]
 		});
 	}
 	changeToToday = () => {
@@ -29,7 +29,7 @@ class CancelFrom extends React.Component {
 	}
 	changeToLastSeven1 = () => {
 		this.props.form.setFieldsValue({
-			cancelDate: [moment().subtract(7, "days"), moment()]
+			cancelDate: [moment().subtract(6, "days"), moment()]
 		});
 	}
 	changeToToday1 = () => {
@@ -95,8 +95,6 @@ class CancelFrom extends React.Component {
 								)}
 						</FormItem>
 					</Col>
-					<Col span={2}>
-					</Col>
 					<Col span={6}>
 						<FormItem {...formItemLayout} label="申请时间">
 							{getFieldDecorator('applicationDate')(
@@ -123,7 +121,7 @@ class CancelFrom extends React.Component {
 						&nbsp;&nbsp;
 							<span className="rangeButton" onClick={this.changeToLastSeven1}>近7天</span>
 					</Col>
-					<Col span={4} className="g-rt">
+					<Col span={5} className="g-rt">
 						<Button type="primary" size="large" htmlType="submit">查询</Button>
 						<Button type="ghost" size="large" className="resetButton" onClick={this.handleReset}>重置</Button>
 					</Col>

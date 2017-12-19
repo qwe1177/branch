@@ -134,7 +134,7 @@ class UserForm extends Component {
                 dataIndex: 'Operation',
                 render: (text, record, index) => {
                     var value = []
-                    if (record.type == 'my'||record.tye == 'underling') {
+                    if (record.type == 'my'||record.type == 'underling') {
                         value = [<p key={`${index}`} style={{marginBottom: '5px'}}>移入公海</p>,
                             <p key={`_${index}`}>分配负责人</p>]
                     } else if (record.type == "theHighSeas") {

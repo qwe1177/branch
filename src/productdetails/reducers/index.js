@@ -3,7 +3,7 @@ import _ from 'lodash';
 import moment from 'moment';
 import {
   tablemodelInfo,modalmodelInfo
-} from '../action' // 引入action类型常量名
+} from '../actions' // 引入action类型常量名
 
 // 初始化state数据
 

@@ -20,7 +20,7 @@ const { MonthPicker, RangePicker } = DatePicker;
 class RankFrom extends React.Component {
 	changeToLastSeven = () => {
 		this.props.form.setFieldsValue({
-			createdate: [moment().subtract(7, "days"), moment()]
+			createdate: [moment().subtract(6, "days"), moment()]
 		});
 	}
 	changeToToday = () => {
@@ -30,7 +30,7 @@ class RankFrom extends React.Component {
 	}
 	changeToLastSeven1 = () => {
 		this.props.form.setFieldsValue({
-			approvalTime: [moment().subtract(7, "days"), moment()]
+			approvalTime: [moment().subtract(6, "days"), moment()]
 		});
 	}
 	changeToToday1 = () => {
@@ -96,9 +96,7 @@ class RankFrom extends React.Component {
 								)}
 						</FormItem>
 					</Col>
-					<Col span={2}>
-					</Col>
-					<Col span={7}>
+					<Col span={7} className='applyTime'>
 						<FormItem {...formItemLayout} label="申请时间">
 							{getFieldDecorator('createdate')(
 								<RangePicker />
@@ -113,7 +111,7 @@ class RankFrom extends React.Component {
 				</Row>
 				<Row gutter={16} className="g-mt">
 
-					<Col span={7}>
+					<Col span={8}>
 						<FormItem {...formItemLayout} label="审核时间">
 							{getFieldDecorator('approvalTime')(
 								<RangePicker />
@@ -125,7 +123,7 @@ class RankFrom extends React.Component {
 						&nbsp;&nbsp;
 							<span className="rangeButton" onClick={this.changeToLastSeven1}>近7天</span>
 					</Col>
-					<Col span={4} className="g-rt">
+					<Col span={5} className="g-rt">
 						<Button type="primary" size="large" htmlType="submit">查询</Button>
 						<Button type="ghost" size="large" className="resetButton" onClick={this.handleReset}>重置</Button>
 					</Col>

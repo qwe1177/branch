@@ -9,7 +9,7 @@ import { connect } from 'react-redux'
 import {
 	tablemodelaction,
 	modalmodelaction
-} from '../../action'
+} from '../../actions'
 
 import BrandSelector from '../../../components/business/uploaddetails';
 const FormItem = Form.Item;

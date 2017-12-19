@@ -8,6 +8,11 @@
 .newClue .ant-table-thead  tr  th{ text-align: center}
 .newClue .ant-form-inline .has-feedback{ width: 100%} */
 
+.main-submit-form{
+    color: #666666;
+    font-size: 14px;
+}
+
 .ant-upload-list-picture-card .ant-upload-list-item {
     float: left;
     width: 70px;
@@ -29,6 +34,14 @@
     width: 70px;
     height: 70px;
     margin: 0 8px 8px 0;
+    font-size: 28px;
+    color: #999;
+}
+
+.ant-upload-select-picture-card .ant-upload-text {
+    margin-top: 8px;
+    font-size: 12px;
+    color: #666;
 }
 
 .ant-upload-list-picture .ant-upload-list-item-name{max-width: 150px ;}
@@ -52,18 +65,6 @@
     color: #999;
 }
 
-
-.ant-upload-select-picture-card i {
-    font-size: 28px;
-    color: #999;
-}
-
-.ant-upload-select-picture-card .ant-upload-text {
-    margin-top: 8px;
-    font-size: 12px;
-    color: #666;
-}
-
 .ant-row .ant-form-item{ margin-top: 20px; margin-bottom: 0px;}
 
 .section-wrap{
@@ -77,4 +78,48 @@
     color: #6699cc;
     margin-left: 8px;
     cursor: pointer;
+}
+
+
+.tabel-wrap {
+    margin-top: 20px;
+    background: #fff;
+}
+
+.oflowen {
+    overflow: hidden;
+}
+
+.pl20 {
+    padding-left: 20px;
+}
+
+.pt20 {
+    padding-top: 20px;
+}
+
+.g-fl {
+    float: left;
+    font-size: 14px;
+}
+
+.oflowen .label {
+    color: #333;
+}
+
+.audit-tit {
+    background-color: #fff;
+    height: 50px;
+    line-height: 50px;
+    font-size: 16px;
+    border-bottom: 1px solid #ccc;
+    padding-left: 20px;
+    color: #333;
+}
+
+.audit-ress {
+    background-color: #fff;
+    height: 120px;
+    font-size: 16px;
+    padding-left: 20px;
 }
