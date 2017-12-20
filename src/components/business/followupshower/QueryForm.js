@@ -85,7 +85,7 @@ class QueryForm extends React.Component {
 							<Input type='hidden'  />
 						)}
 						<FormItem {...formItemLayout} label="跟进方式">
-							{getFieldDecorator('followUpWay', { initialValue: '' })(
+							{getFieldDecorator('contactWay', { initialValue: '' })(
 								<Select style={{ width: '100%' }}  >
 								{levelOptions('跟进方式').map(item => {
 									return (

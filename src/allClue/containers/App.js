@@ -34,7 +34,7 @@ const RadioButton = Radio.Button
 const RadioGroup = Radio.Group
 import axios from '../../util/axios'
 import * as config  from '../../util/connectConfig'
-import {getLoginAccount, getLoginInfo} from '../../util/baseTool';
+import {getLoginAccount, getLoginInfo,getUrlParams} from '../../util/baseTool';
 const RangePicker = DatePicker.RangePicker;
 const CheckboxGroup = Checkbox.Group;
 
@@ -67,8 +67,10 @@ class UserForm extends Component {
                     default:
                         path='allClueDetail'
                 }
-
-                const url=`${config.connect_wwwsrm}/${path}/?supplierId=${record.supplierId}`
+                const urlParams = getUrlParams();
+                const systemId = urlParams['systemId'] ? urlParams['systemId'] : '';
+                const moduleId = urlParams['moduleId'] ? urlParams['moduleId'] : '';
+                const url=`/${path}/?supplierId=${record.supplierId}&systemId=${systemId}&moduleId=${moduleId}`
                 return path!='allClueDetail'?(<a target="_blank" href={url}>{text}</a>):<span>{text}</span>
 
             }

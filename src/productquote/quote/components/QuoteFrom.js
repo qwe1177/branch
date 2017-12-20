@@ -152,7 +152,8 @@ class QuoteFrom extends React.Component {
 
 	hrefdetails = (quotationId) => {
 		var systemId=this.GetQueryString('systemId');
-		window.location.href = "/productdetails/details/index.html?systemId="+systemId+"&quotationId="+quotationId;
+		var moduleId=this.GetQueryString('moduleId');
+		window.location.href = "/productdetails/details/index.html?systemId="+systemId+"&moduleId="+moduleId+"&quotationId="+quotationId;
 	}
 
 	GetQueryString = (name) => {

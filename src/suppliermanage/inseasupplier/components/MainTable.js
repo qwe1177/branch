@@ -98,22 +98,21 @@ class MainTable extends React.Component {
       message.error(messageHeader+'失败!');
     })
   }
-  getDetailUrl =(type,supplierId)=>{
+  getDetailUrl =(type,supplierId,text)=>{
     var urlParams = getUrlParams();
     var moduleId = urlParams['moduleId']?urlParams['moduleId']:'';
     var systemId = urlParams['systemId']?urlParams['systemId']:'';
-    var detailUrl ='/suppliermanage/allsupplierdetail/';
+    var detailUrl ='';
     if(type=='my'){
       detailUrl ='/suppliermanage/mysupplierdetail/';
     }else if(type=='theHighSeas'){
       detailUrl ='/suppliermanage/inseasupplierdetail/';
     }else if(type=='underling'){
       detailUrl ='/suppliermanage/underlingsupplierdetail/';
-    }else{
-      detailUrl ='/suppliermanage/allsupplierdetail/';
     }
+    
     detailUrl +='?systemId='+systemId+'&moduleId='+moduleId+'&supplierId='+supplierId;
-    return detailUrl;
+    return detailUrl==''?text:<a href={detailUrl}>{text}</a>;
   }
   render() {
 
@@ -122,7 +121,7 @@ class MainTable extends React.Component {
       dataIndex: 'companyName',
       key:'companyName',
       render: (text, record) => (
-        <a href={this.getDetailUrl(record.type,record.supplierId)}>{text}</a>
+        this.getDetailUrl(record.type,record.supplierId,text)
       )
     }, {
       title: '来源',

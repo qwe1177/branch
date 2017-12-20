@@ -40,7 +40,7 @@ class MainTable extends React.Component {
     }
     var { pageSize ,current} = pagination;
     var params = {moduleId,pageSize,pageNo:current};
-    axios.get(connect_srm + '/supplier/viewFollowupPlanList.do', { params: params ,timeout:20000}).then((res) => {
+    axios.get(connect_srm + '/supplier/viewFollowupPlanList.do', { params: params}).then((res) => {
       if (res.data.code == '1') {
         var newPagination = { ...pagination, total: res.data.data.rowCount };
         this.setState({ tableData: res.data.data.supplierFollowupPlanList, pagination: newPagination, isFetching: false });
@@ -52,15 +52,32 @@ class MainTable extends React.Component {
       this.setState({ isFetching: false });
     });
   }
-  getDetailUrl =(followupType,supplierId)=>{
-    var url = '';
-    if(followupType==1){
-      url = '/suppliermanage/myClueDetail/?systemId'+this.systemId+'&moduleId='+this.moduleId;
+
+  getDetailUrl =(followupType,type,supplierId,text)=>{
+    var urlParams = getUrlParams();
+    var moduleId = urlParams['moduleId']?urlParams['moduleId']:'';
+    var systemId = urlParams['systemId']?urlParams['systemId']:'';
+    var detailUrl ='';
+    if(followupType==1){ //线索
+      if(type=='my'){
+        detailUrl ='/suppliermanage/myClueDetail/';
+      }else if(type=='theHighSeas'){
+        detailUrl ='/suppliermanage/publicClueDetail/';
+      }else if(type=='underling'){
+        detailUrl ='/suppliermanage/underlingClueDetail/';
+      }
     }else{
-      url = '/suppliermanage/mysupplierdetail/?systemId'+this.systemId+'&moduleId='+this.moduleId;
+      if(type=='my'){
+        detailUrl ='/suppliermanage/mysupplierdetail/';
+      }else if(type=='theHighSeas'){
+        detailUrl ='/suppliermanage/inseasupplierdetail/';
+      }else if(type=='underling'){
+        detailUrl ='/suppliermanage/underlingsupplierdetail/';
+      } 
     }
-    url +='&supplierId='+supplierId;
-    return url;
+    
+    detailUrl +='?systemId='+this.systemId+'&moduleId='+this.moduleId+'&supplierId='+supplierId;
+    return detailUrl==''?text:<a href={detailUrl}>{text}</a>;
   }
   render() {
     const columns = [{
@@ -69,7 +86,7 @@ class MainTable extends React.Component {
       key: 'companyName',
       className:'align-center-column',
       render: (text, record) => (
-        <a href={this.getDetailUrl(record.followupType,record.supplierId)}>{text}</a>
+        this.getDetailUrl(record.followupType,record.type,record.supplierId,text)
       )
     }, {
       title: '计划内容',

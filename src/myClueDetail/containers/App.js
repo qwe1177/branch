@@ -152,7 +152,7 @@ class App extends Component {
                     setTimeout(()=> {
                         location.href = document.referrer;
                     }, 1000)
-                    //setTimeout(()=>{location.href=`${config.connect_wwwsrm}/myClueDetail/?supplierId=${this.props.supplierDetailMain.data.supplierId}`},1000)
+                    //setTimeout(()=>{location.href=`/myClueDetail/?supplierId=${this.props.supplierDetailMain.data.supplierId}`},1000)
                 } else {
                     message.error(`${response.data.msg}`);
                 }
@@ -179,7 +179,7 @@ class App extends Component {
                 setTimeout(()=> {
                     location.href = document.referrer;
                 }, 1000)
-                //location.href=`${config.connect_wwwsrm}/publicClueDetail/?supplierId=${supplierId}`
+                //location.href=`/publicClueDetail/?supplierId=${supplierId}`
             } else {
                 message.error('移入公海失败!');
             }
@@ -197,10 +197,11 @@ class App extends Component {
         location.href = '/suppliermanage/modifysupplier/?supplierId=' + supplierId + '&moduleId=' + moduleId + '&moduleUrl=';
     }
     tourl = (url, type = 1)=>()=> {
-        var supplierId = this.supplierId;
-        var urlParams = getUrlParams();
-        var moduleId = urlParams['moduleId'] ? urlParams['moduleId'] : '';
-        location.href = type ? `${url}?supplierId=${supplierId}&moduleId=${moduleId}&moduleUrl=` : `${url}`;
+        const supplierId = this.supplierId;
+        const urlParams = getUrlParams();
+        const systemId = urlParams['systemId'] ? urlParams['systemId'] : '';
+        const moduleId = urlParams['moduleId'] ? urlParams['moduleId'] : '';
+        location.href = type ? `${url}?supplierId=${supplierId}&moduleId=${moduleId}&systemId=${systemId}` : `${url}?moduleId=${moduleId}&systemId=${systemId}`;
     }
     handleMerged = (isSuccess)=> {
         this.setState({mergeSuppliersVisible: false});
@@ -335,7 +336,7 @@ class App extends Component {
                                 <div className="xsjb">
                                     <p className="p1">线索级别</p>
                                     <p className="p2"><span
-                                        className="s1">{this.props.supplierDetailMain.data.clueLevel ? this.props.supplierDetailMain.data.clueLevel : '暂无'}</span><span
+                                        className="s1">{this.props.supplierDetailMain.data.clueLevel ?  this.props.supplierDetailMain.data.clueLevel : '暂无'}</span><span
                                         className="s2">{icon}</span></p>
                                     <Modal title='修改线索级别' visible={this.props.supplierDetailMain.editXSJBVisible}
                                            onCancel={this.XSJBhandleCancel} footer={null}>

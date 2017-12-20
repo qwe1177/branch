@@ -37,7 +37,7 @@ class EffectFrom extends React.Component {
 	componentDidMount() {
 		//setFieldsValue方法必须在getFieldDecorator之后，getFieldDecorator在render生命周期中定义id来进行表单双向绑定
 		var data = this.props.supplierDetailMain.data;
-		this.props.form.setFieldsValue({relation:data.clueLevel});
+		this.props.form.setFieldsValue({relation:data.clueLevel?data.clueLevel:undefined});
 	}
 	render() {
 		const { getFieldDecorator } = this.props.form;
@@ -49,8 +49,8 @@ class EffectFrom extends React.Component {
 			<Form layout="horizontal" onSubmit={this.handleSubmit} ref="test">
 				<Row gutter={16}>
 					<FormItem {...formItemLayout} label="合作关系" style={{textAlign:'center'}}>
-						{getFieldDecorator('relation',{ initialValue: '暂无兴趣' })(
-							<Select  style={{ width: '80%' }}>
+						{getFieldDecorator('relation',)(
+							<Select  style={{ width: '80%' }} placeholder='请选择'>
 								<Option value="即将签约">即将签约</Option>
 								<Option value="意向客户">意向客户</Option>
 								<Option value="待培育客户">待培育客户</Option>

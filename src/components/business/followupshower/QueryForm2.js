@@ -85,11 +85,15 @@ class QueryForm extends React.Component {
 							<Input type='hidden'  />
 						)}
 						<FormItem {...formItemLayout} label="跟进方式">
-							{getFieldDecorator('followUpWay', { initialValue: '全部' })(
-								<Select style={{ width: '100%' }}  >
-									<Option value="">全部</Option>
-									<Option value="商机">商机</Option>
-									<Option value="线索">线索</Option>
+							{getFieldDecorator('contactWay',)(
+								<Select style={{ width: '100%' }}  placeholder="请选择">
+									<Option value="1">电话</Option>
+									<Option value="2">email</Option>
+									<Option value="3">QQ</Option>
+									<Option value="4">微信</Option>
+									<Option value="5">上门拜访</Option>
+									<Option value="6">客户来访</Option>
+									<Option value="7">其它</Option>
 								</Select>
 							)}
 						</FormItem>
