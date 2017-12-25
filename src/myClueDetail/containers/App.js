@@ -31,6 +31,8 @@ import {
     QXADDMY,
     QRADDMY,
     PKreset,
+    QRYRGH,
+    QXYRGH,
     QRADDMYHANDLE
 } from '../../components/common/supplierdetails/redux';
 import {doFormAdd} from '../../components/publicFollowUp/redux'
@@ -56,7 +58,9 @@ import {doQueryFollow} from '../../components/business/followupshower/redux'
         QXADDMY,
         QRADDMY,
         PKreset,
-        QRADDMYHANDLE
+        QRADDMYHANDLE,
+        QRYRGH,
+        QXYRGH
     }, dispatch)
 )
 
@@ -133,6 +137,27 @@ class App extends Component {
     qxADDMYhandle = ()=> {
         this.props.QXADDMY();
     }
+    QRYRGHhandle = ()=> {
+        var supplierId = this.supplierId;
+        fetchToHighSea(supplierId).then((res) => {
+            if (res.data.code == '1') {
+                message.success('移入公海成功!');
+                this.props.QXYRGH();
+                window.opener && window.opener.location.reload()
+                setTimeout(()=> {
+                    location.href = document.referrer;
+                }, 1000)
+                //location.href=`/publicClueDetail/?supplierId=${supplierId}`
+            } else {
+                message.error('移入公海失败!');
+            }
+        }).catch((e) => {
+            message.error('移入公海失败!');
+        })
+    }
+    QXYRGHhandle = ()=> {
+        this.props.QXYRGH();
+    }
     qrADDMYhandle = ()=> {
 
         axios.get(`${config.connect_srm}/clue/editPersonLiable.do`, {
@@ -148,7 +173,6 @@ class App extends Component {
                     message.success(`${response.data.msg}`);
                     this.props.QRADDMYHANDLE()
                     window.opener && window.opener.location.reload()
-                    console.log(1, document.referrer)
                     setTimeout(()=> {
                         location.href = document.referrer;
                     }, 1000)
@@ -171,21 +195,7 @@ class App extends Component {
     }
 
     handleFetchToHighSea = () => {
-        var supplierId = this.supplierId;
-        fetchToHighSea(supplierId).then((res) => {
-            if (res.data.code == '1') {
-                message.success('移入公海成功!');
-                window.opener && window.opener.location.reload()
-                setTimeout(()=> {
-                    location.href = document.referrer;
-                }, 1000)
-                //location.href=`/publicClueDetail/?supplierId=${supplierId}`
-            } else {
-                message.error('移入公海失败!');
-            }
-        }).catch((e) => {
-            message.error('移入公海失败!');
-        })
+        this.props.QRYRGH();
     }
     showMoreBtn = () => {
         this.setState({isBtnExpand: true});
@@ -319,6 +329,10 @@ class App extends Component {
                                                onCancel={this.qxADDMYhandle} onOk={this.qrADDMYhandle}>
                                             <p>{this.props.supplierDetailMain.ADDMYcontent}</p>
                                         </Modal >
+                                        <Modal title='提示' visible={this.props.supplierDetailMain.yrghVisible}
+                                               onCancel={this.QXYRGHhandle} onOk={this.QRYRGHhandle}>
+                                            <p>{this.props.supplierDetailMain.yrghcontent}</p>
+                                        </Modal >
                                     </div>
                                     <Button className='more' onClick={() => this.showMoreBtn()}>更多</Button>
                                     <PersonSelector onChoosed={this.handleChoosed.bind(this)} title={'分配负责人'}
@@ -336,7 +350,7 @@ class App extends Component {
                                 <div className="xsjb">
                                     <p className="p1">线索级别</p>
                                     <p className="p2"><span
-                                        className="s1">{this.props.supplierDetailMain.data.clueLevel ?  this.props.supplierDetailMain.data.clueLevel : '暂无'}</span><span
+                                        className="s1">{this.props.supplierDetailMain.data.clueLevel ? this.props.supplierDetailMain.data.clueLevel : '暂无'}</span><span
                                         className="s2">{icon}</span></p>
                                     <Modal title='修改线索级别' visible={this.props.supplierDetailMain.editXSJBVisible}
                                            onCancel={this.XSJBhandleCancel} footer={null}>

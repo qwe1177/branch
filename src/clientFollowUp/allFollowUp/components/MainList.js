@@ -21,13 +21,13 @@ class MainTable extends React.Component {
     let paginationObj =  this.props.AllFollowUP.pagination;
     paginationObj.current = page;
     paginationObj.pageSize = pageSize;
-    this.props.doQueryFollow({query:this.props.AllFollowUP.query,pagination:paginationObj});
+    this.props.doQueryFollow({query:this.props.AllFollowUP.query,userList:this.props.AllFollowUP.userList,pagination:paginationObj});
   }
   handleSizeChange= (current, size) =>{
     let paginationObj =  this.props.AllFollowUP.pagination;
     paginationObj.current = current;
     paginationObj.pageSize = size;
-    this.props.doQueryFollow({query:this.props.AllFollowUP.query,pagination:paginationObj});
+    this.props.doQueryFollow({query:this.props.AllFollowUP.query,userList:this.props.AllFollowUP.userList,pagination:paginationObj});
   }
   componentWillMount(){
     // this.props.initSupplierTable();

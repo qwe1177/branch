@@ -139,9 +139,7 @@ class InquireFrom extends React.Component {
 		pagination.pageCount = pagi.current;
     pagination.pageSize = pagi.pageSize;
     var params = { q: pagination.values,pageNo:pagination.pageCount,pageSize:pagination.pageSize};
-    console.log(params);
 		axios.get(connect_srm + '/quotation/search.do', { params: params }).then((res) => {
-      console.log(res);
       var code = res.data.code;
       var datas=res.data.data;
 			if (code == '0') {

@@ -1,8 +1,7 @@
 import React from 'react';
 import './AuditForm.css';
 import { Form, Input, Tooltip, Icon, Select, Table, Row, Col, Checkbox, Button, DatePicker, Radio, Upload, message } from 'antd';
-import moment from 'moment';
-import qs from 'qs';
+
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -10,30 +9,30 @@ const { MonthPicker, RangePicker } = DatePicker;
 const RadioGroup = Radio.Group;
 const { TextArea } = Input;
 
+import moment from 'moment';
+import qs from 'qs';
+
 import Modalmodel from './Modalmodel';
 import { getLoginInfo, getUrlParams, getOneUrlParams } from '../../../util/baseTool';
 import * as config from '../../../util/connectConfig'
 import { connect_srm } from '../../../util/connectConfig';
-
+import { levelOptions } from '../../../util/options';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import actions from '../actions'
 import { fetchInitInfo } from '../actions'
 
 
-import axios from 'axios'
-axios.defaults.timeout = 30000;                        //响应时间
-axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8';           //配置请求头
+import axios from '../../../util/axios'
+
 
 
 class AuditForm extends React.Component {
     constructor(props) {
         super(props);
         this.state = { value: 2 }
-        var urlParams = getUrlParams();
-        var moduleId = urlParams['moduleId'] ? urlParams['moduleId'] : '';
-        var systemId = urlParams['systemId'] ? urlParams['systemId'] : '';
-        this.addSheetUrl = '/productpricing/upload/index.html?systemId' + systemId + '&moduleId=' + moduleId + '&moduleUrl=/productpricing/upload/';
+        var moduleUrl = location.pathname;
+        this.downloadUrl = config.connect_srm + '/quotation/exportQuotationData.do?token=' + getLoginInfo()['token'] + '&moduleUrl=' + moduleUrl;
 
         this.columns = [{
             title: '序号',
@@ -105,6 +104,15 @@ class AuditForm extends React.Component {
                 dataIndex: 'createTime',
                 className: 'column-money',
                 width: 160,
+            }, {
+                title: '操作',
+                dataIndex: 'option',
+                className: 'column-money',
+                width: 160,
+                render: (text, record, index) => {
+                    var url = this.downloadUrl + '&quotationId=' + record.quotationId;
+                    return <a href={url} >下载</a>;
+                }
             }
         ];
 
@@ -163,15 +171,13 @@ class AuditForm extends React.Component {
         this.props.form.validateFieldsAndScroll((err, values) => {
             if (!err) {
                 console.log('Received values of form: ', values);
-                let token = getLoginInfo()['token'];  //获取token　登录用
                 let urlParams = getUrlParams();
                 let supplierId = urlParams['supplierId'] ? urlParams['supplierId'] : '';
                 let { state, remark } = values;
                 const params = {
                     supplierId,
                     state,
-                    remark,
-                    token
+                    remark
                 }
                 console.log(params)
 
@@ -181,6 +187,26 @@ class AuditForm extends React.Component {
                         const code = response.data.code
                         if (code == 1) {
                             message.success(`${response.data.msg}`);
+
+                            setTimeout(() => {
+                                let links = document.getElementsByTagName("a");
+                                if (state == 2) {
+                                    for (const item of links) {
+                                        if (item.getAttribute("href").indexOf("qualityadopt") > 0) {
+                                            item.click();
+                                            break;
+                                        }
+                                    }
+                                } else {
+                                    for (const item of links) {
+                                        if (item.getAttribute("href").indexOf("supplierrefuse") > 0) {
+                                            item.click();
+                                            break;
+                                        }
+                                    }
+                                }
+
+                            }, 1000)
                         } else {
                             message.error(`${response.data.msg}`);
                         }
@@ -217,10 +243,15 @@ class AuditForm extends React.Component {
         {this.props.form.getFieldDecorator(name, {
             rules: [{ required: false, message: message }], initialValue: initialValue
         })(
-            <Select disabled style={{ width: 160 }} placeholder="请选择">
-                {this.props.Infos.category ? this.props.Infos.category.map((o) => {
-                    return <Option key={o.cid} value={o.cid + ''}>{o.c_name}</Option>
-                }) : ''}
+            <Select style={{ width: 160 }} placeholder="请选择" disabled>
+                {levelOptions('品牌类型').map(item => {
+                    return (
+                        <Option key={item.value} value={item.value}
+                        >
+                            {item.label}
+                        </Option>
+                    )
+                })}
             </Select>
             )}
     </FormItem>)
@@ -416,8 +447,8 @@ class AuditForm extends React.Component {
                     this.props.tablemodelaction({ data1: newbrankList, count: newbrankList.length + 1, })
                 }
 
-                var newdeadline =[];
-                if(deadline !=''){
+                var newdeadline = [];
+                if (deadline != '') {
                     newdeadline = deadline.split(',');
                     newdeadline = newdeadline.length ? [moment(newdeadline[0]), moment(newdeadline[1])] : [];
                 }
@@ -455,6 +486,15 @@ class AuditForm extends React.Component {
             console.log(e);
         })
     }
+    // 校验备注 字数不能大于100个
+    checkNote = (rule, value, callback) => {
+        let len = value.length
+        if (len > 100) {
+            callback('备注信息不能多于100字');
+        } else {
+            callback();
+        }
+    }
     render() {
         const formItemLayout = {  //form中的label和内容各自占用多少
             labelCol: { span: 7 },
@@ -487,7 +527,7 @@ class AuditForm extends React.Component {
 
 
         return (
-            <Form layout="horizontal" onSubmit={this.handleSubmit}>
+            <Form layout="horizontal" onSubmit={this.handleSubmit} className='main-submit-form'>
                 <div className="audit-tit">
                     企业信息
 				</div>
@@ -594,8 +634,14 @@ class AuditForm extends React.Component {
                                     <RadioGroup
                                         name="orwomen"
                                         disabled>
-                                        <Radio value='男'>先生</Radio>
-                                        <Radio value='女'>女士</Radio>
+                                        {levelOptions('性别').map(item => {
+                                            return (
+                                                <Radio key={item.value} value={item.value}
+                                                >
+                                                    {item.label}
+                                                </Radio>
+                                            )
+                                        })}
                                     </RadioGroup>
                                     )}
                             </FormItem>
@@ -824,7 +870,11 @@ class AuditForm extends React.Component {
                         <Col span={20}>
                             <FormItem {...formItemLayout3} label="备注信息">
                                 {getFieldDecorator('remark', {
-                                    rules: [{ required: true, message: '请填写备注信息' }]
+                                    rules:
+                                        [
+                                            { required: true, message: '请填写备注信息' },
+                                            { validator: this.checkNote }
+                                        ]
                                 })(
                                     <TextArea rows={4} />
                                     )}

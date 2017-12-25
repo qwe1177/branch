@@ -68,17 +68,17 @@ export const fetchzonesPosts = ({ url, name, value, returnName }) => (dispatch, 
         })
 }
 
-export const fetchCategory = () => async (dispatch, getState) => {
-    try {
-        let res = await axios.get(connect_srm + '/queryCategoryList.do', { params: {}});
-        if (res.data.status) {
-            var original = res.data.data;
-            return await dispatch(baseInfoForm({ 'category': original }))
-        }
-    } catch (error) {
-        console.log('error: ', error)
-    }
-}
+// export const fetchCategory = () => async (dispatch, getState) => {
+//     try {
+//         let res = await axios.get(connect_srm + '/queryCategoryList.do', { params: {}});
+//         if (res.data.status) {
+//             var original = res.data.data;
+//             return await dispatch(baseInfoForm({ 'category': original }))
+//         }
+//     } catch (error) {
+//         console.log('error: ', error)
+//     }
+// }
 
 
 const actions = {
@@ -87,8 +87,8 @@ const actions = {
     tablemodelaction,
     tablemodelaction2,
     fetchTable2Info,
-    fetchzonesPosts,
-    fetchCategory
+    fetchzonesPosts
+    // fetchCategory
 }
 
 export default actions

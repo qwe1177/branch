@@ -35,12 +35,11 @@ class Department extends React.Component {
         // getUser(node.props)
         var _this = this;
         if(info.node.props.type == '11') {
-            const userList = []
-            userList.push(selectedKeys);
-            this.props.doQueryFollow({query:this.props.AllFollowUP.query,pagination:this.props.AllFollowUP.pagination},userList);
+            this.props.doQueryFollow({query:this.props.AllFollowUP.query,userList:selectedKeys.toString(),pagination:this.props.AllFollowUP.pagination});
         }else if(info.node.props.dataRef&&info.node.props.dataRef != ''){
-            const userList = _this.getUser(info.node.props.dataRef.children);
-             this.props.doQueryFollow({query:this.props.AllFollowUP.query,pagination:this.props.AllFollowUP.pagination},userList);
+            const userLists = _this.getUser(info.node.props.dataRef.children);
+            console.log(userLists)
+             this.props.doQueryFollow({query:this.props.AllFollowUP.query,userList:userLists.toString(),pagination:this.props.AllFollowUP.pagination});
         }
       }
     componentWillMount() {

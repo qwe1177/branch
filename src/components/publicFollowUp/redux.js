@@ -72,10 +72,13 @@ export const doFormEdit = (supplierId,id) => async(dispatch, getState) => {
 }
 export const doFormAdd = (data) => (dispatch, getState) => {
   var initForm = {
+    id: '',
     contactPersonnel: '',
     activeContact: '',
     contactWay: '',
     thisContactTime: '',
+    followUpFlag: '',
+    followUpNode: '',
     followUpTheContent: '',
     planNextContactTime: '',
     planNextContent: '',
@@ -101,10 +104,10 @@ export const doEffectFlow = (url,data) => async (dispatch, getState) => {
     var token = getLoginInfo()['token'];  //获取token　登录用
     var pform = data.pform;
     if(pform.thisContactTime) {
-      pform.thisContactTime = pform.thisContactTime.format('YYYY-MM-DD');
+      pform.thisContactTime = pform.thisContactTime.format('YYYY-MM-DD HH:mm');
     }
     if(pform.planNextContactTime) {
-      pform.planNextContactTime = pform.planNextContactTime.format('YYYY-MM-DD');
+      pform.planNextContactTime = pform.planNextContactTime.format('YYYY-MM-DD HH:mm');
     }
     var params = {...pform,token};
     params = _.omitBy(params, _.isUndefined); //删除undefined参数

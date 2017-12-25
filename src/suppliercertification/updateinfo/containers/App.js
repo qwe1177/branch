@@ -21,7 +21,6 @@ class App extends Component {
     componentWillMount() {
         var supplierId = getOneUrlParams("supplierId");
         this.props.fetchTable2Info(supplierId);
-        this.props.fetchCategory();
     }
     render() {
         return (

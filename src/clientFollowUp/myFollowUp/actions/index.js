@@ -62,6 +62,7 @@ export const doQueryFollow = (queryParams) => async (dispatch, getState) => {
         params.finishData = undefined
         query = _.omitBy(query, _.isUndefined); //删除undefined参数
         let res = await axios.get(connect_srm+'/supplier/viewFollowupListByName.do', { params: params });
+        //  let res = await axios.get('http://10.10.10.29:9407/v1/supplier/viewFollowupListByName.do', { params: params });
         var pageSize=parseInt(res.data.data.pageSize);
         return await dispatch(receiveData({ cardData: res.data.data.data,   pagination: { ...pagination,pageSize:pageSize,total:res.data.data.rowCount}}));
     } catch (error) {

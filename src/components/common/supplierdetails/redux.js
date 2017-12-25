@@ -29,6 +29,8 @@ const ALL_DETAILS_QXADDMY = 'ALL_DETAILS_QXADDMY '
 const ALL_DETAILS_QRADDMY = 'ALL_DETAILS_QRADDMY '
 const ALL_DETAILS_PKRESET = 'ALL_DETAILS_PKRESET '
 const ALL_DETAILS_QRADDMYHANDLE = 'ALL_DETAILS_QRADDMYHANDLE '
+const ALL_DETAILS_QRYRGH = 'ALL_DETAILS_QRYRGH'
+const ALL_DETAILS_QXYRGH = 'ALL_DETAILS_QXYRGH'
 
 
 const requestMainData = () => ({
@@ -105,6 +107,14 @@ export  const QRADDMYHANDLE = () => ({
 
 export  const PKreset = () => ({
   type: ALL_DETAILS_PKRESET,
+})
+
+export  const QRYRGH = () => ({
+  type: ALL_DETAILS_QRYRGH,
+})
+
+export  const QXYRGH = () => ({
+  type: ALL_DETAILS_QXYRGH,
 })
 
 
@@ -208,6 +218,7 @@ const defaultState = {
   editXSJBVisible:false, //是否打开标签修改
   PKVisible:false,//取消品控
   addmyVisible:false,
+  yrghVisible:false,
   PKcontent:'',
   data: {
     supplierId:'',
@@ -282,6 +293,10 @@ const supplierDetailMain = function (state = defaultState, action = {}) {
     case ALL_DETAILS_PKRESET:
       var newdata = {...state.data,self:'my',qualityControlId:'0'}
       return {...state,  data:newdata};
+    case ALL_DETAILS_QRYRGH:
+      return { ...state, yrghVisible: true, yrghcontent:'确认移入公海吗？' };
+    case ALL_DETAILS_QXYRGH:
+      return { ...state, yrghVisible: false, yrghcontent:'确认移入公海吗？' };
     case ALL_DETAILS_QRADDMY:
       return { ...state, addmyVisible: true,ADDMYcontent:'确认加入我的线索？' };
     case ALL_DETAILS_QRADDMYHANDLE:

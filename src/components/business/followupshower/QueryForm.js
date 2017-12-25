@@ -15,11 +15,12 @@ const CheckboxGroup = Checkbox.Group;
 const options = [
 	{ label: '日常联系', value: '日常联系' },
 	{ label: '寄送样品', value: '寄送样品' },
-	{ label: '询报价', value: '合同' },
+	{ label: '询报价', value: '询报价' },
+	{ label: '签订合同', value: '签订合同' },
 	{ label: '配送交货', value: '配送交货' },
+	{ label: '付款结束', value: '付款结束' },
 	{ label: '售后服务', value: '售后服务' },
-	{ label: '开具发票', value: '开具发票' },
-	{ label: '货到付款', value: '货到付款' }
+	{ label: '开票结算', value: '开票结算' }
   ];
 import { getOneUrlParams} from '../../../util/baseTool';
 

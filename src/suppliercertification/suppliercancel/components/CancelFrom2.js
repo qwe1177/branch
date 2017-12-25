@@ -54,18 +54,31 @@ class CancelFrom2 extends React.Component {
       this.queryWithDefault();
     }
   }
+  getDetailUrl = (type, supplierId, text) => {
+    var urlParams = getUrlParams();
+    var moduleId = urlParams['moduleId'] ? urlParams['moduleId'] : '';
+    var systemId = urlParams['systemId'] ? urlParams['systemId'] : '';
+    var detailUrl = '';
+    if (type == 'my') {
+      detailUrl = '/myClueDetail/';
+    } else if (type == 'theHighSeas') {
+      detailUrl = '/publicClueDetail/';
+    } else if (type == 'underling') {
+      detailUrl = '/underlingClueDetail/';
+    }
+    return detailUrl == '' ? text : <a href={detailUrl + '?systemId=' + systemId + '&moduleId=' + moduleId + '&supplierId=' + supplierId} target='_blank'>{text}</a>;
+  }
   render() {
     let urlParams = getUrlParams();
     let moduleId = urlParams['moduleId'] ? urlParams['moduleId'] : '';
     let systemId = urlParams['systemId'] ? urlParams['systemId'] : '';
-    let detailUrl = '/allClueDetail/?moduleUrl='+location.pathname;
     let viewUrl = '/suppliercertification/supplierlook/?systemId=' + systemId + '&moduleId=' + moduleId + '&moduleUrl=/suppliercertification/supplierlook/';
     const columns = [{
       title: '企业名称',
       dataIndex: 'companyName',
       className: 'column-money',
-      render: (text, row, index) => {
-        return <a href={detailUrl + '&supplierId=' + row.supplierId} target='_blank'>{text}</a>
+      render: (text, record) => {
+        return this.getDetailUrl(record.type, record.supplierId, text)
       }
     },
     {

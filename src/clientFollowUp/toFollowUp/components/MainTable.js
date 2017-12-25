@@ -79,17 +79,39 @@ class MainTable extends React.Component {
       this.props.queryTableData({queryform:queryform,pagination:pagination});
     }
   }
-  render() {
+  getDetailUrl =(followupType,type,supplierId,text)=>{
     var urlParams = getUrlParams();
     var moduleId = urlParams['moduleId']?urlParams['moduleId']:'';
     var systemId = urlParams['systemId']?urlParams['systemId']:'';
-    var detailUrl ='/suppliermanage/allsupplierdetail/?systemId'+systemId+'&moduleId='+moduleId+'&moduleUrl=/suppliermanage/allsupplierdetail/';
+    var detailUrl ='';
+    if(followupType == '2') {
+        if(type=='my'){
+          detailUrl ='/suppliermanage/mysupplierdetail/';
+        }else if(type=='theHighSeas'){
+          detailUrl ='/suppliermanage/inseasupplierdetail/';
+        }else if(type=='underling'){
+          detailUrl ='/suppliermanage/underlingsupplierdetail/';
+        }
+        detailUrl +='?systemId='+systemId+'&moduleId='+moduleId+'&supplierId='+supplierId;
+      }else {
+        if(type=='my'){
+          detailUrl ='/myClueDetail/';
+        }else if(type=='theHighSeas'){
+          detailUrl ='/publicClueDetail/';
+        }else if(type=='underling'){
+          detailUrl ='/underlingClueDetail/';
+        }
+        detailUrl +='?supplierId='+supplierId;
+      }
+      return detailUrl.indexOf('?')==0? <span>{text}</span>:<a href={detailUrl}>{text}</a>;
+  }
+  render() {
     const columns = [{
       title: '企业名称',
       dataIndex: 'companyName',
       key:'companyName',
       render: (text,record) => (
-        <a href={(record.followupType == '2' ? detailUrl+'&' : '/underlingClueDetail/?')+'supplierId='+record.supplierId}>{text}</a>
+        this.getDetailUrl(record.followupType,record.type,record.supplierId,text)
       )
     } , {
       title: '计划内容',
@@ -106,7 +128,7 @@ class MainTable extends React.Component {
       render: (text, record) => (
         <div className="tabel-extend-option">
             <span onClick={(key) => this.showModal(record.id)}>移除</span>
-            <a href={detailUrl+'&supplierId='+record.supplierId}>去跟进</a>
+            {this.getDetailUrl(record.followupType,record.type,record.supplierId,'去跟进')}
         </div>
       )
     }];

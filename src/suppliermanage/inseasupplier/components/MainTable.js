@@ -110,9 +110,7 @@ class MainTable extends React.Component {
     }else if(type=='underling'){
       detailUrl ='/suppliermanage/underlingsupplierdetail/';
     }
-    
-    detailUrl +='?systemId='+systemId+'&moduleId='+moduleId+'&supplierId='+supplierId;
-    return detailUrl==''?text:<a href={detailUrl}>{text}</a>;
+    return detailUrl==''?text:<a href={detailUrl+'?systemId='+systemId+'&moduleId='+moduleId+'&supplierId='+supplierId}>{text}</a>;
   }
   render() {
 
@@ -120,9 +118,9 @@ class MainTable extends React.Component {
       title: '企业名称',
       dataIndex: 'companyName',
       key:'companyName',
-      render: (text, record) => (
-        this.getDetailUrl(record.type,record.supplierId,text)
-      )
+      render: (text, record) => {
+        return this.getDetailUrl(record.type,record.supplierId,text)
+      }
     }, {
       title: '来源',
       dataIndex: 'source',

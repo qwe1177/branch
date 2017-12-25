@@ -35,6 +35,7 @@ const RadioGroup = Radio.Group
 const RangePicker = DatePicker.RangePicker;
 import axios from '../../util/axios'
 import * as config  from '../../util/connectConfig'
+import {getUrlParams} from '../../util/baseTool';
 
 
 import CategorySelector from '../../components/business/categoryselector';
@@ -199,8 +200,13 @@ class UserForm extends Component {
 
     }
 
-    handleOpenChoose = (name,id) => ()=>{
-        this.setState({brandSelectorVisible: true,brankName:name,brankId:id,Selectortype:name!='mainBrand'?'single':'multiple'});
+    handleOpenChoose = (name, id) => ()=> {
+        this.setState({
+            brandSelectorVisible: true,
+            brankName: name,
+            brankId: id,
+            Selectortype: name != 'mainBrand' ? 'single' : 'multiple'
+        });
     }
     handleOpenChooseForCategory = () => {
         this.setState({categorySelectorVisible: true});
@@ -237,7 +243,7 @@ class UserForm extends Component {
         numb3: {len: 0, color: ''},
         brandSelectorVisible: false,
         categorySelectorVisible: false,
-        Selectortype:'multiple',
+        Selectortype: 'multiple',
     }
 
 
@@ -257,7 +263,7 @@ class UserForm extends Component {
         if (!isLt4M) {
             message.error('图片大小超过4M！');
         }
-        return isimgtype && isLt4M;
+        return (isimgtype && isLt4M)?Promise.resolve():Promise.reject();
     }
 
     onRemovehanddle = (name)=>(file)=> {
@@ -270,14 +276,14 @@ class UserForm extends Component {
 
     telphonevalid = (rule, value, callback)=> {
         const reg = /^1\d{10}$/;
-        if (!reg.test(value)) {
+        if (value && !reg.test(value)) {
             callback('请输入正确的手机号码')
         } else {
             callback()
         }
     }
 
-z
+
     uploadhandleChange = (name)=>(info) => {
         if (info.file.status === 'uploading') {
             this.getBase64(info.file.originFileObj, imageUrl => this.props.baseInfoForm({
@@ -306,11 +312,11 @@ z
                 }], initialValue: initialValue,
                 onChange: name.match(/^remark/g) ? this.companyIntroductionHandle(name, 30) : null,
             })(
-                <Input placeholder={placeholder} style={{width: '100%'}} maxLength="20"/>
+                <Input placeholder={placeholder} style={{width: '100%'}} maxLength="30"/>
             )}
         </FormItem>)
 
-    addinputdata2 = ({name, message, placeholder = '', initialValue = ['',''], required = false, type = 'string',}) => (
+    addinputdata2 = ({name, message, placeholder = '', initialValue = ['', ''], required = false, type = 'string',}) => (
         <FormItem style={{width: '100%'}} {...{
             ...this.formItemLayout, ...{
                 wrapperCol: {
@@ -319,15 +325,16 @@ z
             }
         }}>
 
-            {this.props.form.getFieldDecorator(name.replace(/Name/g,'Id'),{initialValue: initialValue[1]})(
+            {this.props.form.getFieldDecorator(name.replace(/Name/g, 'Id'), {initialValue: initialValue[1]})(
                 <Input type='hidden'/>
             )}
-            {this.props.form.getFieldDecorator(name,{
+            {this.props.form.getFieldDecorator(name, {
                 rules: [{required: required, message: message, type: type}, {
                     validator: name.match(/^mobile/g) ? this.telphonevalid : null,
                 }], initialValue: initialValue[0]
             })(
-                <Input onClick={this.handleOpenChoose(name,name.replace(/Name/g,'Id'))} readOnly style={{width: '100%'}}
+                <Input onClick={this.handleOpenChoose(name, name.replace(/Name/g, 'Id'))} readOnly
+                       style={{width: '100%'}}
                        placeholder="点击选择经营品牌"/>
             )}
 
@@ -360,8 +367,8 @@ z
                 rules: [{required: false, message: message}], initialValue: initialValue
             })(
                 <Select style={{width: '100%'}} placeholder="请选择">
-                    <Option value="男">男</Option>
-                    <Option value="女">女</Option>
+                    <Option value="0">男</Option>
+                    <Option value="1">女</Option>
                 </Select>
             )}
         </FormItem>)
@@ -400,7 +407,7 @@ z
                 getValueFromEvent: this.normFile,
                 initialValue: initialValue,
             })(
-                <Upload {...this.uploadsprops2} beforeUpload={this.beforeUpload}>
+                <Upload {...this.uploadsprops2} >
                     {this.uploadicon(name, num)}
                 </Upload>
             )}
@@ -544,17 +551,17 @@ z
                         brankList, contactsList, harea, province, city, hvenue, hfloor, hdistrict, submitOk, supplierId, provincebase,
                         citybase, countybase, townbase
                     } = response.data.data
-                    var newdeadline = deadline?deadline.split(','):''
+                    var newdeadline = deadline ? deadline.split(',') : ''
                     newdeadline = newdeadline.length ? [moment(newdeadline[0]), moment(newdeadline[1])] : []
 
-                    var newbrankList = brankList.map(v=> {
+                    var newbrankList = brankList.length?brankList.map(v=> {
 
                         return ({
                             key: v.key,
                             No: v.key,
                             brankName: {
                                 name: `brankName${v.key}`,
-                                initialValue: [v.brankName,v.brankId],
+                                initialValue: [v.brankName, v.brankId],
                                 message: '请输入品牌名称',
                                 placeholder: '品牌名称',
                             },
@@ -594,10 +601,17 @@ z
                             },
                             Operation: '删除',
                         })
-                    })
-
-
-                    this.props.tablemodelaction2({data2: newbrankList, count: newbrankList.length + 1,})
+                    }):[{
+                        key: '1',
+                        No: '1',
+                        brankName: {name: 'brankName1', message: '请输入品牌名称', placeholder: '品牌名称',},
+                        brankType: {name: 'brankType1', message: '请输入品牌类型', placeholder: '品牌类型',},
+                        authorization: {name: 'authorization1', message: '请上传授权书', placeholder: '授权书',},
+                        registration: {name: 'registration1', message: '请输入注册证', placeholder: '注册证',},
+                        certification: {name: 'certification1', message: '请输入认证报告', placeholder: '认证报告',},
+                        otherAptitude: {name: 'otherAptitude1', message: '请输入其他资料', placeholder: '其他资料', num: 3,},
+                        Operation: '删除',
+                    }]
 
                     this.props.baseInfoForm({supplierId: supplierId})
                     var newcontactsList = contactsList.map(v=> {
@@ -717,10 +731,10 @@ z
                         varietyName,
                         cscAccount,
                         buy5jAccount,
-                        source,
-                        clueLevel,
+                        source:source||undefined,
+                        clueLevel:clueLevel||undefined,
                         isAddSku,
-                        enterpriseType,
+                        enterpriseType:enterpriseType||undefined,
                         website,
                         goods,
                         shopsite,
@@ -736,11 +750,11 @@ z
                         corporationGender,
                         idcard,
                         oem,
-                        manage,
-                        model,
+                        manage:manage||undefined,
+                        model:model||undefined,
                         regmoney,
-                        employees,
-                        turnover,
+                        employees:employees||undefined,
+                        turnover:turnover||undefined,
                         introduce,
                         deadline: newdeadline,
                         idcards: newidcards,
@@ -750,8 +764,8 @@ z
                         undertaking: newundertaking,
                         officespace: newofficespace,
                         workshop: newworkshop,
-                        province: {key: province},
-                        city: {key: city},
+                        province: province?{key: province}:undefined,
+                        city: city?{key: city}:undefined,
                     })
                 } else {
                 }
@@ -883,6 +897,14 @@ z
                             message.error(`${response.data.msg}`);
                         } else if (code == 1) {
                             message.success(`${response.data.msg}`);
+                            const supplierId = response.data.data;
+                            const urlParams = getUrlParams();
+                            const systemId = urlParams['systemId'] ? urlParams['systemId'] : '';
+                            const moduleId = urlParams['moduleId'] ? urlParams['moduleId'] : '';
+                            const url = `/myClueDetail/?supplierId=${supplierId}&systemId=${systemId}&moduleId=${moduleId}`
+                            setTimeout(()=> {
+                                location.href = url;
+                            }, 1000)
                         }
                     }).catch(e=> {
                     console.log(e);
@@ -908,6 +930,16 @@ z
 
     conpanynamechange = ()=> {
         this.isajaxpost = true;
+    }
+
+    numvalidator = (rule, value, callback)=> {
+        const unum = /^\d+$/g;
+        const unull = /^\s*$/g;
+        if (value && !unull.test(value) && !unum.test(value)) {
+            callback('请输入数字')
+        } else {
+            callback()
+        }
     }
 
     CompanyNamehandle = (rule, value, callback) => {
@@ -1020,6 +1052,7 @@ z
         onPreview: this.handlePreview,
         multiple: true,
         accept: 'image/*',
+        beforeUpload:this.beforeUpload,
         action: `${config.connect_img}/upload?type=approveLicensePic`,
     }
 
@@ -1027,8 +1060,6 @@ z
     uploadonChange = (info)=> {
         const status = info.file.status;
         const response = info.file.response;
-        if (status !== 'uploading') {
-        }
         if (status === 'done') {
             message.success(`${info.file.name} 图片上传成功.`);
         } else if (status === 'error') {
@@ -1529,8 +1560,10 @@ z
                                                         <Input type='hidden'/>
                                                     )}
                                                     {getFieldDecorator('mainBrand')(
-                                                        <Input onClick={this.handleOpenChoose('mainBrand','mainBrandId')} readOnly
-                                                               placeholder="点击选择经营品牌"/>
+                                                        <Input
+                                                            onClick={this.handleOpenChoose('mainBrand', 'mainBrandId')}
+                                                            readOnly
+                                                            placeholder="点击选择经营品牌"/>
                                                     )}
 
                                                 </FormItem>
@@ -1737,15 +1770,16 @@ z
                                                         rules: [{required: false, message: '请输入企业法人'}],
                                                     })(
                                                         <Input placeholder="企业法人"
-                                                               style={{width: '65%', 'marginRight': '10px'}} maxLength="10"/>
+                                                               style={{width: '65%', 'marginRight': '10px'}}
+                                                               maxLength="10"/>
                                                     )}
                                                     {getFieldDecorator('corporationGender', {
                                                         rules: [{required: false, message: '请选择'}],
                                                         initialValue: this.props.Infos.corporationGender && this.props.Infos.corporationGender.value
                                                     })(
                                                         <RadioGroup name="orwomen">
-                                                            <Radio value={0}>先生</Radio>
-                                                            <Radio value={1}>女士</Radio>
+                                                            <Radio value={'0'}>先生</Radio>
+                                                            <Radio value={'1'}>女士</Radio>
                                                         </RadioGroup>
                                                     )}
                                                 </FormItem>
@@ -1778,7 +1812,7 @@ z
 
                                                     })(
                                                         <Upload {...this.uploadsprops2}
-                                                                beforeUpload={this.beforeUpload}>
+                                                                >
                                                             {this.uploadicon('idcards', 2)}
                                                         </Upload>
                                                     )}
@@ -1798,7 +1832,7 @@ z
                                                         getValueFromEvent: this.normFile,
                                                     })(
                                                         <Upload {...this.uploadsprops2}
-                                                                beforeUpload={this.beforeUpload}>
+                                                                >
                                                             {this.uploadicon('license', 1)}
                                                         </Upload>
                                                     )}
@@ -1820,7 +1854,7 @@ z
                                                         getValueFromEvent: this.normFile,
                                                     })(
                                                         <Upload {...this.uploadsprops2}
-                                                                beforeUpload={this.beforeUpload}>
+                                                                >
                                                             {this.uploadicon('qualification', 1)}
                                                         </Upload>
                                                     )}
@@ -1840,7 +1874,7 @@ z
                                                         getValueFromEvent: this.normFile,
                                                     })(
                                                         <Upload {...this.uploadsprops2}
-                                                                beforeUpload={this.beforeUpload}>
+                                                                >
                                                             {this.uploadicon('authorizationBus', 1)}
                                                         </Upload>
                                                     )}
@@ -1862,7 +1896,7 @@ z
                                                         getValueFromEvent: this.normFile,
                                                     })(
                                                         <Upload {...this.uploadsprops2}
-                                                                beforeUpload={this.beforeUpload}>
+                                                                >
                                                             {this.uploadicon('undertaking', 1)}
                                                         </Upload>
                                                     )}
@@ -1882,7 +1916,7 @@ z
 
                                                     })(
                                                         <Upload {...this.uploadsprops2}
-                                                                beforeUpload={this.beforeUpload}>
+                                                                >
                                                             {this.uploadicon('officespace', 1)}
                                                         </Upload>
                                                     )}
@@ -1902,7 +1936,7 @@ z
                                                         valuePropName: 'fileList',
                                                         getValueFromEvent: this.normFile,
                                                     })(
-                                                        <Upload {...this.uploadsprops2} beforeUpload={this.beforeUpload}
+                                                        <Upload {...this.uploadsprops2}
                                                                 multiple={true}>
                                                             {this.uploadicon('workshop', 3)}
                                                         </Upload>
@@ -2017,14 +2051,12 @@ z
                                                     label="注册资本"  {...this.formItemLayout} style={{"width": "100%"}}
                                                 >
                                                     {getFieldDecorator('regmoney', {
-                                                        rules: [{required: false, message: '请选择'}],
+                                                        rules: [{
+                                                            validator: this.numvalidator,
+                                                        }],
 
                                                     })(
-                                                        <Select style={{width: 240}}
-                                                                placeholder="请选择">
-                                                            <Option value="50万">50万</Option>
-                                                            <Option value="100万">100万</Option>
-                                                        </Select>
+                                                        <Input placeholder="请输入数字" maxLength="10" addonAfter="万元"/>
                                                     )}
                                                 </FormItem>
                                             </Col>

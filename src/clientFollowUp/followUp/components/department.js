@@ -17,41 +17,17 @@ class Department extends React.Component {
     state = {
         defaultExpandAll: true,
       }
-      getUser = (arrRead) => {
-        const userList = [];
-        (function circle(arrRead,arrWrite) {
-        for (var i = 0; i < arrRead.length; i++) {
-            if(arrRead[i].type == '11') {
-                arrWrite.push((arrRead[i].key))
-            }
-            if (arrRead[i].children && arrRead[i].children.length !== 0) {
-            circle(arrRead[i].children, arrWrite);
-            }
-            }
-        })(arrRead, userList);
-        return userList;
-    }
       onSelect = (selectedKeys,info) => {//选择的操作
-        // getUser(node.props)
-        var _this = this;
-        if(info.node.props.type == '11') {
-            const userList = []
-            userList.push(selectedKeys);
-            this.props.doQueryFollow({query:this.props.FollowUP.query,pagination:this.props.FollowUP.pagination},userList);
-        }else if(info.node.props.dataRef&&info.node.props.dataRef != ''){
-            const userList = _this.getUser(info.node.props.dataRef.children);
-             this.props.doQueryFollow({query:this.props.FollowUP.query,pagination:this.props.FollowUP.pagination},userList);
-        }
+        this.props.doQueryFollow({query:this.props.FollowUP.query,pagination:this.props.FollowUP.pagination,userList:selectedKeys.toString()});
       }
     componentWillMount() {
         this.props.doInitList();
     }
     renderTreeNodes = (data) => {
         return data.map((item) => {
-          if (item.children) {
+          if (item) {
             return (
-              <TreeNode title={item.title} key={item.key} dataRef={item}>
-                {this.renderTreeNodes(item.children)}
+              <TreeNode title={item.realName} key={item.userId} dataRef={item}>
               </TreeNode>
             );
           }
@@ -62,38 +38,13 @@ class Department extends React.Component {
   render() {
   
     const {departmentList} = this.props.FollowUP;
-    // 改变获取的数据结构
-    function getTreeStruc(arrRead) {
-        var treeData = [];
-        (function circle(arrRead, arrWrite,layer) {
-        for (var i = 0; i < arrRead.length; i++) {
-        arrWrite.push({
-            title: arrRead[i].realName||arrRead[i].departmentName ,
-            key: arrRead[i].userId||arrRead[i].departmentId,
-            type:layer
-        })
-            if (arrRead[i].children && arrRead[i].children.length !== 0) {
-            arrWrite[i].children = [];
-            circle(arrRead[i].children, arrWrite[i].children,layer);
-            }
-            if (arrRead[i].userList && arrRead[i].userList.length) {
-            if (!arrWrite[i].children) {
-            arrWrite[i].children = [];
-            }
-            circle(arrRead[i].userList, arrWrite[i].children,layer+'1');
-            }
-            }
-        })(arrRead, treeData,'1');
-        return treeData;
-    }
-    var a = getTreeStruc(departmentList);
     return (
         <div className="department-list">
                 <Tree
                 defaultExpandAll={this.state.defaultExpandAll}
                 onSelect={this.onSelect}
             >
-                {this.renderTreeNodes(a)}
+                {this.renderTreeNodes(departmentList==undefined ?[]:departmentList)}
             </Tree> 
         </div>
     

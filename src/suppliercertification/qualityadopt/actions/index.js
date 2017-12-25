@@ -1,6 +1,6 @@
 import { connect_srm } from '../../../util/connectConfig';
 import { getLoginInfo, getUrlParams } from '../../../util/baseTool';
-import axios from  '../../../util/axios'; 
+import axios from '../../../util/axios';
 import _ from 'lodash';
 
 
@@ -86,7 +86,7 @@ export const queryTableData = (data) => async (dispatch, getState) => {
         var pagination = data.pagination;
 
         var paramPagination = { pageNo: pagination.current, pageSize: pagination.pageSize };
-      
+
         if (queryform.createdate && queryform.createdate.length > 0) {
             queryform.applyStartTime = queryform.createdate[0].format("YYYY-MM-DD");
             queryform.applyEndTime = queryform.createdate[1].format("YYYY-MM-DD");
@@ -103,7 +103,7 @@ export const queryTableData = (data) => async (dispatch, getState) => {
         var params = { ...queryform, ...paramPagination, state: '2', moduleId }; //查询条件和分页条件传入
 
         let res = await axios.get(connect_srm + '/qualityControl/viewQualityControlList.do', { params: params });
-        return await dispatch(receiveSupplier({ tableData: res.data.data.data, pagination: { total: res.data.data.rowCount } }));
+        return await dispatch(receiveSupplier({ tableData: res.data.data.data, pagination: { total: res.data.data.rowCount, current: res.data.data.pageNo } }));
     } catch (error) {
         console.log('error: ', error)
         return await dispatch(receiveSupplierFail());

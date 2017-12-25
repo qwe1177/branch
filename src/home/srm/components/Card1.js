@@ -63,15 +63,15 @@ export default class Card1 extends React.Component {
               <div className='count'><a href='/myClue/'>{d.clueMyTotal}</a></div>
               <div className='modify-info'>本周新增加{d.weekClueMyTotal}条,转化{d.changeWeekClueMyTotal}条</div></div>
             <div className='column-2'><div className='title'>下属线索</div>
-              <div className='count'>{d.clueUnderlingTotal}</div>
+              <div className='count'><a href='/underlingClue/'>{d.clueUnderlingTotal}</a></div>
               <div className='modify-info'>本周新增加{d.weekClueUnderlingTotal}条,转化{d.changeWeekClueUnderlingTotal}条</div></div>
           </div>
           <div className='row clearfix'>
             <div className='column-2'><div className='title'>公海线索</div>
-              <div className='count'>{d.clueTheHighSeasTotal}</div>
+              <div className='count'><a href='/publicClue/'>{d.clueTheHighSeasTotal}</a></div>
               <div className='modify-info'>本周新增加{d.weekClueTheHighSeasTotal}条,转化{d.changeWeekClueTheHighSeasTotal}条</div></div>
             <div className='column-2'><div className='title'>全部线索</div>
-              <div className='count'>{d.clueTotal}</div>
+              <div className='count'><a href='/allClue/'>{d.clueTotal}</a></div>
               <div className='modify-info'>本周新增加{d.weekClueTotal}条,转化{d.changeWeekClueTotal}条</div></div>
           </div>
         </Spin>

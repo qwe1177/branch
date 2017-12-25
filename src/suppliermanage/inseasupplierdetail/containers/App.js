@@ -121,6 +121,9 @@ class App extends Component {
 		var {query,pagination} = this.props.followupShower;
 		this.props.doQueryFollow({query,pagination});
 	}
+	handleTurnToNewClue =()=>{
+		location.href='/newClue/';
+	}
 	render() {
 		var supplierId = this.supplierId;
 		const { isBtnExpand } = this.state;
@@ -128,8 +131,7 @@ class App extends Component {
 		const isExpandClassName = isExpandCompany ? 'page-main clearfix right-extend-limit' : 'page-main clearfix';
 		const btnClassName = isBtnExpand ? 'botton-wrap all-btns' : 'botton-wrap default-btns';
 		const companyName = this.props.supplierDetailMain.data.companyName?this.props.supplierDetailMain.data.companyName:'';
-		const isSelf = this.props.supplierDetailMain.data.self?(this.props.supplierDetailMain.data.self=='my'):false; //是否本人是负责人
-		const isTheHighSeas =this.props.supplierDetailMain.data.self?(this.props.supplierDetailMain.data.self=='theHighSeas'):false;//
+
 		return (
 			<div>
 				<h3 className="page-title">供应商详情</h3>
@@ -175,10 +177,10 @@ class App extends Component {
 					</div>
 					<div className="right-wrap">
 						<div className="link-wrap">
-							<Button type="primary" className='normal'>新建供应商线索</Button>
+							<Button type="primary" className='normal' onClick={this.handleTurnToNewClue}>新建供应商线索</Button>
 						</div>
 						<Spin spinning={this.props.supplierDetailMain.isfetching}>
-							<CompanyShower  />
+							<CompanyShower isClueView={false}  />
 						</Spin>
 					</div>
 				</div>

@@ -1,36 +1,34 @@
 import React from 'react';
 import './SubmitFrom.css';
 import { Form, Input, Tooltip, Icon, Select, Table, Row, Col, Checkbox, Button, DatePicker, Radio, Upload, message } from 'antd';
-import moment from 'moment';
-import qs from 'qs';
-
 const FormItem = Form.Item;
 const Option = Select.Option;
-const {RangePicker } = DatePicker;
+const { RangePicker } = DatePicker;
 const RadioGroup = Radio.Group;
 const { TextArea } = Input;
 
-import Modalmodel from './Modalmodel';
-import { getLoginInfo, getUrlParams ,getOneUrlParams} from '../../../util/baseTool';
-import * as config from '../../../util/connectConfig'
+import moment from 'moment';
+import qs from 'qs';
 
+
+import Modalmodel from './Modalmodel';
+import { getLoginInfo, getUrlParams, getOneUrlParams } from '../../../util/baseTool';
+import * as config from '../../../util/connectConfig'
+import { levelOptions } from '../../../util/options';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import actions from '../actions'
-import {fetchInitInfo} from '../actions'
-
+import { fetchInitInfo } from '../actions'
 import BrandSelector from '../../../components/business/brandselector/index';
-
-import axios  from '../../../util/axios'
+import axios from '../../../util/axios'
 
 
 class SubmitFrom extends React.Component {
     constructor(props) {
         super(props);
-        var urlParams = getUrlParams();
-        var moduleId = urlParams['moduleId']?urlParams['moduleId']:'';
-        var systemId = urlParams['systemId']?urlParams['systemId']:'';
-        this.addSheetUrl ='/productpricing/upload/index.html';
+        var moduleUrl = location.pathname;
+        this.downloadUrl = config.connect_srm+'/quotation/exportQuotationData.do?token='+getLoginInfo()['token']+'&moduleUrl='+moduleUrl;
+        this.addSheetUrl ='/productpricing/upload/index.html?moduleUrl='+moduleUrl;
 
         this.columns = [{
             title: '序号',
@@ -80,10 +78,10 @@ class SubmitFrom extends React.Component {
             dataIndex: 'Operation',
             render: (text, record, index) => {
                 return (
-                            <div><a onClick={this.Modalshow(index)} >删除</a>
-                            </div>
+                    <div><a onClick={this.Modalshow(index)} >删除</a>
+                    </div>
                 );
-            },
+            }
         }
         ];
         this.columns1 = [
@@ -118,31 +116,34 @@ class SubmitFrom extends React.Component {
                 dataIndex: 'option',
                 className: 'column-money',
                 width: 160,
-                render: text => <a href={this.addSheetUrl} target='_blank'>操作</a>,
+                render: (text, record, index) => {
+                    var url = this.downloadUrl+'&quotationId='+record.quotationId;
+                    return <a href={url} >下载</a>;
+                }
             }
         ];
 
-        this.state ={
+        this.state = {
             brandSelectorVisible: false,
-            brankName:'',
-            brankId:'',
+            brankName: '',
+            brankId: '',
         }
     }
 
-    handleOpenChoose = (name,id) => ()=>{
-        this.setState({brandSelectorVisible: true,brankName:name,brankId:id});
+    handleOpenChoose = (name, id) => () => {
+        this.setState({ brandSelectorVisible: true, brankName: name, brankId: id });
     }
     handleChoosed = (ids, labels) => {
-        this.props.form.setFieldsValue({[this.state.brankName]: labels, [this.state.brankId]: ids});
-        this.setState({brandSelectorVisible: false});
+        this.props.form.setFieldsValue({ [this.state.brankName]: labels, [this.state.brankId]: ids });
+        this.setState({ brandSelectorVisible: false });
     }
     handleCancel = () => {
-        this.setState({brandSelectorVisible: false});
+        this.setState({ brandSelectorVisible: false });
     }
     getLastSelectBrand = () => {
         var labelstr = this.props.form.getFieldValue(this.state.brankName);
         var idstr = this.props.form.getFieldValue(this.state.brankId);
-        return {labelstr, idstr}
+        return { labelstr, idstr }
     }
     formItemLayout = {
         labelCol: { span: 5 },
@@ -169,7 +170,7 @@ class SubmitFrom extends React.Component {
             if (!err) {
                 //测试环境上传报价单有问题，暂时屏蔽
                 var quotationLen = this.props.tablemodel2.data2.length;
-                if(quotationLen==0){
+                if (quotationLen == 0) {
                     message.error('请至少上传1条报价单!');
                     return;
                 }
@@ -225,12 +226,12 @@ class SubmitFrom extends React.Component {
                         }
                     }
                 }
-          
+
                 console.log(newparams)
                 //只提交基础信息和联系人资料和企业规模
-                var filteFields = [ 'creditNumber', 'province', 'city', 'deadline', 'organization', 'corporation', 'corporationGender', 'creditNumber',
-                    'idcard', 'idcards', 'license', 'qualification', 'authorizationBus', 'undertaking', 'officespace', 'workshop','brankId', 'brankName',
-                    'brankType', 'authorization', 'registration', 'certification','otherAptitude', 'remark'];
+                var filteFields = ['creditNumber', 'province', 'city', 'deadline', 'organization', 'corporation', 'corporationGender', 'creditNumber',
+                    'idcard', 'idcards', 'license', 'qualification', 'authorizationBus', 'undertaking', 'officespace', 'workshop', 'brankId', 'brankName',
+                    'brankType', 'authorization', 'registration', 'certification', 'otherAptitude', 'remark'];
                 newparams = _.pick(newparams, filteFields);
                 var moduleUrl = location.pathname;
                 var supplierId = getOneUrlParams("supplierId");
@@ -243,6 +244,8 @@ class SubmitFrom extends React.Component {
                         const code = response.data.code
                         if (code == 1) {
                             message.success(`${response.data.msg}`);
+                            window.opener&&window.opener.location.reload()
+                            setTimeout(()=>{location.href=document.referrer;},1000)
                         } else {
                             message.error(`${response.data.msg}`);
                         }
@@ -260,8 +263,8 @@ class SubmitFrom extends React.Component {
         return e && e.fileList;
     }
 
-    addinputdata = ({name, message, placeholder = '', initialValue = '', required = false, type = 'string',}) => (
-        <FormItem style={{width: '100%'}} {...{
+    addinputdata = ({ name, message, placeholder = '', initialValue = '', required = false, type = 'string', }) => (
+        <FormItem style={{ width: '100%' }} {...{
             ...this.formItemLayout, ...{
                 wrapperCol: {
                     span: 24,
@@ -269,15 +272,15 @@ class SubmitFrom extends React.Component {
             }
         }}>
             {this.props.form.getFieldDecorator(name, {
-                rules: [{required: required, message: message, type: type}, {
+                rules: [{ required: required, message: message, type: type }, {
                     validator: name.match(/^mobile/g) ? this.telphonevalid : null,
                 }], initialValue: initialValue
             })(
-                <Input placeholder={placeholder} style={{width: '100%'}}/>
-            )}
+                <Input placeholder={placeholder} style={{ width: '100%' }} />
+                )}
         </FormItem>)
-    addinputdata2 = ({name, message, placeholder = '', initialValue = ['',''], required = false, type = 'string',}) => (
-        <FormItem style={{width: '100%'}} {...{
+    addinputdata2 = ({ name, message, placeholder = '', initialValue = ['', ''], required = false, type = 'string', }) => (
+        <FormItem style={{ width: '100%' }} {...{
             ...this.formItemLayout, ...{
                 wrapperCol: {
                     span: 24,
@@ -285,36 +288,41 @@ class SubmitFrom extends React.Component {
             }
         }}>
 
-            {this.props.form.getFieldDecorator(name.replace(/Name/g,'Id'),{initialValue: initialValue[1]})(
-                <Input type='hidden'/>
+            {this.props.form.getFieldDecorator(name.replace(/Name/g, 'Id'), { initialValue: initialValue[1] })(
+                <Input type='hidden' />
             )}
-            {this.props.form.getFieldDecorator(name,{
-                rules: [{required: required, message: message, type: type}, {
+            {this.props.form.getFieldDecorator(name, {
+                rules: [{ required: required, message: message, type: type }, {
                     validator: name.match(/^mobile/g) ? this.telphonevalid : null,
                 }], initialValue: initialValue[0]
             })(
-                <Input onClick={this.handleOpenChoose(name,name.replace(/Name/g,'Id'))} readOnly style={{width: '100%'}}
-                       placeholder="点击选择经营品牌"/>
-            )}
+                <Input onClick={this.handleOpenChoose(name, name.replace(/Name/g, 'Id'))} readOnly style={{ width: '100%' }}
+                    placeholder="点击选择经营品牌" />
+                )}
 
         </FormItem>)
     /*下拉控件*/
-    addselectdata = ({ name, message, placeholder = '',initialValue = '' }) => (<FormItem>
+    addselectdata = ({ name, message, placeholder = '', initialValue = '' }) => (<FormItem>
         {this.props.form.getFieldDecorator(name, {
-            rules: [{ required: false, message: message }],initialValue: initialValue
+            rules: [{ required: false, message: message }], initialValue: initialValue
         })(
-            <Select style={{ width: 160 }} placeholder="请选择">
-                {this.props.Infos.category?this.props.Infos.category.map((o)=>{
-                    return <Option key={o.cid} value={o.cid+''}>{o.c_name}</Option>
-                }):''}
+            <Select style={{ width: '100%' }} placeholder="请选择">
+                {levelOptions('品牌类型').map(item => {
+                    return (
+                        <Option key={item.value} value={item.value}
+                        >
+                            {item.label}
+                        </Option>
+                    )
+                })}
             </Select>
             )}
     </FormItem>)
 
     /*上传控件*/
-    adduploaddata = ({name, message, initialValue = [], placeholder = '', num = 1}) => {
+    adduploaddata = ({ name, message, initialValue = [], placeholder = '', num = 1 }) => {
         const newname = name.replace(/(.*?)s(\d+)$/g, '$1$2')
-        return (<FormItem style={{width:'100%'}} {...{
+        return (<FormItem style={{ width: '100%' }} {...{
             ...this.formItemLayout, ...{
                 wrapperCol: {
                     span: 24,
@@ -322,7 +330,7 @@ class SubmitFrom extends React.Component {
             }
         }}>
             {this.props.form.getFieldDecorator(name, {
-                rules: [{required: false, message: message}],
+                rules: [{ required: false, message: message }],
                 onChange: this.uploadonChange,
                 valuePropName: 'fileList',
                 getValueFromEvent: this.normFile,
@@ -331,58 +339,57 @@ class SubmitFrom extends React.Component {
                 <Upload {...this.uploadsprops2} beforeUpload={this.beforeUpload} listType="picture-card">
                     {this.uploadicon(name, num)}
                 </Upload>
-            )}
+                )}
 
 
         </FormItem>)
     }
 
-    identityCodeValid = (rule, value, callback)=>{ 
-        var city={11:"北京",12:"天津",13:"河北",14:"山西",15:"内蒙古",21:"辽宁",22:"吉林",23:"黑龙江 ",31:"上海",32:"江苏",33:"浙江",34:"安徽",35:"福建",36:"江西",37:"山东",41:"河南",42:"湖北 ",43:"湖南",44:"广东",45:"广西",46:"海南",50:"重庆",51:"四川",52:"贵州",53:"云南",54:"西藏 ",61:"陕西",62:"甘肃",63:"青海",64:"宁夏",65:"新疆",71:"台湾",81:"香港",82:"澳门",91:"国外 "};
+    identityCodeValid = (rule, value, callback) => {
+        var city = { 11: "北京", 12: "天津", 13: "河北", 14: "山西", 15: "内蒙古", 21: "辽宁", 22: "吉林", 23: "黑龙江 ", 31: "上海", 32: "江苏", 33: "浙江", 34: "安徽", 35: "福建", 36: "江西", 37: "山东", 41: "河南", 42: "湖北 ", 43: "湖南", 44: "广东", 45: "广西", 46: "海南", 50: "重庆", 51: "四川", 52: "贵州", 53: "云南", 54: "西藏 ", 61: "陕西", 62: "甘肃", 63: "青海", 64: "宁夏", 65: "新疆", 71: "台湾", 81: "香港", 82: "澳门", 91: "国外 " };
         var tip = "";
-        var pass= true;
+        var pass = true;
 
-        if(!value || !/^\d{6}(18|19|20)?\d{2}(0[1-9]|1[12])(0[1-9]|[12]\d|3[01])\d{3}(\d|X)$/i.test(value)){
+        if (!value || !/^\d{6}(18|19|20)?\d{2}(0[1-9]|1[12])(0[1-9]|[12]\d|3[01])\d{3}(\d|X)$/i.test(value)) {
             tip = "身份证号格式错误";
             pass = false;
         }
 
-       else if(!city[value.substr(0,2)]){
+        else if (!city[value.substr(0, 2)]) {
             tip = "地址编码错误";
             pass = false;
         }
-        else{
+        else {
             //18位身份证需要验证最后一位校验位
-            if(value.length == 18){
+            if (value.length == 18) {
                 value = value.split('');
                 //∑(ai×Wi)(mod 11)
                 //加权因子
-                var factor = [ 7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2 ];
+                var factor = [7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2];
                 //校验位
-                var parity = [ 1, 0, 'X', 9, 8, 7, 6, 5, 4, 3, 2 ];
+                var parity = [1, 0, 'X', 9, 8, 7, 6, 5, 4, 3, 2];
                 var sum = 0;
                 var ai = 0;
                 var wi = 0;
-                for (var i = 0; i < 17; i++)
-                {
+                for (var i = 0; i < 17; i++) {
                     ai = value[i];
                     wi = factor[i];
                     sum += ai * wi;
                 }
                 var last = parity[sum % 11];
-                if(parity[sum % 11] != value[17]){
+                if (parity[sum % 11] != value[17]) {
                     tip = "校验位错误";
-                    pass =false;
+                    pass = false;
                 }
             }
         }
-        if(!pass) {
+        if (!pass) {
             callback(tip)
         } else {
             callback()
         }
     }
-    
+
     handlePreview = (file) => {
         this.props.modalmodelaction({
             previewVisible: true,
@@ -473,9 +480,9 @@ class SubmitFrom extends React.Component {
         const delkey = this.props.tablemodel1.delkey;
         this.props.modalmodelaction({ ModalText: '删除中···', confirmLoading: true, })
         setTimeout(() => {
-            if(data1.length==1){ //只有1条的时候清空
+            if (data1.length == 1) { //只有1条的时候清空
                 this.props.resettablemodelaction();
-            }else{
+            } else {
                 data1.splice(delkey, 1);
                 this.props.tablemodelaction({ data1: data1 });
             }
@@ -488,31 +495,31 @@ class SubmitFrom extends React.Component {
     ModalhandleCancel = (value) => () => {
         this.props.modalmodelaction({ [value]: false })
     }
-    refreshTable =()=>{
+    refreshTable = () => {
         var supplierId = getOneUrlParams("supplierId");
         this.props.fetchTable2Info(supplierId);
     }
 
     componentDidMount() {
         var supplierId = getOneUrlParams("supplierId");
-        fetchInitInfo(supplierId).then((res)=>{
-            if(res.data.code='1'){
+        fetchInitInfo(supplierId).then((res) => {
+            if (res.data.code = '1') {
                 const {
-                    companyName, companyAddress,creditNumber, province, city, deadline, organization, corporation, corporationGender, idcard, idcards, card1, card2, license, qualification
+                    companyName, companyAddress, creditNumber, province, city, deadline, organization, corporation, corporationGender, idcard, idcards, card1, card2, license, qualification
                     , undertaking, officespace, workshop, brankName, brankType, authorization, registration, certification, otherAptitude, remark, supplierBrankList,
                     harea, hvenue, hfloor, hdistrict, provincebase, citybase, countybase, townbase
                 } = res.data.data;
 
-                this.props.baseInfoForm({companyName,companyAddress});
+                this.props.baseInfoForm({ companyName, companyAddress });
 
-                if (supplierBrankList 　&& 　supplierBrankList.length > 0) {
-                    var newbrankList = supplierBrankList.map((v,index) => {
+                if (supplierBrankList && supplierBrankList.length > 0) {
+                    var newbrankList = supplierBrankList.map((v, index) => {
                         return ({
                             key: v.key,
                             No: v.key,
                             brankName: {
                                 name: `brankName${v.key}`,
-                                initialValue: [v.brankName,v.brankId],
+                                initialValue: [v.brankName, v.brankId],
                                 message: '请输入品牌名称',
                                 placeholder: '品牌名称',
                             },
@@ -527,21 +534,21 @@ class SubmitFrom extends React.Component {
                                 initialValue: this.fileListhanddle(v.authorization),
                                 message: '请上传授权书',
                                 placeholder: '授权书',
-        
+
                             },
                             registration: {
                                 name: `registration${v.key}`,
                                 initialValue: this.fileListhanddle(v.registration),
                                 message: '请输入注册证',
                                 placeholder: '注册证',
-        
+
                             },
                             certification: {
                                 name: `certification${v.key}`,
                                 initialValue: this.fileListhanddle(v.certification),
                                 message: '请输入认证报告',
                                 placeholder: '认证报告',
-        
+
                             },
                             otherAptitude: {
                                 name: `otherAptitude${v.key}`,
@@ -553,21 +560,21 @@ class SubmitFrom extends React.Component {
                             Operation: '删除',
                         })
                     });
-        
+
                     this.props.tablemodelaction({ data1: newbrankList, count: newbrankList.length + 1, })
                 }
-        
+
                 //省市区联动
                 var allcitys = {}
                 // var allcitysarr = [['Harea', harea], ['Hvenue', hvenue], ['Hfloor', hfloor], ['Hdistrict', hdistrict], ['provincebase', provincebase],
                 //  ['citybase', citybase], ['countybase', countybase], ['townbase', townbase]]
 
                 var allcitysarr = [['provincebase', provincebase],
-                 ['citybase', citybase]]
-        
+                ['citybase', citybase]]
+
                 var allcitysarrlen = allcitysarr.length
                 for (let i = 0; i < allcitysarrlen; i++) {
-        
+
                     if (allcitysarr[i][1]) {
                         allcitys[allcitysarr[i][0]] = {
                             name: allcitysarr[i][0],
@@ -576,8 +583,8 @@ class SubmitFrom extends React.Component {
                     }
                 }
                 this.props.baseInfoForm(allcitys);
-                var newdeadline =[];
-                if(deadline !=''){
+                var newdeadline = [];
+                if (deadline != '') {
                     newdeadline = deadline.split(',');
                     newdeadline = newdeadline.length ? [moment(newdeadline[0]), moment(newdeadline[1])] : [];
                 }
@@ -588,9 +595,9 @@ class SubmitFrom extends React.Component {
                 var newundertaking = this.fileListhanddle(undertaking)
                 var newofficespace = this.fileListhanddle(officespace)
                 var newworkshop = this.fileListhanddle(workshop)
-        
-        
-        
+
+
+
                 this.props.form.setFieldsValue({
                     creditNumber,
                     province: { key: province },
@@ -608,10 +615,10 @@ class SubmitFrom extends React.Component {
                     officespace: newofficespace,
                     workshop: newworkshop,
                     remark
-        
+
                 });
             }
-        
+
 
             this.props.fetchzonesPosts({
                 url: `${config.connect_srm}/clue/getZone.do`,
@@ -625,8 +632,8 @@ class SubmitFrom extends React.Component {
                 value: '',
                 returnName: 'Hareas'
             });
-            this.props.fetchCategory();
-        }).catch((e)=>{
+            // this.props.fetchCategory();
+        }).catch((e) => {
             console.log(e);
         })
     }
@@ -647,14 +654,14 @@ class SubmitFrom extends React.Component {
         const { data2 } = this.props.tablemodel2;
 
         const {
-            provinces, citys, registAddressCitys,companyName,companyAddress
+            provinces, citys, registAddressCitys, companyName, companyAddress
         } = this.props.Infos;
 
         const provincesarr = provinces ? provinces.map((v, i, a) => (<Option key={v['id']}>{v['name']}</Option>)) : [];
         // const citysarr = citys ? citys.map((v, i, a) => (<Option key={v['id']}>{v['name']}</Option>)) : [];
         const registAddressCitysarr = registAddressCitys ? registAddressCitys.map((v, i, a) => (
             <Option key={v['id']}>{v['name']}</Option>)) : [];
-        
+
         const choosedKeys = this.getLastSelectBrand();
 
 
@@ -751,8 +758,14 @@ class SubmitFrom extends React.Component {
                                     initialValue: this.props.Infos.corporationGender && this.props.Infos.corporationGender.value
                                 })(
                                     <RadioGroup name="orwomen">
-                                        <Radio value='男'>先生</Radio>
-                                        <Radio value='女'>女士</Radio>
+                                        {levelOptions('性别').map(item => {
+                                            return (
+                                                <Radio key={item.value} value={item.value}
+                                                >
+                                                    {item.label}
+                                                </Radio>
+                                            )
+                                        })}
                                     </RadioGroup>
                                     )}
                             </FormItem>
@@ -760,12 +773,12 @@ class SubmitFrom extends React.Component {
                         </Col>
                         <Col span={12}>
                             <FormItem {...formItemLayout} label="身份证号">
-                            {getFieldDecorator('idcard', {
-                                    rules: [{required: false, message: '请输入身份证号'},
-                                    {validator:this.identityCodeValid}],
+                                {getFieldDecorator('idcard', {
+                                    rules: [{ required: false, message: '请输入身份证号' },
+                                    { validator: this.identityCodeValid }],
                                 })(
-                                    <Input placeholder="身份证号" style={{ width: '70%'}} maxLength="18"/>
-                                )}
+                                    <Input placeholder="身份证号" style={{ width: '70%' }} maxLength="18" />
+                                    )}
                             </FormItem>
                         </Col>
                     </Row>
@@ -932,7 +945,7 @@ class SubmitFrom extends React.Component {
                             visible={this.state.brandSelectorVisible}
                             choosedKeys={choosedKeys}
                             onCancel={this.handleCancel}
-                            type='single' />    
+                            type='single' />
                     </div>
                 </div>
                 <div className="tabel-wrap">
@@ -971,7 +984,7 @@ class SubmitFrom extends React.Component {
 }
 
 
-export default connect(state => ({...state}), dispatch => bindActionCreators(actions, dispatch))(
+export default connect(state => ({ ...state }), dispatch => bindActionCreators(actions, dispatch))(
     Form.create({
         mapPropsToFields(props) {
             return props.Infos

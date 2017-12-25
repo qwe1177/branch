@@ -130,8 +130,8 @@ export const levelOptions = (name) => {
         case '品牌类型':
             return [
                 { label: '请选择', value: '' },
-                { label: '自有品牌', value: 'ownBrand' },
-                { label: '代理品牌', value: 'agentBrand' }
+                { label: '自有品牌', value: '自有品牌' },
+                { label: '代理品牌', value: '代理品牌' }
             ]
         case '线索级别':
             return [
@@ -160,6 +160,11 @@ export const levelOptions = (name) => {
                 { label: '有跟进记录', value: 'followupRecords' },
                 { label: '有询价单', value: 'hasSheet' },
                 { label: '有上传产品', value: 'hasUpload' }
+            ];
+        case '性别':
+            return [
+                { label: '先生', value: '0' },
+                { label: '女士', value: '1' }
             ];
         default:
             return []

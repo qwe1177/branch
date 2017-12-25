@@ -53,7 +53,7 @@ export const doInitList = (data) => async (dispatch, getState) => {
         var token = getLoginInfo()['token'];  //获取token　登录用
         var params = {token};
         params = _.omitBy(params, _.isUndefined); //删除undefined参数
-        let res = await axios.get(connect_cas+'/api/user/getFollowDepartmentUser', { params: params });
+        let res = await axios.get(connect_cas+'/api/user/getFollowUser', { params: params });
         return await dispatch(initList({departmentList:res.data.data}));
     } catch (error) {
         console.log('error: ', error)
@@ -76,15 +76,12 @@ export const doResetQuery= data => (dispatch, getState) => {
  * 点击查询或者分页进行查询
  * @param {*} data 
  */
-export const doQueryFollow = (queryParams,userList) => async (dispatch, getState) => {
+export const doQueryFollow = (queryParams) => async (dispatch, getState) => {
     try {
         await dispatch(requestData(queryParams));
         var token = getLoginInfo()['token'];  //获取token　登录用
          /**直接修改prop中的值，会导致修改redux值，拷贝一份 */
-        var {query, pagination} = _.cloneDeep(queryParams);
-        if(userList!=undefined) {
-            userList= userList.join(',');
-        }
+        var {query,pagination,userList} = _.cloneDeep(queryParams);
         var paramPagination = {pageNo :pagination.current,pageSize:pagination.pageSize};
         if (query.finishData && query.finishData.length > 0) {
             query.startTime = query.finishData[0].format("YYYY-MM-DD");
@@ -93,12 +90,17 @@ export const doQueryFollow = (queryParams,userList) => async (dispatch, getState
         if(query.followupType &&  query.followupType .length>0) {
             query.followupType = query.followupType.toString();
         }
-        var params = {...query,...paramPagination,token,userList};
-        params.finishData = undefined
+        var params = {...query,...paramPagination,userList,token};
+        params.finishData = undefined;
         params = _.omitBy(params, _.isUndefined); //删除undefined参数
         let res = await axios.get(connect_srm+'/supplier/viewSupplierBySubordinate.do', { params: params });
-        var pageSize=parseInt(res.data.data.pageSize);
-        return await dispatch(receiveData({ list: res.data.data.data,pagination: { ...pagination,pageSize:pageSize,total:res.data.data.rowCount}}));
+        if(res.data.code =='1') {
+            var list = res.data.data.data;
+            pagination.total = res.data.data.rowCount;
+            return await dispatch(receiveData({list,pagination}));
+        }else{
+            return await dispatch(receiveDataFail());
+        }
     } catch (error) {
         console.log('error: ', error)
         return await dispatch(receiveDataFail());
@@ -123,16 +125,17 @@ const defaultState = {
     },
     list: [],
     isFetching: false,
-    departmentList: []
+    departmentList: [],
+    userList:''  
 }
 const FollowUP = function (state = defaultState, action = {}) {
     switch (action.type) {
         case FOLLOWUP_INIT_LIST:
             let {departmentList} = action.data;
-            return { ...state, departmentList: departmentList ,isFetching: true}
+            return { ...state, departmentList: departmentList}
         case FOLLOWUP_REQUEST_DATA:
-            let {query} = action.data;
-            return { ...state, query: query,isFetching: true }
+            let {query,userList} = action.data;
+            return { ...state, query: query,userList:userList,isFetching: true }
         case FOLLOWUP_RECEIVE_DATA:
             let {list} = action.data;
             let Pagination = {...state.pagination,...action.data.pagination};

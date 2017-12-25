@@ -80,10 +80,7 @@ export const doQueryFollow = (queryParams,userList) => async (dispatch, getState
         await dispatch(requestData(queryParams));
         var token = getLoginInfo()['token'];  //获取token　登录用
          /**直接修改prop中的值，会导致修改redux值，拷贝一份 */
-        var {query, pagination} = _.cloneDeep(queryParams);
-        if(userList!=undefined) {
-            userList= userList.join(',');
-        }
+        var {query, pagination,userList} = _.cloneDeep(queryParams);
         var paramPagination = {pageNo :pagination.current,pageSize:pagination.pageSize};
         if (query.finishData && query.finishData.length > 0) {
             query.startTime = query.finishData[0].format("YYYY-MM-DD");
@@ -92,12 +89,17 @@ export const doQueryFollow = (queryParams,userList) => async (dispatch, getState
         if(query.followupType &&  query.followupType .length>0) {
             query.followupType = query.followupType.toString();
         }
-        var params = {...query,...paramPagination,token,userList};
+        var params = {...query,...paramPagination,userList,token};
         params.finishData = undefined
         params = _.omitBy(params, _.isUndefined); //删除undefined参数
         let res = await axios.get(connect_srm+'/supplier/viewSupplierFollowupAll.do', { params: params });
-        var pageSize=parseInt(res.data.data.pageSize);
-        return await dispatch(receiveData({ list: res.data.data.data,pagination: { ...pagination,pageSize:pageSize,total:res.data.data.rowCount}}));
+        if(res.data.code =='1') {
+            var list = res.data.data.data;
+            pagination.total = res.data.data.rowCount;
+            return await dispatch(receiveData({list,pagination}));
+        }else{
+            return await dispatch(receiveDataFail());
+        }
     } catch (error) {
         console.log('error: ', error)
         return await dispatch(receiveDataFail());
@@ -122,7 +124,8 @@ const defaultState = {
     },
     list: [],
     isFetching: false,
-    departmentList: []
+    departmentList: [],
+    userList:''  
 }
 const AllFollowUP = function (state = defaultState, action = {}) {
     switch (action.type) {
@@ -130,8 +133,8 @@ const AllFollowUP = function (state = defaultState, action = {}) {
             let {departmentList} = action.data;
             return { ...state, departmentList: departmentList,isFetching: true }
         case ALLFOLLOWUP_REQUEST_DATA:
-            let {query} = action.data;
-            return { ...state, query: query,isFetching: true }
+            let {query,userList} = action.data;
+            return { ...state, query: query,userList:userList,isFetching: true }
         case ALLFOLLOWUP_RECEIVE_DATA:
             let {list} = action.data;
             let Pagination = {...state.pagination,...action.data.pagination};

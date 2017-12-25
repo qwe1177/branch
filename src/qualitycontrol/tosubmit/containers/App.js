@@ -4,12 +4,11 @@ import 'antd/dist/antd.css';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { getOneUrlParams } from '../../../util/baseTool';
+import { Form } from 'antd';
+import actions from '../actions'
 
 import SubmitFrom from '../components/SubmitFrom';
-import { Form } from 'antd';
 
-import { connect_srm } from '../../../util/connectConfig';
-import actions from '../actions'
 
 @connect(
     state => ({ ...state }),
@@ -21,7 +20,6 @@ class App extends Component {
     componentWillMount() {
         var supplierId = getOneUrlParams("supplierId");
         this.props.fetchTable2Info(supplierId);
-        this.props.fetchCategory();
     }
     render() {
         return (

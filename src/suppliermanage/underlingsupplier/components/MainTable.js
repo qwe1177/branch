@@ -23,16 +23,10 @@ import PersonSelector from '../../../components/business/personselector';
 class MainTable extends React.Component {
   state={
     personSelectorVisible: false,  //是否显示选择人
-    toHighSeaComfirmVisible:false, //是否显示弹出要引入公海框
-    actionInfo:{}  //选择人之后的操作内容{name:'加入',data:[supplierId:xxx,other...]}
+    actionInfo:{},  //选择人之后的操作内容{name:'加入',data:[supplierId:xxx,other...]}
+    confirmTarget: {action:'moveToHighSeas',data:[]}, //弹出框对应的事物类型
+    confirmContent: '是否将此供应商移入到公海?' //弹出框内容
   }
-  static propTypes = {
-    tableData: PropTypes.array, //查询结果(表格数据)
-    isFetching: PropTypes.bool, //是否正在查询中
-    selectedList:PropTypes.array, //表格中选择多选状态
-    pagination:PropTypes.object //表格中的分页
-  }
-
   componentWillMount(){
     this.queryWithDefault();
   }
@@ -82,23 +76,14 @@ class MainTable extends React.Component {
     }else if(className.indexOf('js-out')!=-1){ //分配
       this.setState({ personSelectorVisible: true,actionInfo:{name:'分配',data:[record]}});
     }else{ //移入
-      this.doFetchToHighSea(record.supplierId);
+      // this.doFetchToHighSea(record.supplierId);
+      this.openConfirmModal({confirmTarget: {action:'moveToHighSeas',data:record.supplierId}});
     }
   }
   mutiFetchToHighSea =() =>{
     var selectedList = this.props.mainTableData.selectedList;
     var supplierIds  = selectedList.map((o)=>o.supplierId).toString();
     this.doFetchToHighSea(supplierIds);
-  }
-  openToHighSeaConfirm =()=>{
-    this.setState({toHighSeaComfirmVisible:true});
-  }
-  handleOk =()=>{
-    this.mutiFetchToHighSea();
-    this.setState({toHighSeaComfirmVisible:false});
-  }
-  handleCancel =()=>{
-    this.setState({toHighSeaComfirmVisible:false});
   }
   doFetchToHighSea =(supplierIds,messageHeader)=>{
     fetchToHighSea(supplierIds).then((res)=>{
@@ -128,7 +113,32 @@ class MainTable extends React.Component {
       message.error(messageHeader+'失败!');
     })
   }
-
+  handleConfirmOk =() =>{
+		this.setState({ confirmVisible: false });
+		var action =this.state.confirmTarget.action;
+		if(action=='moveToHighSeas'){ //单个移入公海
+      var supplierId =this.state.confirmTarget.data;
+			this.doFetchToHighSea(supplierId);
+		}else if(action=='mutiMoveToHighSeas'){ //多个移入公海
+      this.mutiFetchToHighSea();
+    }
+	}
+  handleConfirmCancel = () => {
+    this.setState({ confirmVisible: false });
+  }
+  openConfirmModal =(param) =>{
+		var nextState ={ confirmVisible: true };
+		if(param){
+			var {confirmContent,confirmTarget} = param;
+			if(confirmContent){
+				nextState['confirmContent'] =confirmContent;
+			}
+			if(confirmTarget){
+				nextState['confirmTarget'] =confirmTarget;
+			}
+		}
+		this.setState(nextState);
+	}
   getDetailUrl =(type,supplierId,text)=>{
     var urlParams = getUrlParams();
     var moduleId = urlParams['moduleId']?urlParams['moduleId']:'';
@@ -141,9 +151,7 @@ class MainTable extends React.Component {
     }else if(type=='underling'){
       detailUrl ='/suppliermanage/underlingsupplierdetail/';
     }
-    
-    detailUrl +='?systemId='+systemId+'&moduleId='+moduleId+'&supplierId='+supplierId;
-    return detailUrl==''?text:<a href={detailUrl}>{text}</a>;
+    return detailUrl==''?text:<a href={detailUrl+'?systemId='+systemId+'&moduleId='+moduleId+'&supplierId='+supplierId}>{text}</a>;           
   }
   render() {
 
@@ -151,9 +159,9 @@ class MainTable extends React.Component {
       title: '企业名称',
       dataIndex: 'companyName',
       key:'companyName',
-      render: (text, record) => (
-        this.getDetailUrl(record.type,record.supplierId,text)
-      )
+      render: (text, record) => {
+        return this.getDetailUrl(record.type,record.supplierId,text)
+      }
     }, {
       title: '来源',
       dataIndex: 'source',
@@ -209,7 +217,7 @@ class MainTable extends React.Component {
     return (
       <div className='main-table'>
         <div className="tabel-extend-option"><span onClick={this.handleRefresh} className='refresh'>刷新列表</span>  
-        <span onClick={this.openToHighSeaConfirm}>移入公海</span> 
+        <span onClick={()=>this.openConfirmModal({confirmTarget: {action:'mutiMoveToHighSeas'},confirmContent:'是否将选中的供应商移入到公海?'})}>移入公海</span>
         <span onClick={this.handleOpenChoose}>分配负责人</span>
          </div>
         <Table bordered columns={columns}
@@ -221,12 +229,10 @@ class MainTable extends React.Component {
           rowSelection={this.rowSelection}
           onRowClick = {this.handleRowClick}
         />
-        <Modal
-          visible={this.state.toHighSeaComfirmVisible}
-          onOk={this.handleOk}
-          onCancel={this.handleCancel}
+        <Modal visible={this.state.confirmVisible}
+          onOk={this.handleConfirmOk} onCancel={this.handleConfirmCancel}
         >
-          是否将此线客户入公海?
+          <p>{this.state.confirmContent}</p>
         </Modal>
         <PersonSelector onChoosed={this.handleChoosed.bind(this)} 
         onCancel ={this.handlePersonCancel.bind(this)} 

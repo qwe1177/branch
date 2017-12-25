@@ -1,35 +1,34 @@
 import React from 'react';
 import './UpdateInfo.css';
 import { Form, Input, Tooltip, Icon, Select, Table, Row, Col, Checkbox, Button, DatePicker, Radio, Upload, message } from 'antd';
-import moment from 'moment';
-import qs from 'qs';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
 const { MonthPicker, RangePicker } = DatePicker;
 const RadioGroup = Radio.Group;
 const { TextArea } = Input;
+import moment from 'moment';
+import qs from 'qs';
+
 
 import Modalmodel from './Modalmodel';
 import { getLoginInfo, getUrlParams, getOneUrlParams } from '../../../util/baseTool';
 import * as config from '../../../util/connectConfig'
 import { connect_srm } from '../../../util/connectConfig';
-
+import { levelOptions } from '../../../util/options';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import actions from '../actions'
 import { fetchInitInfo } from '../actions'
 
 import BrandSelector from '../../../components/business/brandselector/index';
-import axios  from '../../../util/axios'
+import axios from '../../../util/axios'
 
 class SubmitFrom extends React.Component {
     constructor(props) {
         super(props);
-        var urlParams = getUrlParams();
-        var moduleId = urlParams['moduleId'] ? urlParams['moduleId'] : '';
-        var systemId = urlParams['systemId'] ? urlParams['systemId'] : '';
-        this.addSheetUrl = '/productpricing/upload/index.html?systemId' + systemId + '&moduleId=' + moduleId + '&moduleUrl=/productpricing/upload/';
+        var moduleUrl = location.pathname;
+        this.downloadUrl = config.connect_srm + '/quotation/exportQuotationData.do?token=' + getLoginInfo()['token'] + '&moduleUrl=' + moduleUrl;
 
         this.columns = [
             {
@@ -122,7 +121,10 @@ class SubmitFrom extends React.Component {
                 dataIndex: 'option',
                 className: 'column-money',
                 width: 160,
-                render: text => <a href={this.addSheetUrl}>操作</a>,
+                render: (text, record, index) => {
+                    var url = this.downloadUrl + '&quotationId=' + record.quotationId;
+                    return <a href={url} >下载</a>;
+                }
             }
         ];
         this.columns2 = [
@@ -154,26 +156,26 @@ class SubmitFrom extends React.Component {
                 width: 100
             }
         ];
-        this.state ={
+        this.state = {
             brandSelectorVisible: false,
-            brankName:'',
-            brankId:'',
+            brankName: '',
+            brankId: '',
         }
     }
-    handleOpenChoose = (name,id) => ()=>{
-        this.setState({brandSelectorVisible: true,brankName:name,brankId:id});
+    handleOpenChoose = (name, id) => () => {
+        this.setState({ brandSelectorVisible: true, brankName: name, brankId: id });
     }
     handleChoosed = (ids, labels) => {
-        this.props.form.setFieldsValue({[this.state.brankName]: labels, [this.state.brankId]: ids});
-        this.setState({brandSelectorVisible: false});
+        this.props.form.setFieldsValue({ [this.state.brankName]: labels, [this.state.brankId]: ids });
+        this.setState({ brandSelectorVisible: false });
     }
     handleCancel = () => {
-        this.setState({brandSelectorVisible: false});
+        this.setState({ brandSelectorVisible: false });
     }
     getLastSelectBrand = () => {
         var labelstr = this.props.form.getFieldValue(this.state.brankName);
         var idstr = this.props.form.getFieldValue(this.state.brankId);
-        return {labelstr, idstr}
+        return { labelstr, idstr }
     }
     formItemLayout = {
         labelCol: { span: 5 },
@@ -247,13 +249,13 @@ class SubmitFrom extends React.Component {
                         }
                     }
                 }
-                
+
 
                 console.log(newparams)
                 //只提交基础信息和联系人资料和企业规模
-                var filteFields = [ 'creditNumber', 'province', 'city', 'deadline', 'organization', 'corporation', 'corporationGender', 'creditNumber',
-                'idcard', 'idcards', 'license', 'qualification', 'authorizationBus', 'undertaking', 'officespace', 'workshop','brankId', 'brankName',
-                'brankType', 'authorization', 'registration', 'certification','otherAptitude', 'remark'];
+                var filteFields = ['creditNumber', 'province', 'city', 'deadline', 'organization', 'corporation', 'corporationGender', 'creditNumber',
+                    'idcard', 'idcards', 'license', 'qualification', 'authorizationBus', 'undertaking', 'officespace', 'workshop', 'brankId', 'brankName',
+                    'brankType', 'authorization', 'registration', 'certification', 'otherAptitude', 'remark'];
                 newparams = _.pick(newparams, filteFields);
                 var moduleUrl = location.pathname;
                 var supplierId = getOneUrlParams("supplierId");
@@ -266,6 +268,11 @@ class SubmitFrom extends React.Component {
                         const code = response.data.code
                         if (code == 1) {
                             message.success(`${response.data.msg}`);
+                            var links = document.getElementsByTagName("a");
+                            for (var i = 0; i < links.length; i++) {
+                                if (links[i].getAttribute("href").indexOf("qualityadopt") > 0)
+                                    links[i].click();
+                            }
                         } else {
                             message.error(`${response.data.msg}`);
                         }
@@ -283,8 +290,8 @@ class SubmitFrom extends React.Component {
         return e && e.fileList;
     }
 
-    addinputdata = ({name, message, placeholder = '', initialValue = '', required = false, type = 'string',}) => (
-        <FormItem style={{width: '100%'}} {...{
+    addinputdata = ({ name, message, placeholder = '', initialValue = '', required = false, type = 'string', }) => (
+        <FormItem style={{ width: '100%' }} {...{
             ...this.formItemLayout, ...{
                 wrapperCol: {
                     span: 24,
@@ -292,15 +299,15 @@ class SubmitFrom extends React.Component {
             }
         }}>
             {this.props.form.getFieldDecorator(name, {
-                rules: [{required: required, message: message, type: type}, {
+                rules: [{ required: required, message: message, type: type }, {
                     validator: name.match(/^mobile/g) ? this.telphonevalid : null,
                 }], initialValue: initialValue
             })(
-                <Input placeholder={placeholder} style={{width: '100%'}}/>
-            )}
+                <Input placeholder={placeholder} style={{ width: '100%' }} />
+                )}
         </FormItem>)
-     addinputdata2 = ({name, message, placeholder = '', initialValue = ['',''], required = false, type = 'string',}) => (
-        <FormItem style={{width: '100%'}} {...{
+    addinputdata2 = ({ name, message, placeholder = '', initialValue = ['', ''], required = false, type = 'string', }) => (
+        <FormItem style={{ width: '100%' }} {...{
             ...this.formItemLayout, ...{
                 wrapperCol: {
                     span: 24,
@@ -308,17 +315,17 @@ class SubmitFrom extends React.Component {
             }
         }}>
 
-            {this.props.form.getFieldDecorator(name.replace(/Name/g,'Id'),{initialValue: initialValue[1]})(
-                <Input type='hidden'/>
+            {this.props.form.getFieldDecorator(name.replace(/Name/g, 'Id'), { initialValue: initialValue[1] })(
+                <Input type='hidden' />
             )}
-            {this.props.form.getFieldDecorator(name,{
-                rules: [{required: required, message: message, type: type}, {
+            {this.props.form.getFieldDecorator(name, {
+                rules: [{ required: required, message: message, type: type }, {
                     validator: name.match(/^mobile/g) ? this.telphonevalid : null,
                 }], initialValue: initialValue[0]
             })(
-                <Input onClick={this.handleOpenChoose(name,name.replace(/Name/g,'Id'))} readOnly style={{width: '100%'}}
-                       placeholder="点击选择经营品牌"/>
-            )}
+                <Input onClick={this.handleOpenChoose(name, name.replace(/Name/g, 'Id'))} readOnly style={{ width: '100%' }}
+                    placeholder="点击选择经营品牌" />
+                )}
 
         </FormItem>)
     /*下拉控件*/
@@ -328,9 +335,14 @@ class SubmitFrom extends React.Component {
                 rules: [{ required: false, message: message }], initialValue: initialValue
             })(
                 <Select style={{ width: 160 }} placeholder="请选择">
-                    {this.props.Infos.category ? this.props.Infos.category.map((o) => {
-                        return <Option key={o.cid} value={o.cid + ''}>{o.c_name}</Option>
-                    }) : ''}
+                    {levelOptions('品牌类型').map(item => {
+                        return (
+                            <Option key={item.value} value={item.value}
+                            >
+                                {item.label}
+                            </Option>
+                        )
+                    })}
                 </Select>
                 )}
         </FormItem>)
@@ -482,7 +494,7 @@ class SubmitFrom extends React.Component {
                             No: v.key,
                             brankName: {
                                 name: `brankName${v.key}`,
-                                initialValue: [v.brankName,v.brankId],
+                                initialValue: [v.brankName, v.brankId],
                                 message: '请输入品牌名称',
                                 placeholder: '品牌名称',
                             },
@@ -546,8 +558,8 @@ class SubmitFrom extends React.Component {
                     }
                 }
                 this.props.baseInfoForm(allcitys);
-                var newdeadline =[];
-                if(deadline !=''){
+                var newdeadline = [];
+                if (deadline != '') {
                     newdeadline = deadline.split(',');
                     newdeadline = newdeadline.length ? [moment(newdeadline[0]), moment(newdeadline[1])] : [];
                 }
@@ -595,7 +607,7 @@ class SubmitFrom extends React.Component {
                 value: '',
                 returnName: 'Hareas'
             });
-            this.props.fetchCategory();
+            // this.props.fetchCategory();
         }).catch((e) => {
             console.log(e);
         })
@@ -632,7 +644,7 @@ class SubmitFrom extends React.Component {
         const choosedKeys = this.getLastSelectBrand();
 
         return (
-            <Form layout="horizontal" onSubmit={this.handleSubmit}>
+            <Form layout="horizontal" onSubmit={this.handleSubmit} className='main-submit-form'>
                 <div className="audit-tit">
                     企业信息
 				</div>
@@ -723,8 +735,14 @@ class SubmitFrom extends React.Component {
                                     initialValue: this.props.Infos.corporationGender && this.props.Infos.corporationGender.value
                                 })(
                                     <RadioGroup name="orwomen">
-                                        <Radio value='男'>先生</Radio>
-                                        <Radio value='女'>女士</Radio>
+                                        {levelOptions('性别').map(item => {
+                                            return (
+                                                <Radio key={item.value} value={item.value}
+                                                >
+                                                    {item.label}
+                                                </Radio>
+                                            )
+                                        })}
                                     </RadioGroup>
                                     )}
                             </FormItem>
@@ -904,7 +922,7 @@ class SubmitFrom extends React.Component {
                         <BrandSelector onChoosed={this.handleChoosed}
                             visible={this.state.brandSelectorVisible}
                             choosedKeys={choosedKeys}
-                            onCancel={this.handleCancel}/>  
+                            onCancel={this.handleCancel} />
                     </div>
                 </div>
                 <div className="tabel-wrap">
@@ -931,7 +949,9 @@ class SubmitFrom extends React.Component {
                         <Col span={20}>
                             <FormItem {...formItemLayout3} label="备注信息">
                                 {getFieldDecorator('remark', {
-                                    rules: [{ required: true, message: '请填写备注信息' }]
+                                    rules: [
+                                        { required: true, message: '请填写备注信息' }
+                                    ]
                                 })(
                                     <TextArea rows={4} />
                                     )}

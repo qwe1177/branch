@@ -34,21 +34,39 @@ class RankFrom2 extends React.Component {
     }
   }
 
+  getDetailUrl = (type, supplierId, text) => {
+    var urlParams = getUrlParams();
+    var moduleId = urlParams['moduleId'] ? urlParams['moduleId'] : '';
+    var systemId = urlParams['systemId'] ? urlParams['systemId'] : '';
+    var detailUrl = '';
+    if (type == 'my') {
+      detailUrl = '/suppliermanage/mysupplierdetail/';
+    } else if (type == 'theHighSeas') {
+      detailUrl = '/suppliermanage/inseasupplierdetail/';
+    } else if (type == 'underling') {
+      detailUrl = '/suppliermanage/underlingsupplierdetail/';
+    }
+
+    return detailUrl == '' ? text : <a href={detailUrl + '?systemId=' + systemId + '&moduleId=' + moduleId + '&supplierId=' + supplierId} target='_blank'>{text}</a>;
+  }
+  handleTableChange = (pagination, filters, sorter) => {  //点击分页控件调用  比如换页或者换pageSize
+    let { queryform } = this.props.mainQueryData;
+    this.props.queryTableData({ queryform: queryform, pagination: pagination });
+  }
   render() {
 
     let urlParams = getUrlParams();
     let moduleId = urlParams['moduleId'] ? urlParams['moduleId'] : '';
     let systemId = urlParams['systemId'] ? urlParams['systemId'] : '';
-    let detailUrl = '/allClueDetail/?moduleUrl='+location.pathname;
-    let viewUrl = '/suppliercertification/supplierlook/?moduleUrl='+location.pathname;
-    let updateUrl = '/suppliercertification/updateinfo/?moduleUrl='+location.pathname;
+    let viewUrl = '/suppliercertification/supplierlook/?moduleId=' + moduleId + '&systemId=' + systemId;
+    let updateUrl = '/suppliercertification/updateinfo/?moduleId=' + moduleId + '&systemId=' + systemId;
     const columns = [
       {
         title: '企业名称',
         dataIndex: 'companyName',
         className: 'column-money',
-        render: (text, row, index) => {
-          return <a href={detailUrl + '&supplierId=' + row.supplierId} target='_blank'>{text}</a>
+        render: (text, record) => {
+          return this.getDetailUrl(record.type, record.supplierId, text)
         }
       },
       {
@@ -133,12 +151,15 @@ class RankFrom2 extends React.Component {
       }
     ];
     const { tableData, pagination, isFetching } = this.props.mainTableData;
+    console.log(pagination)
     return (
       <div className="pd20">
         <div className="tit"><div className="g-fl"><a href="javascript:;" onClick={this.handleRefresh}>刷新</a></div></div>
         <Table
           columns={columns}
           dataSource={tableData}
+          onChange={this.handleTableChange}
+          pagination={pagination}
           loading={isFetching}
           rowKey={record => record.id}
           bordered

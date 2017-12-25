@@ -34,13 +34,24 @@ class CertificationFrom2 extends React.Component {
       this.queryWithDefault();
     }
   }
-
+  getDetailUrl =(type,supplierId,text)=>{
+    var urlParams = getUrlParams();
+    var moduleId = urlParams['moduleId']?urlParams['moduleId']:'';
+    var systemId = urlParams['systemId']?urlParams['systemId']:'';
+    var detailUrl ='';
+    if(type=='my'){
+      detailUrl ='/suppliermanage/myClueDetail/';
+    }else if(type=='theHighSeas'){
+      detailUrl ='/suppliermanage/publicClueDetail/';
+    }else if(type=='underling'){
+      detailUrl ='/suppliermanage/underlingClueDetail/';
+    }
+    return detailUrl==''?text:<a href={detailUrl+'?systemId='+systemId+'&moduleId='+moduleId+'&supplierId='+supplierId} target='_blank'>{text}</a>;
+  }
   render() {
     let urlParams = getUrlParams();
     let moduleId = urlParams['moduleId'] ? urlParams['moduleId'] : '';
     let systemId = urlParams['systemId'] ? urlParams['systemId'] : '';
-    let hasPowerForDetail = isEntryVisableByName('列表查询', this.props.power.operate);//获取是否有进入详情页权限
-    let detailUrl = '/allClueDetail/?moduleUrl='+location.pathname;
     let auditeUrl = '/suppliercertification/audit/?moduleId='+moduleId+'&systemId='+systemId;
     const columns = [
       {
@@ -49,7 +60,7 @@ class CertificationFrom2 extends React.Component {
         dataIndex: 'companyName',
         className: 'column-money',
         render: (text, record) => {
-          return <a href={detailUrl + '&supplierId=' + record.supplierId} target='_blank'>{text}</a>
+          return this.getDetailUrl(record.type,record.supplierId,text)
         }
       },
       {

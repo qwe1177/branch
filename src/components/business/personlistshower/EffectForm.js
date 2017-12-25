@@ -7,7 +7,7 @@ import _ from 'lodash';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { doPreEdit, doPreAdd, doEffectFlow, doCancelForm, fetchListData } from './redux';
-
+import { levelOptions } from '../../../util/options';
 @connect(
 	state => ({ personListShower: state.personListShower }),
 	dispatch => bindActionCreators({ doPreEdit, doPreAdd, doEffectFlow, doCancelForm, fetchListData }, dispatch)
@@ -85,8 +85,14 @@ export default class EffectForm extends React.Component {
 						<FormItem {...formItemLayout} label="性别" className="personlist-shower-right-label">
 							{getFieldDecorator('gender')(
 								<RadioGroup>
-									<Radio value='男'>先生</Radio>
-									<Radio value='女'>女士</Radio>
+									 {levelOptions('性别').map(item => {
+										return (
+											<Radio key={item.value} value={item.value}
+											>
+												{item.label}
+											</Radio>
+										)
+									})}
 								</RadioGroup>
 							)}
 						</FormItem>

@@ -22,7 +22,7 @@ class App extends Component {
     }
 	componentWillMount() {
 		var queryParams =  this.props.FollowUP;
-        queryParams = _.pick(queryParams,['query','pagination']);
+        queryParams = _.pick(queryParams,['query','pagination','userList']);
 		this.props.doQueryFollow(queryParams)
     }
 	render() {

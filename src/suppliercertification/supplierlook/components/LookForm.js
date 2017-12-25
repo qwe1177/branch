@@ -1,19 +1,20 @@
 import React from 'react';
 import './LookForm.css';
 import { Form, Input, Tooltip, Icon, Select, Table, Row, Col, Checkbox, Button, DatePicker, Radio, Upload, message } from 'antd';
-import moment from 'moment';
-import qs from 'qs';
-
 const FormItem = Form.Item;
 const Option = Select.Option;
 const { MonthPicker, RangePicker } = DatePicker;
 const RadioGroup = Radio.Group;
 const { TextArea } = Input;
 
+import moment from 'moment';
+import qs from 'qs';
+
 import Modalmodel from './Modalmodel';
 import { getLoginInfo, getUrlParams, getOneUrlParams } from '../../../util/baseTool';
 import * as config from '../../../util/connectConfig'
 import { connect_srm } from '../../../util/connectConfig';
+import { levelOptions } from '../../../util/options';
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -21,18 +22,12 @@ import actions from '../actions'
 import { fetchInitInfo } from '../actions'
 
 
-import axios from 'axios'
-axios.defaults.timeout = 30000;                        //响应时间
-axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8';           //配置请求头
-
 
 class LookForm extends React.Component {
     constructor(props) {
         super(props);
-        var urlParams = getUrlParams();
-        var moduleId = urlParams['moduleId'] ? urlParams['moduleId'] : '';
-        var systemId = urlParams['systemId'] ? urlParams['systemId'] : '';
-        this.addSheetUrl = '/productpricing/upload/index.html?systemId' + systemId + '&moduleId=' + moduleId + '&moduleUrl=/productpricing/upload/';
+        var moduleUrl = location.pathname;
+        this.downloadUrl = config.connect_srm+'/quotation/exportQuotationData.do?token='+getLoginInfo()['token']+'&moduleUrl='+moduleUrl;
 
         this.columns = [{
             title: '序号',
@@ -114,6 +109,15 @@ class LookForm extends React.Component {
                 dataIndex: 'createTime',
                 className: 'column-money',
                 width: 160,
+            }, {
+                title: '操作',
+                dataIndex: 'option',
+                className: 'column-money',
+                width: 160,
+                render: (text, record, index) => {
+                    var url = this.downloadUrl+'&quotationId='+record.quotationId;
+                    return <a href={url} >下载</a>;
+                }
             }
         ];
 
@@ -202,9 +206,14 @@ class LookForm extends React.Component {
             rules: [{ required: false, message: message }], initialValue: initialValue
         })(
             <Select disabled style={{ width: 160 }} placeholder="请选择">
-                {this.props.Infos.category ? this.props.Infos.category.map((o) => {
-                    return <Option key={o.cid} value={o.cid + ''}>{o.c_name}</Option>
-                }) : ''}
+               {levelOptions('品牌类型').map(item => {
+                    return (
+                        <Option key={item.value} value={item.value}
+                        >
+                            {item.label}
+                        </Option>
+                    )
+                })}
             </Select>
             )}
     </FormItem>)
@@ -467,7 +476,7 @@ class LookForm extends React.Component {
             //     value: '',
             //     returnName: 'Hareas'
             // });
-            this.props.fetchCategory();
+            // this.props.fetchCategory();
         }).catch((e) => {
             console.log(e);
         })
@@ -504,7 +513,7 @@ class LookForm extends React.Component {
 
 
         return (
-            <Form layout="horizontal" onSubmit={this.handleSubmit}>
+            <Form layout="horizontal" onSubmit={this.handleSubmit} className='main-submit-form'>
                 <div className="audit-tit">
                     企业信息
 				</div>
@@ -611,8 +620,14 @@ class LookForm extends React.Component {
                                     <RadioGroup
                                         name="orwomen"
                                         disabled>
-                                        <Radio value='男'>先生</Radio>
-                                        <Radio value='女'>女士</Radio>
+                                        {levelOptions('性别').map(item => {
+                                            return (
+                                                <Radio key={item.value} value={item.value}
+                                                >
+                                                    {item.label}
+                                                </Radio>
+                                            )
+                                            })}
                                     </RadioGroup>
                                     )}
                             </FormItem>

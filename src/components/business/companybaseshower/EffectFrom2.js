@@ -48,7 +48,7 @@ class EffectFrom extends React.Component {
 		return (
 			<Form layout="horizontal" onSubmit={this.handleSubmit} ref="test">
 				<Row gutter={16}>
-					<FormItem {...formItemLayout} label="合作关系" style={{textAlign:'center'}}>
+					<FormItem {...formItemLayout} label="线索级别" style={{textAlign:'center'}}>
 						{getFieldDecorator('relation',)(
 							<Select  style={{ width: '80%' }} placeholder='请选择'>
 								<Option value="即将签约">即将签约</Option>

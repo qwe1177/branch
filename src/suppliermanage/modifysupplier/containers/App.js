@@ -11,23 +11,7 @@ import {connect_srm}  from '../../../util/connectConfig'
 import { getLoginInfo ,getUrlParams,getOneUrlParams} from '../../../util/baseTool';
 import _ from 'lodash';
 
-import {
-    Form,
-    Icon,
-    Input,
-    Button,
-    Select,
-    Row,
-    Col,
-    Radio,
-    Cascader,
-    Upload,
-    Table,
-    Popconfirm,
-    Modal,
-    DatePicker,
-    message,
-} from 'antd'
+import {Form,Icon,Input,Button,Select,Row,Col,Radio, Cascader,Upload, Table,Popconfirm,Modal,DatePicker,message,} from 'antd'
 import 'antd/dist/antd.css'
 import '../css/css.css'
 const FormItem = Form.Item
@@ -38,7 +22,7 @@ const RadioGroup = Radio.Group
 const RangePicker = DatePicker.RangePicker;
 
 import axios from '../../../util/axios';
-
+import { levelOptions } from '../../../util/options';
 
 import CategorySelector from '../../../components/business/categoryselector/index';
 import BrandSelector from '../../../components/business/brandselector/index';
@@ -144,7 +128,7 @@ class UserForm extends Component {
             className: 'column-money',
             dataIndex: 'brankName',
             width: 160,
-            render: this.addinputdata,
+            render: this.addinputdata2,
         }, {
             title: '品牌类型',
             dataIndex: 'brankType',
@@ -316,14 +300,42 @@ class UserForm extends Component {
                 <Input placeholder={placeholder} style={{width: '100%'}}/>
             )}
         </FormItem>)
+    addinputdata2 = ({name, message, placeholder = '', initialValue = ['', ''], required = false, type = 'string',}) => (
+        <FormItem style={{width: '100%'}} {...{
+            ...this.formItemLayout, ...{
+                wrapperCol: {
+                    span: 24,
+                }
+            }
+        }}>
+
+            {this.props.form.getFieldDecorator(name.replace(/Name/g, 'Id'), {initialValue: initialValue[1]})(
+                <Input type='hidden'/>
+            )}
+            {this.props.form.getFieldDecorator(name, {
+                rules: [{required: required, message: message, type: type}, {
+                    validator: name.match(/^mobile/g) ? this.telphonevalid : null,
+                }], initialValue: initialValue[0]
+            })(
+                <Input readOnly
+                       style={{width: '100%'}}
+                       placeholder="点击选择经营品牌"/>
+            )}
+
+        </FormItem>)
     addselectdata1 = ({ name, message, placeholder = '',initialValue = '' }) => (<FormItem>
         {this.props.form.getFieldDecorator(name, {
             rules: [{ required: false, message: message }],initialValue: initialValue
         })(
-            <Select style={{ width: 160 }} placeholder="请选择">
-                {this.props.Infos.category?this.props.Infos.category.map((o)=>{
-                    return <Option key={o.cid} value={o.cid+''}>{o.c_name}</Option>
-                }):''}
+            <Select style={{ width: 160 }} placeholder="请选择" disabled >
+                {levelOptions('品牌类型').map(item => {
+                    return (
+                        <Option key={item.value} value={item.value}
+                        >
+                            {item.label}
+                        </Option>
+                    )
+                })}
             </Select>
             )}
     </FormItem>)
@@ -354,8 +366,14 @@ class UserForm extends Component {
                 rules: [{required: false, message: message}], initialValue: initialValue
             })(
                 <Select style={{ width: '100%'}} placeholder="请选择">
-                    <Option value="男">男</Option>
-                    <Option value="女">女</Option>
+                    {levelOptions('性别').map(item => {
+                        return (
+                            <Option key={item.value} value={item.value}
+                            >
+                                {item.label}
+                            </Option>
+                        )
+                    })}
                 </Select>
             )}
         </FormItem>)
@@ -499,7 +517,10 @@ class UserForm extends Component {
             url: `//img.csc86.com${v}`,
         })) : []
     }
-
+    handleOnCancel =(e)=>{
+        window.opener&&window.opener.location.reload()
+        setTimeout(()=>{location.href=document.referrer;},1000)
+    }
 
     componentDidMount() {
         var moduleUrl = location.pathname;
@@ -534,7 +555,7 @@ class UserForm extends Component {
                             No: v.key,
                             brankName: {
                                 name: `brankName${v.key}`,
-                                initialValue: v.brankName,
+                                initialValue: [v.brankName, v.brankId],
                                 message: '请输入品牌名称',
                                 placeholder: '品牌名称',
                             },
@@ -883,6 +904,8 @@ class UserForm extends Component {
                             message.error(`${response.data.msg}`);
                         } else if (code == 1) {
                             message.success(`${response.data.msg}`);
+                            window.opener&&window.opener.location.reload()
+                            setTimeout(()=>{location.href=document.referrer;},1000)
                         }
                     })
                     .catch(function (error) {
@@ -1015,9 +1038,10 @@ class UserForm extends Component {
         listType: 'picture',
         className: 'upload-list-inline',
         onPreview: this.handlePreview,
+        onRemove: () => false,
         multiple: true,
         accept: 'image/*',
-        action: `${config.connect_img}/upload?type=approveLicensePic`,
+        action: `${config.connect_img}/upload?type=approveLicensePic&token=${getLoginInfo()['token']}`,
     }
 
 
@@ -1058,7 +1082,7 @@ class UserForm extends Component {
         this.props.form.getFieldValue(id) && this.props.form.getFieldValue(id).length >= num ? null : ic
 
     handleOnRemove =(e)=>{
-        return;
+        return false;
     }
     render() {
         const {getFieldDecorator, getFieldsError, getFieldError, isFieldTouched} = this.props.form;
@@ -1684,8 +1708,14 @@ class UserForm extends Component {
                                                     initialValue: this.props.Infos.corporationGender && this.props.Infos.corporationGender.value
                                                 })(
                                                     <RadioGroup name="orwomen" disabled>
-                                                        <Radio value={0}>先生</Radio>
-                                                        <Radio value={1}>女士</Radio>
+                                                        {levelOptions('性别').map(item => {
+                                                            return (
+                                                                <Radio key={item.value} value={item.value}
+                                                                >
+                                                                    {item.label}
+                                                                </Radio>
+                                                            )
+                                                        })}
                                                     </RadioGroup>
                                                 )}
                                             </FormItem>
@@ -1940,19 +1970,17 @@ class UserForm extends Component {
                                         </Col>
                                         <Col span={12} style={{ textAlign: 'left' }}>
                                             <FormItem
-                                                label="注册资本"  {...this.formItemLayout} style={{"width":"100%"}}
-                                            >
-                                                {getFieldDecorator('regmoney', {
-                                                    rules: [{required: false, message: '请选择'}],
+                                                    label="注册资本"  {...this.formItemLayout} style={{"width": "90%"}}
+                                                >
+                                                    {getFieldDecorator('regmoney', {
+                                                        rules: [{
+                                                            validator: this.numvalidator,
+                                                        }],
 
-                                                })(
-                                                    <Select style={{ width: 240 } }
-                                                            placeholder="请选择" > 
-                                                        <Option value="50万">50万</Option>
-                                                        <Option value="100万">100万</Option>
-                                                    </Select>
-                                                )}
-                                            </FormItem>
+                                                    })(
+                                                        <Input placeholder="请输入数字" maxLength="10" addonAfter="万元"/>
+                                                    )}
+                                                </FormItem>
                                         </Col>
                                     </Row>
 
@@ -2033,6 +2061,9 @@ class UserForm extends Component {
                                     >
                                         提交
                                     </Button>
+                                    <Button style={{padding:'2px 55px',marginLeft:'8px'}} onClick={this.handleOnCancel}>
+                                    取消
+                                    </Button>
                                     <Modalmodel  {...{
                                         ...this.props.modalmodel,
                                         visible: this.props.modalmodel.submitVisible,
@@ -2042,6 +2073,7 @@ class UserForm extends Component {
                                     }}
                                         ModalText={ct2text} onCancel={this.handleCancel2('submitVisible')}
                                         onOk={this.handleOk2('submitVisible')} okText='确认提交'/>
+                                    
                                 </FormItem>
                             </Row>
                         </div>

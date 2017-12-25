@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import './App.css';
 import vueAxios from 'axios';
 import 'antd/dist/antd.css';
-import { Button, Spin, message } from 'antd';
-import { getUrlParams,getOneUrlParams, getLoginAccount } from '../../../util/baseTool';
+import { Button, Spin, message,Modal } from 'antd';
+import { getUrlParams, getOneUrlParams, getLoginAccount } from '../../../util/baseTool';
 
 import MergeSuppliers from '../../../components/business/mergesuppliers/index';
 import PersonSelector from '../../../components/business/personselector';
@@ -14,16 +14,16 @@ import CompanyBaseShower from '../../../components/business/companybaseshower';
 import PlatformComponent from '../../../components/common/PlatformComponent';
 import PublicModal from '../../../components/publicFollowUp'
 
-import { fetchToHighSea,fetchSetContacts  } from '../../../components/common/publicrequest/index';
+import { fetchToHighSea, fetchSetContacts } from '../../../components/common/publicrequest/index';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { fetchMainData,doChangeChargeMen} from '../../../components/common/supplierdetails/redux';
-import {doFormAdd} from '../../../components/publicFollowUp/redux'
-import {doQueryFollow} from '../../../components/business/followupshower/redux'
+import { fetchMainData, doChangeChargeMen } from '../../../components/common/supplierdetails/redux';
+import { doFormAdd } from '../../../components/publicFollowUp/redux'
+import { doQueryFollow } from '../../../components/business/followupshower/redux'
 
 @connect(
-	state => ({ supplierDetailMain: state.supplierDetailMain ,EditModal: state.EditModal,followupShower: state.followupShower}),
-	dispatch => bindActionCreators({ fetchMainData,doChangeChargeMen,doFormAdd,doQueryFollow }, dispatch)
+	state => ({ supplierDetailMain: state.supplierDetailMain, EditModal: state.EditModal, followupShower: state.followupShower }),
+	dispatch => bindActionCreators({ fetchMainData, doChangeChargeMen, doFormAdd, doQueryFollow }, dispatch)
 )
 
 class App extends Component {
@@ -32,9 +32,12 @@ class App extends Component {
 		this.state = {
 			isBtnExpand: false,  //按钮组默认收缩
 			personSelectorVisible: false, //打开和关闭选择人组件
-			mergeSuppliersVisible:false  //打开合并供应商入口
+			mergeSuppliersVisible: false,  //打开合并供应商入口
+			confirmVisible: false,  //弹出确认框
+			confirmTarget: {action:'moveToHighSeas'}, //弹出框对应的事物类型
+			confirmContent:'是否将此供应商移入到公海?' //弹出框内容
 		}
-        this.supplierId = getOneUrlParams('supplierId');
+		this.supplierId = getOneUrlParams('supplierId');
 	}
 	componentWillMount() {
 		this.props.fetchMainData(this.supplierId);
@@ -46,16 +49,16 @@ class App extends Component {
 		this.setState({ personSelectorVisible: false });
 		var supplierIds = this.supplierId;
 		var responsibleSources = this.props.supplierDetailMain.data.supplier.userId;
-		fetchSetContacts(supplierIds ,ids,labels,responsibleSources).then((res)=>{
-		  if(res.data.code=='1'){
-			message.success('分配负责人操作成功!');
-			window.opener&&window.opener.location.reload()
-			setTimeout(()=>{location.href=document.referrer;},1000)
-		  }else{
+		fetchSetContacts(supplierIds, ids, labels, responsibleSources).then((res) => {
+			if (res.data.code == '1') {
+				message.success('分配负责人操作成功!');
+				window.opener && window.opener.location.reload()
+				setTimeout(() => { location.href = document.referrer; }, 1000)
+			} else {
+				message.error('分配负责人操作失败!');
+			}
+		}).catch((e) => {
 			message.error('分配负责人操作失败!');
-		  }
-		}).catch((e)=>{
-		  message.error('分配负责人操作失败!');
 		})
 	}
 	handleFetchToHighSea = () => {
@@ -63,8 +66,8 @@ class App extends Component {
 		fetchToHighSea(supplierId).then((res) => {
 			if (res.data.code == '1') {
 				message.success('移入公海成功!');
-				window.opener&&window.opener.location.reload()
-				setTimeout(()=>{location.href=document.referrer;},1000)
+				window.opener && window.opener.location.reload()
+				setTimeout(() => { location.href = document.referrer; }, 1000)
 			} else {
 				message.error('移入公海失败!');
 			}
@@ -72,54 +75,80 @@ class App extends Component {
 			message.error('移入公海失败!');
 		})
 	}
-	handleAddToMe =()=>{
-		var account =  getLoginAccount();
-		  fetchSetContacts(this.supplierId ,account.userId,account.realName,'0').then((res)=>{
-			if(res.data.code=='1'){
-			  message.success('加入我的客户成功!');
-			  window.opener&&window.opener.location.reload()
-			  setTimeout(()=>{location.href=document.referrer;},1000)
-			}else{
-			  message.error('加入我的客户失败!');
+	handleAddToMe = () => {
+		var account = getLoginAccount();
+		fetchSetContacts(this.supplierId, account.userId, account.realName, '0').then((res) => {
+			if (res.data.code == '1') {
+				message.success('加入我的客户成功!');
+				window.opener && window.opener.location.reload()
+				setTimeout(() => { location.href = document.referrer; }, 1000)
+			} else {
+				message.error('加入我的客户失败!');
 			}
-		  }).catch((e)=>{
+		}).catch((e) => {
 			message.error('加入我的客户失败!');
-		  })
+		})
 	}
 	showMoreBtn = () => {
 		this.setState({ isBtnExpand: true });
 	}
-	turnToMidify =()=>{
+	turnToMidify = () => {
 		var supplierId = this.supplierId;
 		var urlParams = getUrlParams();
-		var moduleId = urlParams['moduleId']?urlParams['moduleId']:'';
-		var systemId = urlParams['systemId']?urlParams['systemId']:'';
-		location.href='/suppliermanage/modifysupplier/?supplierId='+supplierId+'&moduleId='+moduleId+'&systemId='+systemId;
+		var moduleId = urlParams['moduleId'] ? urlParams['moduleId'] : '';
+		var systemId = urlParams['systemId'] ? urlParams['systemId'] : '';
+		location.href = '/suppliermanage/modifysupplier/?supplierId=' + supplierId + '&moduleId=' + moduleId + '&systemId=' + systemId;
 	}
-	handleMerged =(isSuccess)=>{
-		this.setState({mergeSuppliersVisible:false});
-		if(isSuccess){
+	handleMerged = (isSuccess) => {
+		this.setState({ mergeSuppliersVisible: false });
+		if (isSuccess) {
 			message.success('合并成功!');
-		}else{
+		} else {
 			message.error('合并失败!');
 		}
 	}
-	handlePersonCancel =() =>{
-		this.setState({ personSelectorVisible: false});
+	handlePersonCancel = () => {
+		this.setState({ personSelectorVisible: false });
 	}
-	openMergedWidget =() =>{
-		this.setState({mergeSuppliersVisible:true});
+	openMergedWidget = () => {
+		this.setState({ mergeSuppliersVisible: true });
 	}
-	handleCancel =() =>{
-		this.setState({mergeSuppliersVisible:false});
+	handleCancel = () => {
+		this.setState({ mergeSuppliersVisible: false });
 	}
-	    
-	addShowModal = (supplierId,companyName) => {
-		this.props.doFormAdd({companyName,supplierId,followupType:2,modalType:'1'});
-      }
-	handleAddSuccess =()=>{
-		var {query,pagination} = this.props.followupShower;
-		this.props.doQueryFollow({query,pagination});
+
+	addShowModal = (supplierId, companyName) => {
+		this.props.doFormAdd({ companyName, supplierId, followupType: 2, modalType: '1' });
+	}
+	handleAddSuccess = () => {
+		var { query, pagination } = this.props.followupShower;
+		this.props.doQueryFollow({ query, pagination });
+	}
+	handleTurnToNewClue = () => {
+		location.href = '/newClue/';
+	}
+	handleConfirmOk =() =>{
+		this.setState({ confirmVisible: false });
+		var action =this.state.confirmTarget.action;
+		if(action=='moveToHighSeas'){
+			this.handleFetchToHighSea();
+		}
+	}
+	handleConfirmCancel =() =>{
+		this.setState({ confirmVisible: false });
+	}
+	openConfirmModal =(param) =>{
+		var nextState ={ confirmVisible: true };
+		if(param){
+			var {confirmContent,confirmTarget} = param;
+			if(confirmContent){
+				nextState['confirmContent'] =confirmContent;
+			}
+			if(confirmTarget){
+				nextState['confirmTarget'] =confirmTarget;
+			}
+		}
+		this.setState(nextState);
 	}
 	render() {
 		var supplierId = this.supplierId;
@@ -127,9 +156,8 @@ class App extends Component {
 		const isExpandCompany = this.props.supplierDetailMain.isExpand;
 		const isExpandClassName = isExpandCompany ? 'page-main clearfix right-extend-limit' : 'page-main clearfix';
 		const btnClassName = isBtnExpand ? 'botton-wrap all-btns' : 'botton-wrap default-btns';
-		const companyName = this.props.supplierDetailMain.data.companyName?this.props.supplierDetailMain.data.companyName:'';
-		const isSelf = this.props.supplierDetailMain.data.self?(this.props.supplierDetailMain.data.self=='my'):false; //是否本人是负责人
-		const isTheHighSeas =this.props.supplierDetailMain.data.self?(this.props.supplierDetailMain.data.self=='theHighSeas'):false;//
+		const companyName = this.props.supplierDetailMain.data.companyName ? this.props.supplierDetailMain.data.companyName : '';
+
 		return (
 			<div>
 				<h3 className="page-title">供应商详情</h3>
@@ -150,18 +178,23 @@ class App extends Component {
 										{/* 并入供应商有否有这个按钮需要在下一期中设置操作权限控制 */}
 										<Button type="primary" className='normal' onClick={this.openMergedWidget}>并入供应商</Button>
 										<Button type="primary" className='normal' onClick={this.handleOpenChoose}>分配负责人</Button>
-										<Button type="primary" className='normal' onClick={this.handleFetchToHighSea}>移入公海</Button>
+										<Button type="primary" className='normal' onClick={()=>{this.openConfirmModal()}}>移入公海</Button>
 										{/* <Button type="primary" className='normal'>供应商评分</Button>*/}
 									</div>
 									<Button className='more' onClick={() => this.showMoreBtn()}>更多</Button>
 									<PersonSelector onChoosed={this.handleChoosed.bind(this)} title={'分配负责人'} visible={this.state.personSelectorVisible}
-									onCancel ={this.handlePersonCancel.bind(this)}  />
-									<MergeSuppliers onComfirm={this.handleMerged.bind(this)} 
-									onCancel ={this.handleCancel.bind(this)} 
-									supplierId={supplierId} 
-									companyName={companyName}
-									visible={this.state.mergeSuppliersVisible} />
-									<PublicModal  onSuccess={this.handleAddSuccess.bind(this)}/>
+										onCancel={this.handlePersonCancel.bind(this)} />
+									<MergeSuppliers onComfirm={this.handleMerged.bind(this)}
+										onCancel={this.handleCancel.bind(this)}
+										supplierId={supplierId}
+										companyName={companyName}
+										visible={this.state.mergeSuppliersVisible} />
+									<PublicModal onSuccess={this.handleAddSuccess.bind(this)} />
+									<Modal visible={this.state.confirmVisible}
+										onOk={this.handleConfirmOk} onCancel={this.handleConfirmCancel}
+									>
+										<p>{this.state.confirmContent}</p>
+									</Modal>
 								</div>
 							</div>
 							<div className="chart-wrap"></div>
@@ -173,10 +206,10 @@ class App extends Component {
 					</div>
 					<div className="right-wrap">
 						<div className="link-wrap">
-							<Button type="primary" className='normal'>新建供应商线索</Button>
+							<Button type="primary" className='normal' onClick={this.handleTurnToNewClue}>新建供应商线索</Button>
 						</div>
 						<Spin spinning={this.props.supplierDetailMain.isfetching}>
-							<CompanyShower  />
+							<CompanyShower isClueView={false}  />
 						</Spin>
 					</div>
 				</div>

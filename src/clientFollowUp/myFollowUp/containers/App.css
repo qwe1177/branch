@@ -100,7 +100,7 @@
   background-color: #6393bf;
   border-color: #6393bf;
 }
-.ant-btn-primary:hover {
+.ant-btn-primary:hover, .ant-btn-primary:focus {
   background-color: #6393bf;
   border-color: #6393bf;
 }

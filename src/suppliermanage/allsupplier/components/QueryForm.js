@@ -86,14 +86,16 @@ class QueryForm extends React.Component {
 		this.setState({ categorySelectorVisible: true });
 	}
 	handleChoosed = (ids, labels) => {
-		this.props.form.setFieldsValue({ brandNames: labels, brandIds: ids });
+		// this.props.form.setFieldsValue({ brandNames: labels, brandIds: ids });
+		this.props.form.setFieldsValue({ mainBrandNames: labels, mainBrandId: ids });
 		this.setState({ brandSelectorVisible: false });
 	}
 	handleCancel = () => {
 		this.setState({ brandSelectorVisible: false });
 	}
 	handleChoosedForCategory = (ids, labels) => {
-		this.props.form.setFieldsValue({ selltypeNames: labels, selltypeIds: ids });
+		// this.props.form.setFieldsValue({ selltypeNames: labels, selltypeIds: ids });
+		this.props.form.setFieldsValue({ varietyNameNames: labels, varietyNameId: ids });
 		this.setState({ categorySelectorVisible: false });
 	}
 	handleCancelForCategory = () => {
@@ -101,7 +103,7 @@ class QueryForm extends React.Component {
 	}
 	getLastSelectBrand = () => {
 		var labelstr = this.props.form.getFieldValue('mainBrandNames');
-		var idstr = this.props.form.getFieldValue('mainBrand');
+		var idstr = this.props.form.getFieldValue('mainBrandId');
 		return { labelstr, idstr }
 	}
 	getLastSelectCategory = () => {
@@ -219,7 +221,7 @@ class QueryForm extends React.Component {
 				</Row>
 				<Row gutter={16}>
 					<Col span={5}>
-						{getFieldDecorator('mainBrand')(
+						{getFieldDecorator('mainBrandId')(
 							<Input type='hidden' />
 						)}
 						<FormItem {...formItemLayout} label="主营品牌"  >
@@ -286,12 +288,14 @@ class QueryForm extends React.Component {
 						<Button type="ghost" className="resetButton" onClick={this.handleReset}>重置</Button>
 					</Col>
 				</Row>
-				<BrandSelector onChoosed={this.handleChoosed.bind(this)}
+				<BrandSelector
+					onChoosed={this.handleChoosed.bind(this)}
 					visible={this.state.brandSelectorVisible}
 					choosedKeys={choosedKeys}
 					onCancel={this.handleCancel.bind(this)}
 				/>
-				<CategorySelector onChoosed={this.handleChoosedForCategory.bind(this)}
+				<CategorySelector
+					onChoosed={this.handleChoosedForCategory.bind(this)}
 					choosedKeys={choosedKeys1}
 					visible={this.state.categorySelectorVisible}
 					onCancel={this.handleCancelForCategory.bind(this)}

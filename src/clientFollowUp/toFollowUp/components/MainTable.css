@@ -31,7 +31,7 @@
     justify-content: flex-start;
     line-height: 50px;
  }
- .tabel-extend-option span,.tabel-extend-option button {
+ .tabel-extend-option span:first-child,.tabel-extend-option button {
     border: none;
     background-color: transparent; 
     cursor: pointer;
@@ -51,6 +51,7 @@
  .ant-modal-body {
   height: 200px;
   font-size: 14px;
+  text-align: center;
   font-weight: 700;
   color: #999;
   line-height: 9.5;

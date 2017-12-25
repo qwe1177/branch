@@ -1,19 +1,19 @@
 import React from 'react';
 import './SubmitFrom.css';
 import { Form, Input, Tooltip, Icon, Select, Table, Row, Col, Checkbox, Button, DatePicker, Radio, Upload, message } from 'antd';
-import moment from 'moment';
-import qs from 'qs';
-
 const FormItem = Form.Item;
 const Option = Select.Option;
 const { MonthPicker, RangePicker } = DatePicker;
 const RadioGroup = Radio.Group;
 const { TextArea } = Input;
 
+import moment from 'moment';
+import qs from 'qs';
+
 import Modalmodel from './Modalmodel';
 import { getLoginInfo, getUrlParams ,getOneUrlParams} from '../../../util/baseTool';
 import * as config from '../../../util/connectConfig'
-
+import { levelOptions } from '../../../util/options';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import actions from '../actions'
@@ -25,10 +25,9 @@ import axios  from '../../../util/axios'
 class SubmitFrom extends React.Component {
     constructor(props) {
         super(props);
-        var urlParams = getUrlParams();
-        var moduleId = urlParams['moduleId']?urlParams['moduleId']:'';
-        var systemId = urlParams['systemId']?urlParams['systemId']:'';
-        this.addSheetUrl ='/productpricing/upload/index.html?systemId'+systemId+'&moduleId='+moduleId+'&moduleUrl=/productpricing/upload/';
+        var moduleUrl = location.pathname;
+        this.downloadUrl = config.connect_srm+'/quotation/exportQuotationData.do?token='+getLoginInfo()['token']+'&moduleUrl='+moduleUrl;
+        this.addSheetUrl ='/productpricing/upload/index.html?moduleUrl='+moduleUrl;
 
         this.columns = [{
             title: '序号',
@@ -81,7 +80,7 @@ class SubmitFrom extends React.Component {
                     <div><a onClick={this.Modalshow(index)} >删除</a>
                     </div>
                 );
-            },
+            }
         }
         ];
         this.columns1 = [
@@ -116,7 +115,10 @@ class SubmitFrom extends React.Component {
                 dataIndex: 'option',
                 className: 'column-money',
                 width: 160,
-                render: text => <a href={this.addSheetUrl}>操作</a>,
+                render: (text, record, index) => {
+                    var url = this.downloadUrl+'&quotationId='+record.quotationId;
+                    return <a href={url} >下载</a>;
+                }
             }
         ];
 
@@ -269,6 +271,8 @@ class SubmitFrom extends React.Component {
                         const code = response.data.code
                         if (code == 1) {
                             message.success(`${response.data.msg}`);
+                            window.opener&&window.opener.location.reload()
+                            setTimeout(()=>{location.href=document.referrer;},1000)
                         } else {
                             message.error(`${response.data.msg}`);
                         }
@@ -330,9 +334,14 @@ class SubmitFrom extends React.Component {
             rules: [{ required: false, message: message }],initialValue: initialValue
         })(
             <Select style={{ width: 160 }} placeholder="请选择">
-                {this.props.Infos.category?this.props.Infos.category.map((o)=>{
-                    return <Option key={o.cid} value={o.cid+''}>{o.c_name}</Option>
-                }):''}
+                {levelOptions('品牌类型').map(item => {
+                    return (
+                        <Option key={item.value} value={item.value}
+                        >
+                            {item.label}
+                        </Option>
+                    )
+                })}
             </Select>
             )}
     </FormItem>)
@@ -646,7 +655,7 @@ class SubmitFrom extends React.Component {
                 value: '',
                 returnName: 'Hareas'
             });
-            this.props.fetchCategory();
+            // this.props.fetchCategory();
         }).catch((e)=>{
             console.log(e);
         })
@@ -774,8 +783,14 @@ class SubmitFrom extends React.Component {
                                     initialValue: this.props.Infos.corporationGender && this.props.Infos.corporationGender.value
                                 })(
                                     <RadioGroup name="orwomen">
-                                        <Radio value='男'>先生</Radio>
-                                        <Radio value='女'>女士</Radio>
+                                        {levelOptions('性别').map(item => {
+                                            return (
+                                                <Radio key={item.value} value={item.value}
+                                                >
+                                                    {item.label}
+                                                </Radio>
+                                            )
+                                        })}
                                     </RadioGroup>
                                     )}
                             </FormItem>
@@ -963,7 +978,7 @@ class SubmitFrom extends React.Component {
                     <div className='section-wrap'>
                         {this.props.tablemodel2.data2.length > 0 ?
                             <Table rowKey={record => record.quotationId} pagination={false} columns={this.columns1} dataSource={data2} bordered className="g-mt" /> : <Table pagination={false} columns={this.columns1} dataSource={data2} bordered className="g-mt"
-                                footer={() => <div style={{ textAlign: 'center' }} >您还没有添加任何产品报价，请点击<a href={this.addSheetUrl}>添加报价单</a>至少上传条记录</div>}
+                                footer={() => <div style={{ textAlign: 'center' }} >您还没有添加任何产品报价，请点击<a href={this.addSheetUrl} target='_blank'>添加报价单</a>至少上传条记录</div>}
                             />}
 
                     </div>

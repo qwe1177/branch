@@ -92,6 +92,7 @@ export const queryTableData = (data) => async(dispatch, getState) => {
         params.finishData = undefined
         params = _.omitBy(params, _.isUndefined); //删除undefined参数
         let res = await axios.get(connect_srm+'/supplier/viewFollowupPlanList.do', { params: params });
+        // let res = await axios.get('http://10.10.10.29:9407/v1/supplier/viewFollowupPlanList.do', { params: params });
         var pageSize=parseInt(res.data.data.pageSize);
         return await dispatch(receiveSupplier({
             tableData: res.data.data.supplierFollowupPlanList,

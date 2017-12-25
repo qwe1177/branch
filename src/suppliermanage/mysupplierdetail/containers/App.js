@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import './App.css';
 import vueAxios from 'axios';
 import 'antd/dist/antd.css';
-import { Button, Spin, message } from 'antd';
+import { Button, Spin, message,Modal } from 'antd';
 import { getUrlParams, getOneUrlParams, getLoginAccount } from '../../../util/baseTool';
 
 import MergeSuppliers from '../../../components/business/mergesuppliers/index';
@@ -32,7 +32,10 @@ class App extends Component {
 		this.state = {
 			isBtnExpand: false,  //按钮组默认收缩
 			personSelectorVisible: false, //打开和关闭选择人组件
-			mergeSuppliersVisible: false  //打开合并供应商入口
+			mergeSuppliersVisible: false,  //打开合并供应商入口
+			confirmVisible: false,  //弹出确认框
+			confirmTarget: {action:'moveToHighSeas'}, //弹出框对应的事物类型
+			confirmContent:'是否将此供应商移入到公海?' //弹出框内容
 		}
 		this.supplierId = getOneUrlParams('supplierId');
 	}
@@ -121,6 +124,32 @@ class App extends Component {
 		var { query, pagination } = this.props.followupShower;
 		this.props.doQueryFollow({ query, pagination });
 	}
+	handleTurnToNewClue =()=>{
+		location.href='/newClue/';
+	}
+	handleConfirmOk =() =>{
+		this.setState({ confirmVisible: false });
+		var action =this.state.confirmTarget.action;
+		if(action=='moveToHighSeas'){
+			this.handleFetchToHighSea();
+		}
+	}
+	handleConfirmCancel =() =>{
+		this.setState({ confirmVisible: false });
+	}
+	openConfirmModal =(param) =>{
+		var nextState ={ confirmVisible: true };
+		if(param){
+			var {confirmContent,confirmTarget} = param;
+			if(confirmContent){
+				nextState['confirmContent'] =confirmContent;
+			}
+			if(confirmTarget){
+				nextState['confirmTarget'] =confirmTarget;
+			}
+		}
+		this.setState(nextState);
+	}
 	render() {
 		var supplierId = this.supplierId;
 		const { isBtnExpand } = this.state;
@@ -149,7 +178,7 @@ class App extends Component {
 										<Button type="primary" className='normal' onClick={() => this.addShowModal(this.supplierId, companyName)}>跟进供应商</Button>
 										<Button type="primary" className='normal' onClick={this.turnToMidify} >编辑供应商</Button>
 										<Button type="primary" className='normal' onClick={this.handleOpenChoose}>分配负责人</Button>
-										<Button type="primary" className='normal' onClick={this.handleFetchToHighSea}>移入公海</Button>
+										<Button type="primary" className='normal' onClick={()=>{this.openConfirmModal()}}>移入公海</Button>
 										{/* <Button type="primary" className='normal'>供应商评分</Button>*/}
 									</div>
 									<Button className='more' onClick={() => this.showMoreBtn()}>更多</Button>
@@ -161,6 +190,11 @@ class App extends Component {
 										companyName={companyName}
 										visible={this.state.mergeSuppliersVisible} />
 									<PublicModal onSuccess={this.handleAddSuccess.bind(this)} />
+									<Modal visible={this.state.confirmVisible}
+										onOk={this.handleConfirmOk} onCancel={this.handleConfirmCancel}
+									>
+										<p>{this.state.confirmContent}</p>
+									</Modal>
 								</div>
 							</div>
 							<div className="chart-wrap"></div>
@@ -172,10 +206,10 @@ class App extends Component {
 					</div>
 					<div className="right-wrap">
 						<div className="link-wrap">
-							<Button type="primary" className='normal'>新建供应商线索</Button>
+						<Button type="primary" className='normal' onClick={this.handleTurnToNewClue}>新建供应商线索</Button>
 						</div>
 						<Spin spinning={this.props.supplierDetailMain.isfetching}>
-							<CompanyShower />
+							<CompanyShower isClueView={false}  />
 						</Spin>
 					</div>
 				</div>

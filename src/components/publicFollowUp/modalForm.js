@@ -20,22 +20,38 @@ import {doReceiveSuccess,doReceiveFail,doEffectFlow,doCancelForm} from './redux'
 class ModalForm extends React.Component {
 	state = {
 		selectedTags: [],
+		numb1: {len: 0, color: ''},
+		numb2: {len: 0, color: ''},
+		isSelectTag:true,
+		startValue: null,
+		endValue: null,
+		endOpen: false,
 	  };
 	
 	  handleChange(tag, checked) {
-		const { followUpFlag} = this.props.EditModal.pform;
+		const followUpFlag = this.props.EditModal.pform.followUpFlag!= undefined&&this.props.EditModal.pform.followUpFlag!= ''?this.props.EditModal.pform.followUpFlag:[];
 		const nextSelectedTags = checked ?
 				[...followUpFlag, tag] :
 				followUpFlag.filter(t => t !== tag);
-		this.props.EditModal.pform.followUpFlag = nextSelectedTags;
+		this.props.EditModal.pform.followUpFlag = nextSelectedTags;	
 		this.setState({ selectedTags: nextSelectedTags });
+		console.log(nextSelectedTags)
+		if(nextSelectedTags.length == 0) {
+			this.setState({ isSelectTag: false });
+		}else {
+			this.setState({ isSelectTag: true });
+		}
+		
 	  }
 	handleSubmit = (e) => {
 		e.preventDefault();
 		this.props.form.validateFields((err, values) => {
-			if (!err) {
-				// var initdata=this.props.EditModal.selectedTags;
+			console.log(this.props.EditModal.pform.followUpFlag)
+			if(this.props.EditModal.pform.followUpFlag == '') {
+				this.setState({ isSelectTag: false });
+			}else if (!err) {
 				var initdata=this.props.EditModal.pform.followUpFlag;
+				if(initdata)
 				values.followUpFlag= (initdata!=''&&initdata!=undefined)?initdata.join(',') : '';
 				var url = this.props.url;
 				var promise = this.props.doEffectFlow(url,{pform:values});
@@ -54,13 +70,19 @@ class ModalForm extends React.Component {
 		//setFieldsValue方法必须在getFieldDecorator之后，getFieldDecorator在render生命周期中定义id来进行表单双向绑定
 		let form = this.props.EditModal.pform;
 		let data ={};
-			for(let key in form){  //过滤空字符串
-				if(form[key] && form[key]!=''){
-					data[key] = form[key];
-				}
+		for(let key in form){  //过滤空字符串
+			if(form[key] && form[key]!=''){
+				data[key] = form[key];
 			}
-			this.props.form.setFieldsValue(data);
 		}
+		this.props.form.setFieldsValue(data);
+		if(this.props.EditModal.pform.modalType == '2') {
+			this.setState({
+				numb1: {len: data.followUpTheContent.length, color: ''},
+				numb2: {len: (data.planNextContent==undefined?0:data.planNextContent.length), color: ''},
+			})
+		}	
+	}
 	
 	handleCancel = () => {
 		this.props.doCancelForm();
@@ -71,7 +93,7 @@ class ModalForm extends React.Component {
 		var type = form.getFieldValue('followupType');
 		var name  = form.getFieldValue('followUpNode');
 		if ((type==1)&&(!name || ''== form.getFieldValue('followUpNode'))) {
-			callback('请选择跟进节点!');
+			callback('请选择跟进节点');
 		}else {
 			callback();
 		}
@@ -80,11 +102,56 @@ class ModalForm extends React.Component {
 		const form = this.props.form;
 		var name  = form.getFieldValue('followUpTheContent');
 		if (!name || ''== form.getFieldValue('followUpTheContent')) {
-			callback('请选择跟进内容!');
+			callback('请选择跟进内容');
 		}else  {
 			callback();
 		}
 	}
+	companyIntroductionHandle = (n, v)=>(e)=> {
+        const {value} = e.target;
+        var len = value.length
+        const reg = new RegExp('(.{' + v + '}).*', 'g');
+        var color = ''
+        if (len > v) {
+            e.target.value = e.target.value.replace(reg, '$1');
+            len = v
+            color = "#ff0000";
+        }
+        this.setState({[n]: {len: len, color: color}})
+	}
+	// 日期
+	disabledStartDate = (startValue) => {
+		let  value  = this.props.form.getFieldValue('planNextContactTime');
+		const endValue =  this.state.endValue==null?value:this.state.endValue;
+		if (!startValue || !endValue) {
+		  return false;
+		}
+		return startValue.valueOf() > endValue.valueOf();
+	  }
+	
+	  disabledEndDate = (endValue) => {
+		let  value  = this.props.form.getFieldValue('thisContactTime');
+		const startValue =  this.state.startValue==null?value:this.state.startValue;
+		if (!endValue || !startValue) {
+		  return false;
+		}
+		return endValue.valueOf() <= startValue.valueOf();
+	  }
+	
+	  onChange = (field, value) => {
+		this.setState({
+		  [field]: value,
+		});
+	  }
+	
+	  onStartChange = (value) => {
+		this.onChange('startValue', value);
+	  }
+	
+	  onEndChange = (value) => {
+		this.onChange('endValue', value);
+	  }
+	
 	render() {
 		const { getFieldDecorator } = this.props.form;
 		const formItemLayout = {  //form中的label和内容各自占用多少
@@ -111,11 +178,10 @@ class ModalForm extends React.Component {
 			labelCol: { span: 5 },
 			wrapperCol: { span: 19 }
 		};
-		const {pform} = this.props.EditModal;
-		const selectedTags = this.state.selectedTags.length != 0 ? this.state.selectedTags:(this.props.EditModal.pform.followUpFlag!=undefined?this.props.EditModal.pform.followUpFlag:[]);
-		const className = pform.followupType == 2 ?'editModal':'editModal xiansuo';
-		const isMustName = selectedTags.length != 0 ? 'noMust' : 'must';
-	
+		const {followupType,followUpFlag} = this.props.EditModal.pform;
+		const selectedTags = this.state.selectedTags.length != 0 ? this.state.selectedTags:(followUpFlag!=undefined&&followUpFlag!=''?followUpFlag:[]);
+		const className = followupType == 2 ?'editModal':'editModal xiansuo';
+		const isMustName = this.state.isSelectTag == true ? 'noMust' : 'must';
 		return (
 				<Form layout="horizontal" hideRequiredMark onSubmit={this.handleSubmit} className={className}>
 				<Row gutter={16}>
@@ -143,7 +209,9 @@ class ModalForm extends React.Component {
 				<Row>
 					<Col span={8}>
 						<FormItem {...formItemLayout} label="联系人">
-							{getFieldDecorator('contactPersonnel')(
+							{getFieldDecorator('contactPersonnel',{
+								rules: [{ required: true, message: '请填写联系人' }],
+							})(
 								<Input />
 							)}
 						</FormItem>
@@ -184,7 +252,11 @@ class ModalForm extends React.Component {
 							{getFieldDecorator('thisContactTime',{
 								rules: [{ required: true, message: '请选择本次联络时间' }],
 							})(
-								<DatePicker/>
+								<DatePicker 
+								disabledDate={this.disabledStartDate}
+								showTime={{ format: 'HH:mm' }} 
+								format="YYYY-MM-DD HH:mm" 
+								onChange={this.onStartChange}/>
 							)}
 						</FormItem>
 					</Col>
@@ -204,7 +276,7 @@ class ModalForm extends React.Component {
 											{tag}
 										</CheckableTag>
 										))}
-						<div className={isMustName}>请选择跟进标签！</div>
+						<div className={isMustName}>请选择跟进标签</div>
 						</FormItem>
 					</Col>
 				</Row>
@@ -233,9 +305,19 @@ class ModalForm extends React.Component {
 						<FormItem {...formItemLayout3} label="跟进内容" className="marginLeft">
 							{getFieldDecorator('followUpTheContent',{
 								rules: [{ validator: this.required}],
+								onChange: this.companyIntroductionHandle('numb1', 200)
 							})(
-								<Input type="textarea" rows={2} />
+									<Input type="textarea" rows={3}/>
 							)}
+							<p style={{
+										position: 'relative',
+										position: 'absolute',
+										bottom: '0px',
+										right: '0px',
+										paddingRight: '10px',
+										color: this.state.numb1.color,
+									}}
+									>{this.state.numb1.len}/200</p>
 						</FormItem>
 					</Col>
 				</Row>
@@ -243,7 +325,11 @@ class ModalForm extends React.Component {
 					<Col span={12}>
 						<FormItem {...formItemLayout2} label="计划下次跟进时间">
 							{getFieldDecorator('planNextContactTime')(
-								<DatePicker />
+								<DatePicker 
+								disabledDate={this.disabledEndDate}
+								showTime={{ format: 'HH:mm' }} 
+								format="YYYY-MM-DD HH:mm" 
+								onChange={this.onEndChange}/>
 							)}
 						</FormItem>
 					</Col>
@@ -251,9 +337,21 @@ class ModalForm extends React.Component {
 				<Row gutter={16}>
 					<Col span={24}>
 						<FormItem {...formItemLayout4} label="计划下次跟进内容">
-							{getFieldDecorator('planNextContent')(
-								<Input type="textarea" rows={2} />
+							{getFieldDecorator('planNextContent',{
+								 rules: [{required: false, message: '请填写计划下次跟进内容(100个字符)'}],
+								 onChange: this.companyIntroductionHandle('numb2', 100)
+							})(
+									<Input type="textarea" rows={3} />
 							)}
+							<p style={{
+										position: 'relative',
+										position: 'absolute',
+										bottom: '0px',
+										right: '0px',
+										paddingRight: '10px',
+										color: this.state.numb2.color,
+									}}
+									>{this.state.numb2.len}/100</p>
 						</FormItem>
 					</Col>
 				</Row>

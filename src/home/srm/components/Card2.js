@@ -72,13 +72,13 @@ export default class Card2 extends React.Component {
                 <h1 className='header'>供应商总览</h1>
                 <div className='row clearfix'>
                     <div className='column-2'><div className='title'>我的供应商</div>
-                        <div className='count'>{my.count}	</div>
+                        <div className='count'><a href='/suppliermanage/mysupplier/'>{my.count}</a>	</div>
                         <div className='modify-info'>本周新增加{my.thisWeekCount}条,环比
                     <span className={my.trend} dangerouslySetInnerHTML={{ __html: this.getUporDown(my.trend) + my.chainIndex }}></span>
                         </div>
                     </div>
                     <div className='column-2'><div className='title'>下属供应商
-                    </div><div className='count'>{underling.count}</div>
+                    </div><div className='count'><a href='/suppliermanage/underlingsupplier/'>{underling.count}</a></div>
                         <div className='modify-info'>本周新增加{underling.thisWeekCount}条,环比
                     <span className={underling.trend} dangerouslySetInnerHTML={{ __html: this.getUporDown(underling.trend) + underling.chainIndex }}></span>
                         </div>
@@ -86,11 +86,11 @@ export default class Card2 extends React.Component {
                 </div>
                 <div className='row clearfix'>
                     <div className='column-2'><div className='title'>公海供应商</div>
-                        <div className='count'>{theHighSeas.count}</div>
+                        <div className='count'><a href='/suppliermanage/inseasupplier/'>{theHighSeas.count}</a></div>
                         <div className='modify-info'>本周新增加{theHighSeas.thisWeekCount}条,转化{theHighSeas.thisWeekGetCount}条</div>
                     </div>
                     <div className='column-2'><div className='title'>全部供应商</div>
-                        <div className='count'>{all.count}</div>
+                        <div className='count'><a href='/suppliermanage/allsupplier/'>{all.count}</a></div>
                         <div className='modify-info'>本周新增加{all.thisWeekCount}条,环比
                         <span className={all.trend} dangerouslySetInnerHTML={{ __html: this.getUporDown(all.trend) + all.chainIndex }}></span>
                         </div>

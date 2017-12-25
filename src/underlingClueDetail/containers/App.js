@@ -31,6 +31,8 @@ import {
     QXADDMY,
     QRADDMY,
     PKreset,
+    QRYRGH,
+    QXYRGH,
     QRADDMYHANDLE
 } from '../../components/common/supplierdetails/redux';
 import {doFormAdd} from '../../components/publicFollowUp/redux'
@@ -56,7 +58,9 @@ import {doQueryFollow} from '../../components/business/followupshower/redux'
         QXADDMY,
         QRADDMY,
         PKreset,
-        QRADDMYHANDLE
+        QRADDMYHANDLE,
+        QRYRGH,
+        QXYRGH,
     }, dispatch)
 )
 
@@ -133,6 +137,28 @@ class App extends Component {
     qxADDMYhandle = ()=> {
         this.props.QXADDMY();
     }
+    QRYRGHhandle = ()=> {
+        var supplierId = this.supplierId;
+        fetchToHighSea(supplierId).then((res) => {
+            if (res.data.code == '1') {
+                message.success('移入公海成功!');
+                this.props.QXYRGH();
+                window.opener && window.opener.location.reload()
+                setTimeout(()=> {
+                    location.href = document.referrer;
+                }, 1000)
+                //location.href=`/publicClueDetail/?supplierId=${supplierId}`
+            } else {
+                message.error('移入公海失败!');
+            }
+        }).catch((e) => {
+            message.error('移入公海失败!');
+        })
+    }
+    QXYRGHhandle = ()=> {
+        this.props.QXYRGH();
+    }
+
     qrADDMYhandle = ()=> {
 
         axios.get(`${config.connect_srm}/clue/editPersonLiable.do`, {
@@ -170,21 +196,7 @@ class App extends Component {
     }
 
     handleFetchToHighSea = () => {
-        var supplierId = this.supplierId;
-        fetchToHighSea(supplierId).then((res) => {
-            if (res.data.code == '1') {
-                message.success('移入公海成功!');
-                window.opener && window.opener.location.reload()
-                setTimeout(()=> {
-                    location.href = document.referrer;
-                }, 1000)
-                //location.href=`/publicClueDetail/?supplierId=${supplierId}`
-            } else {
-                message.error('移入公海失败!');
-            }
-        }).catch((e) => {
-            message.error('移入公海失败!');
-        })
+        this.props.QRYRGH();
     }
     showMoreBtn = () => {
         this.setState({isBtnExpand: true});
@@ -317,6 +329,10 @@ class App extends Component {
                                         <Modal title='提示' visible={this.props.supplierDetailMain.addmyVisible}
                                                onCancel={this.qxADDMYhandle} onOk={this.qrADDMYhandle}>
                                             <p>{this.props.supplierDetailMain.ADDMYcontent}</p>
+                                        </Modal >
+                                        <Modal title='提示' visible={this.props.supplierDetailMain.yrghVisible}
+                                               onCancel={this.QXYRGHhandle} onOk={this.QRYRGHhandle}>
+                                            <p>{this.props.supplierDetailMain.yrghcontent}</p>
                                         </Modal >
                                     </div>
                                     <Button className='more' onClick={() => this.showMoreBtn()}>更多</Button>

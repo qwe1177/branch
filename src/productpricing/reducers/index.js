@@ -5,6 +5,22 @@ import {
     tablemodelInfo,modalmodelInfo
 } from '../actions' // 引入action类型常量名
 
+
+// function selectmodel(state = {
+//     data: '',
+// }, action) {
+
+//     switch (action.type) {
+//         case tablemodelInfo:
+//             return {
+//                 ...state,
+//                 ...action.payload,
+//             };
+//         default:
+//             return state;
+//     }
+// }
+
 function tablemodel(state = {
     data: [{
         id: '0',
@@ -35,6 +51,7 @@ function tablemodel(state = {
             return state;
     }
 }
+
 
 function modalmodel(state = {
     title: "提示", ModalText: '内容',

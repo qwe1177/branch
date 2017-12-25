@@ -15,13 +15,12 @@ import { doQueryFollow } from '../actions/index.js';
 
 
 class CommentForm extends React.Component {
+    state = {
+		numb1: {len: 0, color: ''},
+	  };
+	
     static propTypes = {
         recordsId: PropTypes.number.isRequired
-    }
-    componentDidMount() {
-        // To disabled submit button at the beginning.
-        // this.props.form.validateFields();
-
     }
     handleSubmit = (e) => {
         e.preventDefault();
@@ -49,6 +48,18 @@ class CommentForm extends React.Component {
             }
         });
     }
+    companyIntroductionHandle = (n, v)=>(e)=> {
+        const {value} = e.target;
+        var len = value.length;
+        const reg = new RegExp('(.{' + v + '}).*', 'g');
+        var color = ''
+        if (len > v) {
+            e.target.value = e.target.value.replace(reg, '$1');
+            len = v
+            color = "#ff0000";
+        }
+        this.setState({[n]: {len: len, color: color}})
+    }
     render() {
         const { getFieldDecorator, getFieldsError, getFieldError, isFieldTouched } = this.props.form;
         var recordsId = this.props.recordsId;
@@ -61,9 +72,19 @@ class CommentForm extends React.Component {
                         <FormItem>
                             {getFieldDecorator(name2, {
                                 rules: [{ required: true, message: '请填写批注内容!' }],
+                                onChange: this.companyIntroductionHandle('numb1', 100)
                             })(
                                 <Input type="textarea" rows={3} />
                                 )}
+                                 <p style={{
+										position: 'relative',
+										position: 'absolute',
+										bottom: '0px',
+										right: '0px',
+										paddingRight: '10px',
+										color: this.state.numb1.color,
+									}}
+								>{this.state.numb1.len}/100</p>
                         </FormItem>
                     </Col>
                     <Col span={3}>

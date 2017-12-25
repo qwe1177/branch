@@ -27,7 +27,7 @@ class QueryFrom extends React.Component {
 		this.props.form.validateFields((err, values) => {
 			if (!err) {
 				console.log('Received values of form: ', values);
-				this.props.doQueryFollow({query:values,pagination:this.props.FollowUP.pagination});
+				this.props.doQueryFollow({query:values,userList:this.props.FollowUP.userList,pagination:this.props.FollowUP.pagination});
 			}
 		});
 	}

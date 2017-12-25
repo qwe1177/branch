@@ -20,17 +20,8 @@ import { doDeleteFollowMessage, doFirstQueryFollow, doQueryFollow, doModifiyFoll
 
 
 class MainCard extends React.Component {
-    removeOneMess = (followUpId, commentId) => {
-        axios.get(connect_srm + '/supplier/delSupplierFollowupPostil.do', { params: {id:commentId}}).then((res)=>{
-            if(res.data.code=='1'){
-                this.props.doDeleteFollowMessage(followUpId, commentId);
-                message.success("删除成功!");
-            }else{
-                message.error(res.data.msg);
-            }
-        }).catch((e)=>{
-            message.error(e.message);
-        });
+    handleRemoveOneMess = (followUpId, commentId) => {
+        this.props.onBeforeDelComment({confirmTarget: {action:'removeMess',data:{followUpId, commentId}}});
     }
     showModal = (key, id) => {
         this.props.onEdit(key, id)
@@ -41,8 +32,9 @@ class MainCard extends React.Component {
     }
     render() {
         const data = this.props.data;
-        console.log(data)
-        const title = <div><span>{data.contactPersonnel}</span><span className='card-date'>{data.thisContactTime}</span></div>;
+        // console.log(data)
+        const title = <div><span>{data.realName}</span><span className='card-date'>{data.thisContactTime}</span>
+		<span style={{float:'right',padding:'1px 15px',borderRadius:'5px', margin:'6px 15px', background:'#ccc',lineHeight:'25px'}}>{data.followUpNode}</span></div>;
         var followUpFlag = data.followUpFlag;
         followUpFlag = (followUpFlag == null || !followUpFlag) ? [] : followUpFlag.split(",");
         const tags = <div>{followUpFlag.map((o, index) => { return <Tag key={index} >{o}</Tag> })}</div>
@@ -81,12 +73,12 @@ class MainCard extends React.Component {
                 {data.supplierFollowupPostilDTOs.map((o) => {
                     return <Row key={o.id} className="region-tool" type="flex" justify="space-between">
                         <Col span={18}>
-                            {/* <span className='label'>{o.author}:</span> */}
+                            <span className='label'>{o.realName}:</span>
                             <span className='value'>{o.postilContent}</span>
                         </Col>
                         <Col span={6} className='card-option'>
                             <div>{o.updateTime}</div>
-                            {o.self == 'Y' ? <div className='remove-btn' onClick={() => this.removeOneMess(data.id, o.id)}>删除</div> : ''}
+                            {o.self == 'Y' ? <div className='remove-btn' onClick={() => this.handleRemoveOneMess(data.id, o.id)}>删除</div> : ''}
                         </Col>
                     </Row>
                 })}

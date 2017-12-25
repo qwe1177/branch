@@ -86,3 +86,20 @@
 .noMust {
     display: none;
 }   
+/* 按钮的样式 */
+.ant-btn-danger {
+    color: #a7a7a8;
+}
+.ant-btn-danger:hover {
+    color: #a7a7a8;
+    background-color: #f7f7f7;
+    border-color: #d9d9d9;
+}
+.ant-btn-primary {
+    background-color: #6393bf;
+    border-color: #6393bf;
+}
+.ant-btn-primary:hover {
+    background-color: #6393bf;
+    border-color: #6393bf;
+}

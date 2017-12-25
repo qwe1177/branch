@@ -22,18 +22,18 @@ const vendors = [
 ];
 
 
-var  entries = getEntries('src/**/index.js');  //编译所有页面
-//var  entries = getEntries('src/home/srm/index.js'); //编译首页
-//entries.push(getEntries('src/myClue/index.js')[0]);  //编译编辑线索页面
-//entries.push(getEntries('src/newClue/index.js')[0]);  //编译编辑线索页面
-//entries.push(getEntries('src/underlingClue/index.js')[0]);  //编译编辑线索页面
-//entries.push(getEntries('src/publicClue/index.js')[0]);  //编译编辑线索页面
-//entries.push(getEntries('src/allClue/index.js')[0]);  //编译编辑线索页面
-//entries.push(getEntries('src/editClue/index.js')[0]);  //编译编辑线索页面
-//entries.push(getEntries('src/myClueDetail/index.js')[0]);  //编译编辑线索页面
-//entries.push(getEntries('src/underlingClueDetail/index.js')[0]);  //编译编辑线索页面
-//entries.push(getEntries('src/publicClueDetail/index.js')[0]);  //编译编辑线索页面
-//entries.push(getEntries('src/allClueDetail/index.js')[0]);  //编译编辑线索页面
+//var  entries = getEntries('src/**/index.js');  //编译所有页面
+var  entries = getEntries('src/home/srm/index.js'); //编译首页
+entries.push(getEntries('src/myClue/index.js')[0]);  //编译编辑线索页面
+entries.push(getEntries('src/newClue/index.js')[0]);  //编译编辑线索页面
+entries.push(getEntries('src/underlingClue/index.js')[0]);  //编译编辑线索页面
+entries.push(getEntries('src/publicClue/index.js')[0]);  //编译编辑线索页面
+entries.push(getEntries('src/allClue/index.js')[0]);  //编译编辑线索页面
+entries.push(getEntries('src/editClue/index.js')[0]);  //编译编辑线索页面
+entries.push(getEntries('src/myClueDetail/index.js')[0]);  //编译编辑线索页面
+entries.push(getEntries('src/underlingClueDetail/index.js')[0]);  //编译编辑线索页面
+entries.push(getEntries('src/publicClueDetail/index.js')[0]);  //编译编辑线索页面
+entries.push(getEntries('src/allClueDetail/index.js')[0]);  //编译编辑线索页面
 
 
 const __DEV__ = NODE_ENV === 'development';

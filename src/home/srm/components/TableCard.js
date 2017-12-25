@@ -75,9 +75,7 @@ class MainTable extends React.Component {
         detailUrl ='/suppliermanage/underlingsupplierdetail/';
       } 
     }
-    
-    detailUrl +='?systemId='+this.systemId+'&moduleId='+this.moduleId+'&supplierId='+supplierId;
-    return detailUrl==''?text:<a href={detailUrl}>{text}</a>;
+    return detailUrl==''?text:<a href={detailUrl+'?systemId='+systemId+'&moduleId='+moduleId+'&supplierId='+supplierId}>{text}</a>;      
   }
   render() {
     const columns = [{
