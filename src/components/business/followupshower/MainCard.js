@@ -34,7 +34,7 @@ class MainCard extends React.Component {
         const data = this.props.data;
         // console.log(data)
         const title = <div><span>{data.realName}</span><span className='card-date'>{data.thisContactTime}</span>
-		<span style={{float:'right',padding:'1px 15px',borderRadius:'5px', margin:'6px 15px', background:'#ccc',lineHeight:'25px'}}>{data.followUpNode}</span></div>;
+		{data.followUpNode?<span style={{float:'right',padding:'1px 15px',borderRadius:'5px', margin:'6px 15px', background:'#ccc',lineHeight:'25px'}}>{data.followUpNode}</span>:''}</div>;
         var followUpFlag = data.followUpFlag;
         followUpFlag = (followUpFlag == null || !followUpFlag) ? [] : followUpFlag.split(",");
         const tags = <div>{followUpFlag.map((o, index) => { return <Tag key={index} >{o}</Tag> })}</div>

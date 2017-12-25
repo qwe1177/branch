@@ -381,7 +381,10 @@ class UserForm extends Component {
 
         const rowSelection = {
             selectedRowKeys: this.props.tablemodel.selectedRowKeys,
-            onChange: this.onSelectChange
+            onChange: this.onSelectChange,
+            getCheckboxProps: record => ({
+                disabled: true,    
+            }),
         };
 
         return (

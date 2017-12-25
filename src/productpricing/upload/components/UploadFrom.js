@@ -56,6 +56,7 @@ class UploadFrom2 extends React.Component {
 
 
     componentDidMount() {
+        //页面加载调用类目接口
         axios.get(connect_srm + '/queryCategoryList.do').then((res) => {
             var data = res.data.data;
             this.setState({ catNamelist: data });
@@ -70,17 +71,17 @@ class UploadFrom2 extends React.Component {
         this.columns = [{
             title: '规格编码',
             dataIndex: 'specCode',
-            className: 'column-money',
+            className: 'column-money required',
             render: this.addinputdata,
         }, {
             title: '名称',
             dataIndex: 'pName',
-            className: 'column-money',
+            className: 'column-money required',
             render: this.addinputdata
         }, {
             title: '品牌',
             dataIndex: 'brand',
-            className: 'column-money',
+            className: 'column-money required',
             render: this.addinputdata
         }, {
             title: '所属类目',
@@ -105,7 +106,7 @@ class UploadFrom2 extends React.Component {
         }, {
             title: '进价(元)',
             dataIndex: 'price',
-            className: 'column-money',
+            className: 'column-money required',
             render: this.addinputdata
         }, {
             title: '税点',
@@ -159,7 +160,6 @@ class UploadFrom2 extends React.Component {
         action: `${connect_srm}/quotation/uploadExcelQuotation.do?token=${getLoginInfo()['token']}`,
         onChange: (info) => {
             const status = info.file.status;
-
             if (status !== 'uploading') {
                 //console.log(info.file, info.fileList);
             }
@@ -172,7 +172,6 @@ class UploadFrom2 extends React.Component {
                     d1 = _.omitBy(d1, _.isUndefined);
                     return d1;
                 })
-
                 var newrespList = respdatas.map(v => {
                     return ({
                         id: count + v.id + '',
@@ -251,7 +250,9 @@ class UploadFrom2 extends React.Component {
                             placeholder: '请输入付款方式',
                         },
                         Operation: '删除',
+                        
                     });
+                   
                 });
                 //console.log(newrespList);
 
@@ -574,7 +575,7 @@ class UploadFrom2 extends React.Component {
                             <Col span={12}>
                                 <FormItem label="联系人信息"  {...formItemLayout} style={{ "width": "100%" }}>
                                     {getFieldDecorator('contact', {
-                                        rules: [{ required: false, message: '请联系人信息' }],
+                                        rules: [{ required: true, message: '请联系人信息' }],
                                     })(
                                         <Input placeholder="" readOnly />
                                         )}

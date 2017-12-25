@@ -46,8 +46,8 @@ class ModalForm extends React.Component {
 	handleSubmit = (e) => {
 		e.preventDefault();
 		this.props.form.validateFields((err, values) => {
-			console.log(this.props.EditModal.pform.followUpFlag)
-			if(this.props.EditModal.pform.followUpFlag == '') {
+			const {followupType,followUpFlag} = this.props.EditModal.pform;
+			if(followupType==2&&followUpFlag == '') {
 				this.setState({ isSelectTag: false });
 			}else if (!err) {
 				var initdata=this.props.EditModal.pform.followUpFlag;

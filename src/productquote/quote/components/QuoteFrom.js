@@ -401,7 +401,7 @@ class QuoteFrom extends React.Component {
 						</Row>
 						<Row gutter={24} style={{ 'padding': '8px 0px' }} className="skusum">
 							<Col span={12}>
-								下SKU总数：<span>{this.state.pagination.total}</span>
+								SKU总数：<span>{this.state.pagination.total}</span>
 							</Col>
 						</Row>
 					</Form>

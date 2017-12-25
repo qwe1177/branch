@@ -168,13 +168,16 @@ export default class MergeSuppliers extends React.Component {
         var urlParams = getUrlParams();
         var moduleId = urlParams['moduleId'] ? urlParams['moduleId'] : '';
 
-        var supplierId  = ids.toString();
-        var toSupplierId  = this.props.supplierId;
+        var supplierId  = this.props.supplierId;
+        var toSupplierId  = ids.toString();
 
         var params = { supplierId,toSupplierId, token,moduleId};
         axios.get(connect_srm + '/clue/editIntoSupplierClue.do', { params: params, timeout: 10000 }).then((res) => {
             if (res.data.code = '1') {
                 this.props.onComfirm(true);
+                setTimeout(()=> {
+                    location.href = document.referrer;
+                }, 1000)
             }else{
                 this.props.onComfirm(false);
             }

@@ -41,18 +41,60 @@ export default class BrandSelector extends React.Component {
     setVisible =(visible)=>{
         this.setState({visible:visible});
     }
-    componentWillMount(){
-        this.setVisible(this.props.visible?true:false);
-        if(this.props.choosedKeys && this.props.choosedKeys.length>0){
-            this.setState({checkedList:this.props.choosedKeys});
-        }
+    componentDidMount() {
+
+        //var params = {...query,page:pagination.current,pageSize:pagination.pageSize};
+        // axios.get(crmnew_url + '/api/purchaser/searchPurchaserList', {params: params }).then((res)=>{
+        //     var data = res.data.data.rows;
+        //     var pageSize=parseInt(res.data.data.pageSize);
+        //     var total=parseInt(res.data.data.total);
+        //      this.setState({dataSource: data,pagination:{...pagination,pageSize:pageSize,total:total},isFetching: false});
+        // }).catch((e)=>{
+        //     this.setState({ isFetching: false});
+        //     console.log('data error');
+        // });
     }
-    componentWillReceiveProps(nextProps){
-        this.setVisible(nextProps.visible?true:false);
-        if(this.props.choosedKeys && this.props.choosedKeys.length>0){
-            this.setState({checkedList:this.props.choosedKeys});
+
+    doInit = (props) => {
+        if (props.visible) { //显示的时候
+            var checkedList = [];
+            if (props.choosedKeys && props.choosedKeys.labelstr && props.choosedKeys.idstr) {
+                var ids = props.choosedKeys.idstr.split('、');
+                var labels = props.choosedKeys.labelstr.split('、');
+
+                if (ids.length > 0 && ids.length === labels.length) {
+                    checkedList = ids.map((o, index) => {
+                        return { id: parseFloat(o), brand_name_ch: labels[index] };
+                    })
+                    // this.setState({checkedList});
+                }
+            }
+            this.fetch({ checkedList });
         }
+        this.setState({ visible: props.visible ? true : false });
     }
+    //弹窗点击打开自动调用
+    componentWillMount() {
+        this.doInit(this.props);
+    }
+    //弹窗点击打开自动调用
+    componentWillReceiveProps(nextProps) {
+        this.doInit(nextProps);
+    }
+
+    // componentWillMount(){
+    //     this.setVisible(this.props.visible?true:false);
+    //     if(this.props.choosedKeys && this.props.choosedKeys.length>0){
+    //         this.setState({checkedList:this.props.choosedKeys});
+    //     }
+    // }
+    // componentWillReceiveProps(nextProps){
+    //     this.setVisible(nextProps.visible?true:false);
+    //     if(this.props.choosedKeys && this.props.choosedKeys.length>0){
+    //         this.setState({checkedList:this.props.choosedKeys});
+    //     }
+    // }
+
     handleOk = (e) => {
         var {checkedlistall} = this.state;
         var listall={
@@ -71,7 +113,6 @@ export default class BrandSelector extends React.Component {
         this.fetch({pagination});
     }
     onQuery =(query)=>{  //查询的时候调用
-
         this.fetch({query});
     }
     fetch =(queryParams)=>{
@@ -88,6 +129,10 @@ export default class BrandSelector extends React.Component {
             query = _.omitBy(queryParams.query, _.isUndefined); //删除undefined参数
         }
         
+        if (queryParams && queryParams.checkedList) { //解析初始化的代码
+            checkedList = queryParams.checkedList;
+        }
+
         var params = {...query,page:pagination.current,pageSize:pagination.pageSize};
         axios.get(crmnew_url + '/api/purchaser/searchPurchaserList', {params: params }).then((res)=>{
             var data = res.data.data.rows;

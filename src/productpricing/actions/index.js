@@ -11,8 +11,3 @@ export const modalmodelaction = value=> ({
     type: modalmodelInfo,
     payload: value
 })
-// export const selectmodelaction = value=> ({
-//     type: selectmodelinit,
-//     payload: value
-// })
-
