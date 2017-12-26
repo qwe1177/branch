@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types'
-import { Pagination,Modal } from 'antd';
+import { Pagination,Modal,message } from 'antd';
 import MainCard from './MainCard.js';
 import PublicModal from '../../publicFollowUp/index'
 import { connect } from 'react-redux';

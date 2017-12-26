@@ -119,13 +119,38 @@ class QuoteFrom extends React.Component {
 
 	//页面加载前调用的函数(react生命周期);
 	componentDidMount() {
+		var { pagination, parlist } = this.state;
+		var startDate = '';
+		var endDate = '';
+		var type = 'companyName'
+		var ssUserId = ''
+		var typeValue = ''
+		var params = { type: type, startDate: startDate, endDate: endDate, ssUserId: ssUserId, typeValue: typeValue, pageNo: pagination.current, pageSize: pagination.pageSize };
+		axios.get(connect_srm + '/quotation/viewQuotations.do', { params: params }).then((res) => {
+			var data = res.data.data;
+			if (res.data.code == 1) {
+				this.setState({ pagination: { ...pagination, total: data.rowCount, pageSize: data.pageSize }, isFetching: false });
+				this.props.dispatch(tablemodelaction({ data: data.quotations }));
 
-		var params = { pageNo: '' };
-		axios.get(connect_srm + '/quotation/queryQuotationUploader.do', { params: params }).then((res) => {
-			let code = res.data.code;
-			if (code == 1) {
-				this.setState({ usernamelist: res.data.data });
-			} else {
+				var paramsuuid = { pageNo: '' };
+				axios.get(connect_srm + '/quotation/queryQuotationUploader.do', { params: paramsuuid }).then((res) => {
+					console.log(res);
+					let code = res.data.code;
+					if (code == 1) {
+						this.setState({ usernamelist: res.data.data });
+					} else {
+						const args = {
+							message: '提示：',
+							description: res.data.msg,
+							duration: 3,
+						};
+						notification.open(args);
+					}
+				}).catch((e) => {
+					this.setState({ isFetching: false });
+					console.log('data error');
+				});
+			} else if (res.data.code == 0) {
 				const args = {
 					message: '提示：',
 					description: res.data.msg,
@@ -133,10 +158,25 @@ class QuoteFrom extends React.Component {
 				};
 				notification.open(args);
 			}
-		}).catch((e) => {
-			this.setState({ isFetching: false });
-			console.log('data error');
-		});
+		})
+		// var params = { pageNo: '' };
+		// axios.get(connect_srm + '/quotation/queryQuotationUploader.do', { params: params }).then((res) => {
+		// 	console.log(res);
+		// 	let code = res.data.code;
+		// 	if (code == 1) {
+		// 		this.setState({ usernamelist: res.data.data });
+		// 	} else {
+		// 		const args = {
+		// 			message: '提示：',
+		// 			description: res.data.msg,
+		// 			duration: 3,
+		// 		};
+		// 		notification.open(args);
+		// 	}
+		// }).catch((e) => {
+		// 	this.setState({ isFetching: false });
+		// 	console.log('data error');
+		// });
 	}
 	
 
@@ -317,6 +357,7 @@ class QuoteFrom extends React.Component {
 
 				var params = { type: type, startDate: startDate, endDate: endDate, ssUserId: ssUserId, typeValue: typeValue, pageNo: pagination.current, pageSize: pagination.pageSize };
 				this.setState({ parlist: { type: type, startDate: startDate, endDate: endDate, ssUserId: ssUserId, typeValue: typeValue, pageNo: pagination.current, pageSize: pagination.pageSize } });
+				console.log(params);
 				axios.get(connect_srm + '/quotation/viewQuotations.do', { params: params }).then((res) => {
 					console.log(res);
 					var data = res.data.data;

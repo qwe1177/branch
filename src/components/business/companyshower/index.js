@@ -13,10 +13,10 @@ import { toSwitchExtend } from '../../../components/common/supplierdetails/redux
 )
 class CompanyShower extends React.Component {
     static propTypes = { //声明prop中属性变量
-        isClueView:PropTypes.bool,  // 是为线索，否为供应商
+        isClueView: PropTypes.bool,  // 是为线索，否为供应商
     }
     static defaultProps = {
-        isClueView:true
+        isClueView: true
     }
     collapse = (e) => {
         this.props.toSwitchExtend();
@@ -43,6 +43,9 @@ class CompanyShower extends React.Component {
 
         const workshop = data.supplierBusiness ? data.supplierBusiness.workshop ? data.supplierBusiness.workshop.split('@').map((v, i, a) => (<a key={i} target="_blank" href={config.connect_img + v}>
             <img style={{ width: '100%' }} src={config.connect_img + '/' + v} /></a>)) : '' : '';
+        
+        const officespace = data.supplierBusiness ? data.supplierBusiness.officespace ? data.supplierBusiness.officespace.split('@').map((v, i, a) => (<a key={i} target="_blank" href={config.connect_img + v}>
+            <img style={{ width: '100%' }} src={config.connect_img + '/' + v} /></a>)) : '' : '';
 
         return (
 
@@ -51,7 +54,7 @@ class CompanyShower extends React.Component {
                     <div className='title-1'>企业信息</div>
                     {data.supplier.varietyName != '' && <div><span className='title-2'>经营品类</span><span className='content-1'>{data.supplier.varietyName}</span></div>}
                     {data.supplier.cscAccount != '' && <div><span className='title-2'>csc86账号</span><span className='content-1'>{data.supplier.cscAccount}</span></div>}
-                    {data.supplier.cscAccount != '' && <div><span className='title-2'>buy5j账号</span><span className='content-1'>{data.supplier.buy5jAccount}</span></div>}
+                    {data.supplier.buy5jAccount != '' && <div><span className='title-2'>buy5j账号</span><span className='content-1'>{data.supplier.buy5jAccount}</span></div>}
                     {data.supplier.source != '' && <div><span className='title-2'>来源</span><span className='content-1'>{data.supplier.source}</span></div>}
                     {(this.props.isClueView && data.clueLevel !== '') && <div><span className='title-2'>线索级别</span><span className='content-1'>{data.clueLevel}</span></div>}
                     {(!this.props.isClueView && data.partnership !== '') && <div><span className='title-2'>合作关系</span><span className='content-1'>{data.partnership}</span></div>}
@@ -112,37 +115,40 @@ class CompanyShower extends React.Component {
                         {(data.supplierBusiness.undertaking != '') &&
                             <div><span className='title-2'>廉洁承诺书</span><span className='content-1'>{undertaking}</span></div>
                         }
+                        {(data.supplierBusiness.officespace != '') &&
+                            <div><span className='title-2'>办公场所</span><span className='content-1'>{officespace}</span></div>
+                        }
                         {(data.supplierBusiness.workshop != '') &&
                             <div><span className='title-2'>生成车间/仓库</span><span className='content-1'>{workshop}</span></div>
                         }
                     </div>
                     : null}
-                 {(data.supplier.oem != '' || data.supplier.manage != '' || data.supplier.model != ''
-                    || data.supplier.regmoney != '' || data.supplier.employees != '' || data.supplier.turnover != '' 
+                {(data.supplier.oem != '' || data.supplier.manage != '' || data.supplier.model != ''
+                    || data.supplier.regmoney != '' || data.supplier.employees != '' || data.supplier.turnover != ''
                     || data.supplier.introduce != '') ?
-                <div className='more-info'>
-                    {data.supplier.oem != '' &&
-                        <div><span className='title-2'>是否支持来料加工</span><span className='content-1'>{data.supplier.oem == '1' ? '是' : '否'}</span></div>
-                    }
-                    {data.supplier.manage != '' &&
-                        <div><span className='title-2'>管理体系认证</span><span className='content-1'>{data.supplier.manage}</span></div>
-                    }
-                    {data.supplier.model != '' &&
-                        <div><span className='title-2'>经营模式</span><span className='content-1'>{data.supplier.model}</span></div>
-                    }
-                    {data.supplier.regmoney != '' &&
-                        <div><span className='title-2'>注册资本</span><span className='content-1'>{data.supplier.regmoney}</span></div>
-                    }
-                    {data.supplier.employees != '' &&
-                        <div><span className='title-2'>员工人数</span><span className='content-1'>{data.supplier.employees}</span></div>
-                    }
-                    {data.supplier.turnover != '' &&
-                        <div><span className='title-2'>年营业额</span><span>{data.supplier.turnover}</span></div>
-                    }
-                    {data.supplier.introduce != '' &&
-                        <div><span className='title-2'>公司介绍</span><span>{data.supplier.introduce}</span></div>
-                    }
-                </div>:null}
+                    <div className='more-info'>
+                        {data.supplier.oem != '' &&
+                            <div><span className='title-2'>是否支持来料加工</span><span className='content-1'>{data.supplier.oem == '1' ? '是' : '否'}</span></div>
+                        }
+                        {data.supplier.manage != '' &&
+                            <div><span className='title-2'>管理体系认证</span><span className='content-1'>{data.supplier.manage}</span></div>
+                        }
+                        {data.supplier.model != '' &&
+                            <div><span className='title-2'>经营模式</span><span className='content-1'>{data.supplier.model}</span></div>
+                        }
+                        {data.supplier.regmoney != '' &&
+                            <div><span className='title-2'>注册资本</span><span className='content-1'>{data.supplier.regmoney}</span></div>
+                        }
+                        {data.supplier.employees != '' &&
+                            <div><span className='title-2'>员工人数</span><span className='content-1'>{data.supplier.employees}</span></div>
+                        }
+                        {data.supplier.turnover != '' &&
+                            <div><span className='title-2'>年营业额</span><span>{data.supplier.turnover}</span></div>
+                        }
+                        {data.supplier.introduce != '' &&
+                            <div><span className='title-2'>公司介绍</span><span>{data.supplier.introduce}</span></div>
+                        }
+                    </div> : null}
             </div>
         );
     }

@@ -30,7 +30,10 @@ import axios from '../../../util/axios'
 class AuditForm extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { value: 2 }
+        this.state = {
+            value: 2,
+            numb3: { len: 0, color: '' }
+        }
         var moduleUrl = location.pathname;
         this.downloadUrl = config.connect_srm + '/quotation/exportQuotationData.do?token=' + getLoginInfo()['token'] + '&moduleUrl=' + moduleUrl;
 
@@ -383,6 +386,18 @@ class AuditForm extends React.Component {
     ModalhandleCancel = (value) => () => {
         this.props.modalmodelaction({ [value]: false })
     }
+    companyIntroductionHandle = (n, v) => (e) => {
+        const { value } = e.target;
+        var len = value.length
+        const reg = new RegExp('(.{' + v + '}).*', 'g');
+        var color = ''
+        if (len > v) {
+            e.target.value = e.target.value.replace(reg, '$1');
+            len = v
+            color = "#ff0000";
+        }
+        this.setState({ [n]: { len: len, color: color } })
+    }
     componentDidMount() {
         var supplierId = getOneUrlParams("supplierId");
         fetchInitInfo(supplierId).then((res) => {
@@ -486,15 +501,7 @@ class AuditForm extends React.Component {
             console.log(e);
         })
     }
-    // 校验备注 字数不能大于100个
-    checkNote = (rule, value, callback) => {
-        let len = value.length
-        if (len > 100) {
-            callback('备注信息不能多于100字');
-        } else {
-            callback();
-        }
-    }
+
     render() {
         const formItemLayout = {  //form中的label和内容各自占用多少
             labelCol: { span: 7 },
@@ -870,13 +877,22 @@ class AuditForm extends React.Component {
                         <Col span={20}>
                             <FormItem {...formItemLayout3} label="备注信息">
                                 {getFieldDecorator('remark', {
-                                    rules:
-                                        [
-                                            { required: true, message: '请填写备注信息' },
-                                            { validator: this.checkNote }
-                                        ]
+                                    rules: [{ required: true, message: '请填写备注信息' }],
+                                    onChange: this.companyIntroductionHandle('numb3', 100)
                                 })(
-                                    <TextArea rows={4} />
+                                    <div style={{ position: 'relative' }}>
+                                        <TextArea rows={4} />
+                                        <p
+                                            style={{
+                                                position: 'relative',
+                                                position: 'absolute',
+                                                bottom: '0px',
+                                                right: '0px',
+                                                paddingRight: '10px',
+                                                color: this.state.numb3.color,
+                                            }}
+                                        >{this.state.numb3.len}/100</p>
+                                    </div>
                                     )}
                             </FormItem>
                         </Col>

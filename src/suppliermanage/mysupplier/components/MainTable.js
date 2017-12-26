@@ -28,7 +28,7 @@ class MainTable extends React.Component {
     cooperationModalVisible: false, //修改合作关系弹框显示
     actionInfo: {},  //选择人之后的操作内容{name:'加入',data:[supplierId:xxx,other...]}
     confirmVisible: false,  //弹出确认框
-    confirmTarget: {action:'moveToHighSeas',data:[]}, //弹出框对应的事物类型
+    confirmTarget: { action: 'moveToHighSeas', data: [] }, //弹出框对应的事物类型
     confirmContent: '是否将此供应商移入到公海?' //弹出框内容
   }
   componentWillMount() {
@@ -77,7 +77,7 @@ class MainTable extends React.Component {
     if (className.indexOf('js-out') != -1) { //分配
       this.setState({ personSelectorVisible: true, actionInfo: { name: '分配', data: [record] } });
     } else { //移入
-      this.openConfirmModal({confirmTarget: {action:'moveToHighSeas',data:record.supplierId}});
+      this.openConfirmModal({ confirmTarget: { action: 'moveToHighSeas', data: record.supplierId } });
     }
   }
   mutiFetchToHighSea = () => {
@@ -85,7 +85,7 @@ class MainTable extends React.Component {
     var supplierIds = selectedList.map((o) => o.supplierId).toString();
     this.doFetchToHighSea(supplierIds);
   }
- 
+
   doFetchToHighSea = (supplierIds, messageHeader) => {
     fetchToHighSea(supplierIds).then((res) => {
       if (res.data.code == '1') {
@@ -142,45 +142,55 @@ class MainTable extends React.Component {
       message.error('修改失败!');
     });
   }
-  handleConfirmOk =() =>{
-		this.setState({ confirmVisible: false });
-		var action =this.state.confirmTarget.action;
-		if(action=='moveToHighSeas'){ //单个移入公海
-      var supplierId =this.state.confirmTarget.data;
-			this.doFetchToHighSea(supplierId);
-		}else if(action=='mutiMoveToHighSeas'){ //多个移入公海
+  handleConfirmOk = () => {
+    this.setState({ confirmVisible: false });
+    var action = this.state.confirmTarget.action;
+    if (action == 'moveToHighSeas') { //单个移入公海
+      var supplierId = this.state.confirmTarget.data;
+      this.doFetchToHighSea(supplierId);
+    } else if (action == 'mutiMoveToHighSeas') { //多个移入公海
       this.mutiFetchToHighSea();
     }
-	}
+  }
   handleConfirmCancel = () => {
     this.setState({ confirmVisible: false });
   }
-  openConfirmModal =(param) =>{
-		var nextState ={ confirmVisible: true };
-		if(param){
-			var {confirmContent,confirmTarget} = param;
-			if(confirmContent){
-				nextState['confirmContent'] =confirmContent;
-			}
-			if(confirmTarget){
-				nextState['confirmTarget'] =confirmTarget;
-			}
-		}
-		this.setState(nextState);
-	}
-  getDetailUrl =(type,supplierId,text)=>{
-    var urlParams = getUrlParams();
-    var moduleId = urlParams['moduleId']?urlParams['moduleId']:'';
-    var systemId = urlParams['systemId']?urlParams['systemId']:'';
-    var detailUrl ='';
-    if(type=='my'){
-      detailUrl ='/suppliermanage/mysupplierdetail/';
-    }else if(type=='theHighSeas'){
-      detailUrl ='/suppliermanage/inseasupplierdetail/';
-    }else if(type=='underling'){
-      detailUrl ='/suppliermanage/underlingsupplierdetail/';
+  openConfirmModal = (param) => {
+    var nextState = { confirmVisible: true };
+    if (param) {
+      var { confirmContent, confirmTarget } = param;
+      if (confirmContent) {
+        nextState['confirmContent'] = confirmContent;
+      }
+      if (confirmTarget) {
+        nextState['confirmTarget'] = confirmTarget;
+      }
     }
-    return detailUrl==''?text:<a href={detailUrl+'?systemId='+systemId+'&moduleId='+moduleId+'&supplierId='+supplierId}>{text}</a>;      
+    this.setState(nextState);
+  }
+  getDetailUrl = (type, supplierId, text) => {
+    var urlParams = getUrlParams();
+    var moduleId = urlParams['moduleId'] ? urlParams['moduleId'] : '';
+    var systemId = urlParams['systemId'] ? urlParams['systemId'] : '';
+    var detailUrl = '';
+    if (type == 'my') {
+      detailUrl = '/suppliermanage/mysupplierdetail/';
+    } else if (type == 'theHighSeas') {
+      detailUrl = '/suppliermanage/inseasupplierdetail/';
+    } else if (type == 'underling') {
+      detailUrl = '/suppliermanage/underlingsupplierdetail/';
+    }
+    return detailUrl == '' ? text : <a href={detailUrl + '?systemId=' + systemId + '&moduleId=' + moduleId + '&supplierId=' + supplierId}>{text}</a>;
+  }
+  handleClickMoveToSea = () => {
+    if (this.props.mainTableData.selectedList.length === 0) {
+      message.warning('请选择要移入公海的供应商');
+      return;
+    }
+    this.openConfirmModal({
+      confirmTarget: { action: 'mutiMoveToHighSeas' },
+      confirmContent: '是否将选中的供应商移入到公海?'
+    })
   }
   render() {
 
@@ -189,19 +199,19 @@ class MainTable extends React.Component {
       dataIndex: 'companyName',
       key: 'companyName',
       render: (text, record) => {
-        return this.getDetailUrl(record.type,record.supplierId,text)
+        return this.getDetailUrl(record.type, record.supplierId, text)
       }
     }, {
       title: '来源',
       dataIndex: 'source',
       key: 'source'
     }
-    // , {
-    //   title: '级别',
-    //   dataIndex: 'clueLevel',
-    //   key: 'clueLevel'
-    // }
-    , {
+      // , {
+      //   title: '级别',
+      //   dataIndex: 'clueLevel',
+      //   key: 'clueLevel'
+      // }
+      , {
       title: '企业性质',
       dataIndex: 'enterpriseType',
       key: 'enterpriseType'
@@ -216,17 +226,17 @@ class MainTable extends React.Component {
     }, {
       title: '联系人信息',
       dataIndex: 'contacts',
-      key:'contacts',
+      key: 'contacts',
       render: (text, record) => (
         <div>
           <div>{record.fullname}</div>
           <div>{record.mobile}</div>
         </div>
       )
-    },{
+    }, {
       title: '创建时间',
       dataIndex: 'createTime2',
-      key:'createTime2'
+      key: 'createTime2'
     }, {
       title: '负责时间',
       dataIndex: 'responsibleTime',
@@ -246,7 +256,7 @@ class MainTable extends React.Component {
     return (
       <div className='main-table'>
         <div className="tabel-extend-option"><span onClick={this.handleRefresh} className='refresh'>刷新列表</span>
-          <span onClick={()=>this.openConfirmModal({confirmTarget: {action:'mutiMoveToHighSeas'},confirmContent:'是否将选中的供应商移入到公海?'})}>移入公海</span>
+          <span onClick={this.handleClickMoveToSea}>移入公海</span>
           <span onClick={this.handleOpenChoose}>分配负责人</span>
           <span onClick={this.handleOpenCooperationModal}>修改合作关系</span>
         </div>

@@ -272,7 +272,21 @@ class SubmitFrom extends React.Component {
                         if (code == 1) {
                             message.success(`${response.data.msg}`);
                             window.opener&&window.opener.location.reload()
-                            setTimeout(()=>{location.href=document.referrer;},1000)
+                            if(document.referrer==''){
+                                var type = response.data.data.type;
+                                var moduleId = urlParams['moduleId']?urlParams['moduleId']:'';
+                                var systemId = urlParams['systemId']?urlParams['systemId']:'';
+                                if(type=='my'){
+                                    detailUrl ='/suppliermanage/myClueDetail/';
+                                }else if(type=='theHighSeas'){
+                                    detailUrl ='/suppliermanage/publicClueDetail/';
+                                }else if(type=='underling'){
+                                    detailUrl ='/suppliermanage/underlingClueDetail/';
+                                }
+                                setTimeout(()=>{location.href=detailUrl+'?systemId='+systemId+'&moduleId='+moduleId+'&supplierId='+supplierId;},1000)
+                            }else{
+                                setTimeout(()=>{location.href=document.referrer;},1000)
+                            }
                         } else {
                             message.error(`${response.data.msg}`);
                         }
@@ -380,10 +394,8 @@ class SubmitFrom extends React.Component {
         if(!value || !/^\d{6}(18|19|20)?\d{2}(0[1-9]|1[12])(0[1-9]|[12]\d|3[01])\d{3}(\d|X)$/i.test(value)){
             tip = "身份证号格式错误";
             pass = false;
-        }
-
-       else if(!city[value.substr(0,2)]){
-            tip = "地址编码错误";
+        }else if(!city[value.substr(0,2)]){
+            tip = "身份证号地址编码错误";
             pass = false;
         }
         else{
@@ -406,15 +418,19 @@ class SubmitFrom extends React.Component {
                 }
                 var last = parity[sum % 11];
                 if(parity[sum % 11] != value[17]){
-                    tip = "校验位错误";
+                    tip = "身份证号校验位错误";
                     pass =false;
                 }
             }
         }
-        if(!pass) {
-            callback(tip)
-        } else {
+        if(value==''){
             callback()
+        }else{
+            if(!pass) {
+                callback(tip)
+            } else {
+                callback()
+            }
         }
     }
 

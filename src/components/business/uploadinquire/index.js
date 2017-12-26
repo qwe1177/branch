@@ -200,6 +200,19 @@ export default class BrandSelector extends React.Component {
     radioonChange = (e) => {
         this.setState({ reaiomoren: e.target.value,checked:e.target.value});
     }
+    redtablelist=()=>{
+        var { query, pagination, checkedList } = this.state;
+        var params = { ...query, pageNo: pagination.current, pageSize: pagination.pageSize };
+        axios.get(connect_srm + '/clue/getCompanyList.do', { params: params }).then((res) => {
+            var data = res.data.data.resultList;
+            var pageSize = parseInt(res.data.data.pageSize);
+            this.setState({ query: query, dataSource: data, pagination: { ...pagination, pageSize: pageSize, total: res.data.data.rowCount }, isFetching: false });
+        }).catch((e) => {
+            this.setState({ isFetching: false });
+            console.log('data error');
+        });
+        
+    }
     render() {
         var { dataSource, checkedList, visible, pagination, isFetching, checked} = this.state;
         var { addOrRemoveCheckList } = this.state;
@@ -220,9 +233,8 @@ export default class BrandSelector extends React.Component {
             <Modal title='选择供应商' visible={visible} onOk={this.handleOk} onCancel={this.handleCancel}>
                 <WrappedQueryFrom onQuery={this.onQuery} query={this.state.query} />
                 <div className="tctit">
-                    <span><a>刷新列表</a></span>
-                    <span><a>添加企业</a></span>
-                    <span><a>新增联系人</a></span>
+                    <span><a href="javascript:;" onClick={this.redtablelist}>刷新列表</a></span>
+                    <span><a href='http://srm.csc86.com/newClue/?systemId=fe5a16a4f59fcf086d89173b54b5e8c3&moduleId=cc266cfe88bd704831bdac5ca11c5672'>添加企业</a></span>
                 </div>
                 <Table bordered rowSelection={rowSelection} className='person-selector-tablewrap' columns={columns} dataSource={dataSource}
                     rowKey={record => record.supplierId}  //数据中已key为唯一标识

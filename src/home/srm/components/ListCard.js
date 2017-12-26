@@ -60,8 +60,11 @@ export default class ListCard extends React.Component {
     const { listData, pagination, isFetching } = this.state;
     return (
       <div className='list-card-wrap'>
-        <div className="card-title">待办任务-α<span className='number-wrap'>(<span className='card-title-number'>22</span>)</span> <a href='#' className='more-link'>more<Icon type="double-right" /></a>  </div>
-        <Spin spinning={this.state.isFetching}>
+        <div className="card-title">待办任务<span className='number-wrap'>(<span className='card-title-number'>22</span>)</span> <a href='#' className='more-link'>more<Icon type="double-right" /></a>  </div>
+        <div style={{padding:'0 12px',height:'336px'}}>
+          后续功能建设中...
+        </div>
+        {/* <Spin spinning={this.state.isFetching}>
           <div className='alignment-wrap'>
 
             {listData.map((o)=>{
@@ -80,7 +83,7 @@ export default class ListCard extends React.Component {
           <Pagination defaultCurrent={1} total={50} pageSize={4} onChange={this.handleTableChange} />
         </div>
           </div>
-        </Spin>
+        </Spin> */}
         
       </div>
     );

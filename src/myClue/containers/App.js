@@ -34,7 +34,7 @@ const RadioButton = Radio.Button
 const RadioGroup = Radio.Group
 import axios from '../../util/axios'
 import * as config  from '../../util/connectConfig'
-import {getLoginAccount, getLoginInfo,getUrlParams} from '../../util/baseTool';
+import {getLoginAccount, getLoginInfo, getUrlParams} from '../../util/baseTool';
 const RangePicker = DatePicker.RangePicker;
 const CheckboxGroup = Checkbox.Group;
 
@@ -52,7 +52,7 @@ class UserForm extends Component {
                 const urlParams = getUrlParams();
                 const systemId = urlParams['systemId'] ? urlParams['systemId'] : '';
                 const moduleId = urlParams['moduleId'] ? urlParams['moduleId'] : '';
-                const url=`/myClueDetail/?supplierId=${record.supplierId}&systemId=${systemId}&moduleId=${moduleId}`
+                const url = `/myClueDetail/?supplierId=${record.supplierId}&systemId=${systemId}&moduleId=${moduleId}`
                 return (<a target="_blank" href={url}>{text}</a>)
             }
         }, {
@@ -251,6 +251,8 @@ class UserForm extends Component {
                             newobj['endTime'] = arr[1] ? arr[1] : ''
                         } else if (i == 'other') {
                             newobj[i] = values[i].join(',')
+                        } else if (i == 'compNameOrAddressOrMobile') {
+                            newobj[i] = values[i].key
                         } else {
                             newobj[i] = values[i]
                         }
@@ -361,6 +363,8 @@ class UserForm extends Component {
             onChange: this.onSelectChange
         };
 
+        const compNameOrAddressOrMobilelable = this.props.form.getFieldValue('compNameOrAddressOrMobile') ? this.props.form.getFieldValue('compNameOrAddressOrMobile').label : undefined;
+
         return (
             <div className="newClue">
                 <h2>我的线索</h2>
@@ -381,9 +385,9 @@ class UserForm extends Component {
 
                                                 {getFieldDecorator('compNameOrAddressOrMobile', {
                                                     rules: [{required: false, message: '请选择名称'}],
-                                                    initialValue: 'companyName'
+                                                    initialValue: {key: 'companyName'}
                                                 })(
-                                                    <Select placeholder="请选择名称">
+                                                    <Select labelInValue placeholder="请选择名称">
                                                         <Option value="companyName">企业名称</Option>
                                                         <Option value="address">企业地址</Option>
                                                         <Option value="mobile">手机</Option>
@@ -399,9 +403,13 @@ class UserForm extends Component {
                                             >
 
                                                 {getFieldDecorator('compNameOrAddressOrMobileValue', {
-                                                    rules: [{required: false, message: '请输入'}],
+                                                    rules: [{
+                                                        required: false,
+                                                        message: `请输入${compNameOrAddressOrMobilelable}`
+                                                    }],
                                                 })(
-                                                    <Input placeholder="" maxLength="100"/>
+                                                    <Input placeholder={`请输入${compNameOrAddressOrMobilelable}`}
+                                                           maxLength="100"/>
                                                 )}
 
 
@@ -562,22 +570,28 @@ class UserForm extends Component {
                                         </Col>
                                         <Col span={12}>
                                             <div style={{textAlign: 'right'}}>
-                                                <FormItem >
+                                                <FormItem>
                                                     <Button
-                                                        type="primary" style={{padding: '5px 30px'}}
+                                                        type="primary" style={{
+                                                        height: '35px',
+                                                        lineHeight: '35px',
+                                                        padding: '0px 30px'
+                                                    }}
                                                         htmlType="submit"
                                                         disabled={this.hasErrors(getFieldsError())}
                                                     >
                                                         查询
                                                     </Button>
                                                 </FormItem>
-                                                <FormItem style={{marginLeft: '10px'}}>
+                                                <FormItem style={{marginLeft: '20px'}}>
                                                     <Button
                                                         type="primary"
                                                         style={{
-                                                            backgroundColor: '#fe7676',
-                                                            borderColor: '#fe7676',
-                                                            padding: '5px 30px'
+                                                            height: '35px', lineHeight: '35px',
+                                                            backgroundColor: '#f5f5f5',
+                                                            borderColor: '#e6e6e6',
+                                                            padding: '0px 30px',
+                                                            color: '#a8a8a8'
                                                         }}
                                                         htmlType="submit"
                                                         onClick={this.handleReset}
@@ -595,19 +609,21 @@ class UserForm extends Component {
 
                             <div className="newCluenk">
                                 <div className="title"><Button
-                                    type="primary" style={{padding: '5px 30px', marginRight: '10px'}}
+                                    type="primary" style={{padding: '5px 15px', marginRight: '5px', border: 'none'}}
                                     ghost size="large" onClick={this.handleSubmit}
                                 >
                                     刷新列表
                                 </Button>
                                     <Button
-                                        type="primary" style={{padding: '5px 30px', marginRight: '10px'}}
+                                        type="primary"
+                                        style={{padding: '5px 15px', marginRight: '5px', border: 'none', color: '#666'}}
                                         ghost size="large" onClick={this.Modalshow2}
                                     >
                                         移入公海
                                     </Button>
                                     <Button
-                                        type="primary" style={{padding: '5px 30px', marginRight: '10px'}}
+                                        type="primary"
+                                        style={{padding: '5px 15px', marginRight: '5px', border: 'none', color: '#666'}}
                                         ghost size="large" onClick={this.Modalshow2}
                                     >
                                         分配负责人

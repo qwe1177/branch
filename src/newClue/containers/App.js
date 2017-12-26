@@ -244,6 +244,7 @@ class UserForm extends Component {
         brandSelectorVisible: false,
         categorySelectorVisible: false,
         Selectortype: 'multiple',
+        formloading: true,
     }
 
 
@@ -263,7 +264,7 @@ class UserForm extends Component {
         if (!isLt4M) {
             message.error('图片大小超过4M！');
         }
-        return (isimgtype && isLt4M)?Promise.resolve():Promise.reject();
+        return (isimgtype && isLt4M) ? Promise.resolve() : Promise.reject();
     }
 
     onRemovehanddle = (name)=>(file)=> {
@@ -274,10 +275,22 @@ class UserForm extends Component {
     }
 
 
-    telphonevalid = (rule, value, callback)=> {
-        const reg = /^1\d{10}$/;
-        if (value && !reg.test(value)) {
-            callback('请输入正确的手机号码')
+    contactsvalid = (rule, value, callback)=> {
+        const field = rule.field
+        if (field.match(/^mobile/g)) {
+            const reg = /^1\d{10}$/;
+            if (value && !reg.test(value)) {
+                callback('请输入正确的手机号码')
+            } else {
+                callback()
+            }
+        } else if (field.match(/^fullname/g)) {
+            const reg2 = /^.{6,}$/;
+            if (value && reg2.test(value)) {
+                callback('姓名不能超过5个字符')
+            } else {
+                callback()
+            }
         } else {
             callback()
         }
@@ -308,7 +321,7 @@ class UserForm extends Component {
         }}>
             {this.props.form.getFieldDecorator(name, {
                 rules: [{required: required, message: message, type: type}, {
-                    validator: name.match(/^mobile/g) ? this.telphonevalid : null,
+                    validator: this.contactsvalid,
                 }], initialValue: initialValue,
                 onChange: name.match(/^remark/g) ? this.companyIntroductionHandle(name, 30) : null,
             })(
@@ -532,251 +545,6 @@ class UserForm extends Component {
 
 
     componentDidMount() {
-        this.setState({formloading: true})
-        const locationarr = window.location.href.split('?');
-        const supplierId = locationarr.length > 1 ? qs.parse(locationarr[1])['supplierId'] : '';
-        axios.get(`${config.connect_srm}/clue/viewSupplierClueInfo.do?`, {
-            params: {
-                supplierId: supplierId
-            }
-        }).then(response => {
-            if (response.status == 200) {
-                if (response.data.code == 1) {
-
-                    const {
-                        companyName, varietyId, varietyName, cscAccount, buy5jAccount, source, clueLevel, isAddSku, enterpriseType,
-                        website, goods, shopsite, mainBrand, mainBrandId, mainBusiness, orOut, remarkbase, address, creditNumber,
-                        organization, corporation, corporationGender, idcard, oem, manage, model, regmoney, employees, turnover,
-                        introduce, deadline, idcards, license, qualification, authorizationBus, undertaking, officespace, workshop,
-                        brankList, contactsList, harea, province, city, hvenue, hfloor, hdistrict, submitOk, supplierId, provincebase,
-                        citybase, countybase, townbase
-                    } = response.data.data
-                    var newdeadline = deadline ? deadline.split(',') : ''
-                    newdeadline = newdeadline.length ? [moment(newdeadline[0]), moment(newdeadline[1])] : []
-
-                    var newbrankList = brankList.length?brankList.map(v=> {
-
-                        return ({
-                            key: v.key,
-                            No: v.key,
-                            brankName: {
-                                name: `brankName${v.key}`,
-                                initialValue: [v.brankName, v.brankId],
-                                message: '请输入品牌名称',
-                                placeholder: '品牌名称',
-                            },
-                            brankType: {
-                                name: `brankType${v.key}`,
-                                initialValue: v.brankType,
-                                message: '请输入品牌类型',
-                                placeholder: '品牌类型',
-                            },
-                            authorization: {
-                                name: `authorization${v.key}`,
-                                initialValue: this.fileListhanddle(v.authorization),
-                                message: '请上传授权书',
-                                placeholder: '授权书',
-
-                            },
-                            registration: {
-                                name: `registration${v.key}`,
-                                initialValue: this.fileListhanddle(v.registration),
-                                message: '请输入注册证',
-                                placeholder: '注册证',
-
-                            },
-                            certification: {
-                                name: `certification${v.key}`,
-                                initialValue: this.fileListhanddle(v.certification),
-                                message: '请输入认证报告',
-                                placeholder: '认证报告',
-
-                            },
-                            otherAptitude: {
-                                name: `otherAptitude${v.key}`,
-                                initialValue: this.fileListhanddle(v.otherAptitude),
-                                message: '请输入其他资料',
-                                placeholder: '其他资料',
-                                num: 3,
-                            },
-                            Operation: '删除',
-                        })
-                    }):[{
-                        key: '1',
-                        No: '1',
-                        brankName: {name: 'brankName1', message: '请输入品牌名称', placeholder: '品牌名称',},
-                        brankType: {name: 'brankType1', message: '请输入品牌类型', placeholder: '品牌类型',},
-                        authorization: {name: 'authorization1', message: '请上传授权书', placeholder: '授权书',},
-                        registration: {name: 'registration1', message: '请输入注册证', placeholder: '注册证',},
-                        certification: {name: 'certification1', message: '请输入认证报告', placeholder: '认证报告',},
-                        otherAptitude: {name: 'otherAptitude1', message: '请输入其他资料', placeholder: '其他资料', num: 3,},
-                        Operation: '删除',
-                    }]
-
-                    this.props.baseInfoForm({supplierId: supplierId})
-                    var newcontactsList = contactsList.map(v=> {
-
-                        return ({
-                            key: v.key,
-                            fullname: {
-                                name: `fullname${v.key}`,
-                                initialValue: v.fullname,
-                                message: '请输入姓名',
-                                placeholder: '姓名',
-                                required: true,
-                            },
-                            gender: {
-                                name: `gender${v.key}`,
-                                initialValue: v.gender,
-                                message: '请输入性别',
-                                placeholder: '性别',
-                            },
-                            mobile: {
-                                name: `mobile${v.key}`,
-                                initialValue: v.mobile,
-                                message: '请输入手机',
-                                placeholder: '手机',
-                                required: true,
-                            },
-                            telephone: {
-                                name: `telephone${v.key}`,
-                                initialValue: v.telephone,
-                                message: '请输入固话',
-                                placeholder: '固话',
-                            },
-                            position: {
-                                name: `position${v.key}`,
-                                initialValue: v.position,
-                                message: '请输入职位',
-                                placeholder: '职位',
-                            },
-                            birthday: {
-                                name: `birthday${v.key}`,
-                                initialValue: v.birthday ? moment(v.birthday) : null,
-                                message: '请输入生日',
-                                placeholder: '生日',
-                            },
-                            email: {
-                                name: `email${v.key}`,
-                                initialValue: v.email,
-                                message: '请输入邮箱',
-                                placeholder: '邮箱',
-                                required: false,
-                                type: 'email',
-                            },
-                            fax: {name: `fax${v.key}`, initialValue: v.fax, message: '请输入传真', placeholder: '传真',},
-                            wangwang: {
-                                name: `wangwang${v.key}`,
-                                initialValue: v.wangwang,
-                                message: '请输入旺旺',
-                                placeholder: '旺旺',
-                            },
-                            qq: {name: `qq${v.key}`, initialValue: v.qq, message: '请输入QQ', placeholder: 'QQ',},
-                            weixin: {
-                                name: `weixin${v.key}`,
-                                initialValue: v.weixin,
-                                message: '请输入微信',
-                                placeholder: '微信',
-                            },
-                            remark: {
-                                name: `remark${v.key}`,
-                                initialValue: v.remark,
-                                message: '请输入备注',
-                                placeholder: '备注',
-                            },
-                            del: '删除',
-                        })
-                    })
-
-                    if (submitOk) {
-                        this.isajaxpost = false
-                    }
-                    this.props.tablemodelaction({data: newcontactsList, count: newcontactsList.length + 1,})
-
-                    this.props.tablemodelaction2({data2: newbrankList, count: newbrankList.length + 1,})
-
-                    this.setState({
-                        numb1: {len: mainBusiness.length, color: ''},
-                        numb2: {len: remarkbase.length, color: ''},
-                        numb3: {len: introduce.length, color: ''}
-                    })
-
-                    var newidcards = this.fileListhanddle(idcards)
-                    var newlicense = this.fileListhanddle(license)
-                    var newqualification = this.fileListhanddle(qualification)
-                    var newauthorizationBus = this.fileListhanddle(authorizationBus)
-                    var newundertaking = this.fileListhanddle(undertaking)
-                    var newofficespace = this.fileListhanddle(officespace)
-                    var newworkshop = this.fileListhanddle(workshop)
-
-                    var allcitys = {}
-                    var allcitysarr = [['Harea', harea], ['Hvenue', hvenue], ['Hfloor', hfloor], ['Hdistrict', hdistrict], ['provincebase', provincebase], ['citybase', citybase], ['countybase', countybase], ['townbase', townbase]]
-
-                    var allcitysarrlen = allcitysarr.length
-                    for (let i = 0; i < allcitysarrlen; i++) {
-
-                        if (allcitysarr[i][1]) {
-                            allcitys[allcitysarr[i][0]] = {
-                                name: allcitysarr[i][0],
-                                value: {key: allcitysarr[i][1], label: allcitysarr[i][1]}
-                            }
-                        }
-                    }
-
-                    this.props.baseInfoForm(allcitys)
-
-                    this.props.form.setFieldsValue({
-                        companyName,
-                        varietyId,
-                        varietyName,
-                        cscAccount,
-                        buy5jAccount,
-                        source:source||undefined,
-                        clueLevel:clueLevel||undefined,
-                        isAddSku,
-                        enterpriseType:enterpriseType||undefined,
-                        website,
-                        goods,
-                        shopsite,
-                        mainBrand,
-                        mainBrandId,
-                        mainBusiness,
-                        orOut,
-                        remarkbase,
-                        address,
-                        creditNumber,
-                        organization,
-                        corporation,
-                        corporationGender,
-                        idcard,
-                        oem,
-                        manage:manage||undefined,
-                        model:model||undefined,
-                        regmoney,
-                        employees:employees||undefined,
-                        turnover:turnover||undefined,
-                        introduce,
-                        deadline: newdeadline,
-                        idcards: newidcards,
-                        license: newlicense,
-                        qualification: newqualification,
-                        authorizationBus: newauthorizationBus,
-                        undertaking: newundertaking,
-                        officespace: newofficespace,
-                        workshop: newworkshop,
-                        province: province?{key: province}:undefined,
-                        city: city?{key: city}:undefined,
-                    })
-                } else {
-                }
-            }
-            this.setState({formloading: false})
-        }).catch(e=> {
-            this.setState({formloading: false});
-        })
-
-
-        //this.props.fetchPosts('categoryChild')
         this.props.fetchzonesPosts({
             url: `${config.connect_srm}/clue/getZone.do`,
             name: 'id',
@@ -789,6 +557,252 @@ class UserForm extends Component {
             value: '',
             returnName: 'Hareas'
         })
+        const locationarr = window.location.href.split('?');
+        const supplierId = locationarr.length > 1 ? qs.parse(locationarr[1])['supplierId'] ? qs.parse(locationarr[1])['supplierId'] : '' : '';
+        if (supplierId) {
+            axios.get(`${config.connect_srm}/clue/viewSupplierClueInfo.do?`, {
+                params: {
+                    supplierId: supplierId
+                }
+            }).then(response => {
+                if (response.status == 200) {
+                    if (response.data.code == 1) {
+
+                        const {
+                            companyName, varietyId, varietyName, cscAccount, buy5jAccount, source, clueLevel, isAddSku, enterpriseType,
+                            website, goods, shopsite, mainBrand, mainBrandId, mainBusiness, orOut, remarkbase, address, creditNumber,
+                            organization, corporation, corporationGender, idcard, oem, manage, model, regmoney, employees, turnover,
+                            introduce, deadline, idcards, license, qualification, authorizationBus, undertaking, officespace, workshop,
+                            brankList, contactsList, harea, province, city, hvenue, hfloor, hdistrict, submitOk, supplierId, provincebase,
+                            citybase, countybase, townbase
+                        } = response.data.data
+                        var newdeadline = deadline ? deadline.split(',') : ''
+                        newdeadline = newdeadline.length ? [moment(newdeadline[0]), moment(newdeadline[1])] : []
+
+                        var newbrankList = brankList.length ? brankList.map(v=> {
+
+                            return ({
+                                key: v.key,
+                                No: v.key,
+                                brankName: {
+                                    name: `brankName${v.key}`,
+                                    initialValue: [v.brankName, v.brankId],
+                                    message: '请输入品牌名称',
+                                    placeholder: '品牌名称',
+                                },
+                                brankType: {
+                                    name: `brankType${v.key}`,
+                                    initialValue: v.brankType,
+                                    message: '请输入品牌类型',
+                                    placeholder: '品牌类型',
+                                },
+                                authorization: {
+                                    name: `authorization${v.key}`,
+                                    initialValue: this.fileListhanddle(v.authorization),
+                                    message: '请上传授权书',
+                                    placeholder: '授权书',
+
+                                },
+                                registration: {
+                                    name: `registration${v.key}`,
+                                    initialValue: this.fileListhanddle(v.registration),
+                                    message: '请输入注册证',
+                                    placeholder: '注册证',
+
+                                },
+                                certification: {
+                                    name: `certification${v.key}`,
+                                    initialValue: this.fileListhanddle(v.certification),
+                                    message: '请输入认证报告',
+                                    placeholder: '认证报告',
+
+                                },
+                                otherAptitude: {
+                                    name: `otherAptitude${v.key}`,
+                                    initialValue: this.fileListhanddle(v.otherAptitude),
+                                    message: '请输入其他资料',
+                                    placeholder: '其他资料',
+                                    num: 3,
+                                },
+                                Operation: '删除',
+                            })
+                        }) : [{
+                            key: '1',
+                            No: '1',
+                            brankName: {name: 'brankName1', message: '请输入品牌名称', placeholder: '品牌名称',},
+                            brankType: {name: 'brankType1', message: '请输入品牌类型', placeholder: '品牌类型',},
+                            authorization: {name: 'authorization1', message: '请上传授权书', placeholder: '授权书',},
+                            registration: {name: 'registration1', message: '请输入注册证', placeholder: '注册证',},
+                            certification: {name: 'certification1', message: '请输入认证报告', placeholder: '认证报告',},
+                            otherAptitude: {name: 'otherAptitude1', message: '请输入其他资料', placeholder: '其他资料', num: 3,},
+                            Operation: '删除',
+                        }]
+
+                        this.props.baseInfoForm({supplierId: supplierId})
+                        var newcontactsList = contactsList.map(v=> {
+
+                            return ({
+                                key: v.key,
+                                fullname: {
+                                    name: `fullname${v.key}`,
+                                    initialValue: v.fullname,
+                                    message: '请输入姓名',
+                                    placeholder: '姓名',
+                                    required: true,
+                                },
+                                gender: {
+                                    name: `gender${v.key}`,
+                                    initialValue: v.gender,
+                                    message: '请输入性别',
+                                    placeholder: '性别',
+                                },
+                                mobile: {
+                                    name: `mobile${v.key}`,
+                                    initialValue: v.mobile,
+                                    message: '请输入手机',
+                                    placeholder: '手机',
+                                    required: true,
+                                },
+                                telephone: {
+                                    name: `telephone${v.key}`,
+                                    initialValue: v.telephone,
+                                    message: '请输入固话',
+                                    placeholder: '固话',
+                                },
+                                position: {
+                                    name: `position${v.key}`,
+                                    initialValue: v.position,
+                                    message: '请输入职位',
+                                    placeholder: '职位',
+                                },
+                                birthday: {
+                                    name: `birthday${v.key}`,
+                                    initialValue: v.birthday ? moment(v.birthday) : null,
+                                    message: '请输入生日',
+                                    placeholder: '生日',
+                                },
+                                email: {
+                                    name: `email${v.key}`,
+                                    initialValue: v.email,
+                                    message: '请输入邮箱',
+                                    placeholder: '邮箱',
+                                    required: false,
+                                    type: 'email',
+                                },
+                                fax: {name: `fax${v.key}`, initialValue: v.fax, message: '请输入传真', placeholder: '传真',},
+                                wangwang: {
+                                    name: `wangwang${v.key}`,
+                                    initialValue: v.wangwang,
+                                    message: '请输入旺旺',
+                                    placeholder: '旺旺',
+                                },
+                                qq: {name: `qq${v.key}`, initialValue: v.qq, message: '请输入QQ', placeholder: 'QQ',},
+                                weixin: {
+                                    name: `weixin${v.key}`,
+                                    initialValue: v.weixin,
+                                    message: '请输入微信',
+                                    placeholder: '微信',
+                                },
+                                remark: {
+                                    name: `remark${v.key}`,
+                                    initialValue: v.remark,
+                                    message: '请输入备注',
+                                    placeholder: '备注',
+                                },
+                                del: '删除',
+                            })
+                        })
+
+                        if (submitOk) {
+                            this.isajaxpost = false
+                        }
+                        this.props.tablemodelaction({data: newcontactsList, count: newcontactsList.length + 1,})
+
+                        this.props.tablemodelaction2({data2: newbrankList, count: newbrankList.length + 1,})
+
+                        this.setState({
+                            numb1: {len: mainBusiness.length, color: ''},
+                            numb2: {len: remarkbase.length, color: ''},
+                            numb3: {len: introduce.length, color: ''}
+                        })
+
+                        var newidcards = this.fileListhanddle(idcards)
+                        var newlicense = this.fileListhanddle(license)
+                        var newqualification = this.fileListhanddle(qualification)
+                        var newauthorizationBus = this.fileListhanddle(authorizationBus)
+                        var newundertaking = this.fileListhanddle(undertaking)
+                        var newofficespace = this.fileListhanddle(officespace)
+                        var newworkshop = this.fileListhanddle(workshop)
+
+                        var allcitys = {}
+                        var allcitysarr = [['Harea', harea], ['Hvenue', hvenue], ['Hfloor', hfloor], ['Hdistrict', hdistrict], ['provincebase', provincebase], ['citybase', citybase], ['countybase', countybase], ['townbase', townbase]]
+
+                        var allcitysarrlen = allcitysarr.length
+                        for (let i = 0; i < allcitysarrlen; i++) {
+
+                            if (allcitysarr[i][1]) {
+                                allcitys[allcitysarr[i][0]] = {
+                                    name: allcitysarr[i][0],
+                                    value: {key: allcitysarr[i][1], label: allcitysarr[i][1]}
+                                }
+                            }
+                        }
+
+                        this.props.baseInfoForm(allcitys)
+
+                        this.props.form.setFieldsValue({
+                            companyName,
+                            varietyId,
+                            varietyName,
+                            cscAccount,
+                            buy5jAccount,
+                            source: source || undefined,
+                            clueLevel: clueLevel || undefined,
+                            isAddSku,
+                            enterpriseType: enterpriseType || undefined,
+                            website,
+                            goods,
+                            shopsite,
+                            mainBrand,
+                            mainBrandId,
+                            mainBusiness,
+                            orOut,
+                            remarkbase,
+                            address,
+                            creditNumber,
+                            organization,
+                            corporation,
+                            corporationGender,
+                            idcard,
+                            oem,
+                            manage: manage || undefined,
+                            model: model || undefined,
+                            regmoney,
+                            employees: employees || undefined,
+                            turnover: turnover || undefined,
+                            introduce,
+                            deadline: newdeadline,
+                            idcards: newidcards,
+                            license: newlicense,
+                            qualification: newqualification,
+                            authorizationBus: newauthorizationBus,
+                            undertaking: newundertaking,
+                            officespace: newofficespace,
+                            workshop: newworkshop,
+                            province: province ? {key: province} : undefined,
+                            city: city ? {key: city} : undefined,
+                        })
+                    } else {
+                    }
+                }
+                this.setState({formloading: false})
+            }).catch(e=> {
+                this.setState({formloading: false});
+            })
+        } else {
+            this.setState({formloading: false})
+        }
+
     }
 
 
@@ -943,7 +957,7 @@ class UserForm extends Component {
     }
 
     CompanyNamehandle = (rule, value, callback) => {
-        const userNameres1 = /^[^\s]+$/g, userNameres2 = /.{20,}/g;
+        const userNameres1 = /^[^\s]+$/g, userNameres2 = /.{21,}/g;
         if (!userNameres1.test(value)) {
             this.ajaxpost = false;
             callback('请输入企业名称')
@@ -1052,7 +1066,7 @@ class UserForm extends Component {
         onPreview: this.handlePreview,
         multiple: true,
         accept: 'image/*',
-        beforeUpload:this.beforeUpload,
+        beforeUpload: this.beforeUpload,
         action: `${config.connect_img}/upload?type=approveLicensePic`,
     }
 
@@ -1518,7 +1532,7 @@ class UserForm extends Component {
                                                     {getFieldDecorator('goods', {
                                                         rules: [{required: false, message: '请填写优势产品'}],
                                                     })(
-                                                        <Input placeholder="请填写优势产品" maxLength="100"/>
+                                                        <Input placeholder="请填写优势产品" maxLength="30"/>
                                                     )}
                                                 </FormItem>
                                             </Col>
@@ -1812,7 +1826,7 @@ class UserForm extends Component {
 
                                                     })(
                                                         <Upload {...this.uploadsprops2}
-                                                                >
+                                                        >
                                                             {this.uploadicon('idcards', 2)}
                                                         </Upload>
                                                     )}
@@ -1832,7 +1846,7 @@ class UserForm extends Component {
                                                         getValueFromEvent: this.normFile,
                                                     })(
                                                         <Upload {...this.uploadsprops2}
-                                                                >
+                                                        >
                                                             {this.uploadicon('license', 1)}
                                                         </Upload>
                                                     )}
@@ -1854,7 +1868,7 @@ class UserForm extends Component {
                                                         getValueFromEvent: this.normFile,
                                                     })(
                                                         <Upload {...this.uploadsprops2}
-                                                                >
+                                                        >
                                                             {this.uploadicon('qualification', 1)}
                                                         </Upload>
                                                     )}
@@ -1874,7 +1888,7 @@ class UserForm extends Component {
                                                         getValueFromEvent: this.normFile,
                                                     })(
                                                         <Upload {...this.uploadsprops2}
-                                                                >
+                                                        >
                                                             {this.uploadicon('authorizationBus', 1)}
                                                         </Upload>
                                                     )}
@@ -1896,7 +1910,7 @@ class UserForm extends Component {
                                                         getValueFromEvent: this.normFile,
                                                     })(
                                                         <Upload {...this.uploadsprops2}
-                                                                >
+                                                        >
                                                             {this.uploadicon('undertaking', 1)}
                                                         </Upload>
                                                     )}
@@ -1916,7 +1930,7 @@ class UserForm extends Component {
 
                                                     })(
                                                         <Upload {...this.uploadsprops2}
-                                                                >
+                                                        >
                                                             {this.uploadicon('officespace', 1)}
                                                         </Upload>
                                                     )}
@@ -2142,7 +2156,12 @@ class UserForm extends Component {
                             <div className="submit">
                                 <Row style={{'padding': '8px 0px'}}>
                                     <FormItem>
-                                        <Button style={{padding: '2px 55px'}}
+                                        <Button style={{
+                                            padding: '0px 50px',
+                                            height: '40px',
+                                            lineHeight: '40px',
+                                            fontSize: '16px'
+                                        }}
                                                 type="primary"
                                                 htmlType="submit"
                                                 disabled={this.hasErrors(getFieldsError())}

@@ -7,7 +7,7 @@ import _ from 'lodash'
 import querystring  from 'querystring';
 import url from 'url';
 
-import { getUrlParams } from '../../util/baseTool';
+import { getUrlParams ,getLoginInfo} from '../../util/baseTool';
 const SubMenu = Menu.SubMenu;
 
 
@@ -204,6 +204,7 @@ class LeftWidget extends React.Component {
     data: PropTypes.array.isRequired, //菜单原始数据必须的
   }
   render() {
+    const crmUrl = 'http://admin.csc86.com/main/system.html?platformId=50fdd217ed620e74f673b7ce724bae5e&token='+getLoginInfo()['token'];
     return (
       <div className="leftwidget">
         <div className="leftlogo">
@@ -211,7 +212,7 @@ class LeftWidget extends React.Component {
           <span className="sp2">CRM</span>
         </div>
         <div className="switch">
-          <div className='system'>奇智SRM系统</div><div className='switch-wrap'><a href='http://crm.csc86.com' className='switch-icon'>CRM</a></div>
+          <div className='system'>奇智SRM系统</div><div className='switch-wrap'><a href={crmUrl} target='_blank' className='switch-icon'>CRM</a></div>
         </div>
         <div>
           <Sider data={this.props.data} />

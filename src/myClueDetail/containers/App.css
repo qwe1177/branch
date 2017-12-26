@@ -131,11 +131,16 @@
 
 
 .default-btns  .btns{
-    max-height: 110px;
+    max-height: 130px;
     overflow: hidden;
 }
-.default-btns  .more{
+
+.botton-wrap  .more{
+    height: 35px; line-height: 35px;
     display: block;
+}
+.botton-wrap  .btns .normal{
+    height: 35px; line-height: 35px;
 }
 
 .all-btns  .more{

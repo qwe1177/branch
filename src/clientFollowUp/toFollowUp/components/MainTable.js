@@ -43,7 +43,7 @@ class MainTable extends React.Component {
       _this.setState({visible:false});
       let {pagination,isFetching} = _this.props.mainTableData;
       let {queryform} =  _this.props.mainQueryData;
-      _this.props.queryTableData({queryform:queryform,pagination:pagination})
+      _this.props.queryTableData({queryform,pagination})
       message.success('移除成功!');
     })
     .catch(function (error) {
@@ -60,7 +60,7 @@ class MainTable extends React.Component {
   }
   handleTableChange = (pagination, filters, sorter) => {  //点击分页控件调用  比如换页或者换pageSize
     let {queryform} =  this.props.mainQueryData;
-    this.props.queryTableData({queryform:queryform,pagination:pagination});
+    this.props.queryTableData({queryform,pagination});
   }
   rowSelection = {  //table中的checkbox调用
     onChange: (selectedRowKeys, selectedRows) => {
@@ -76,7 +76,7 @@ class MainTable extends React.Component {
     let {queryform} =  this.props.mainQueryData;
     if(!isFetching){
       pagination.current = 1;  //刷新重置为查询第1页
-      this.props.queryTableData({queryform:queryform,pagination:pagination});
+      this.props.queryTableData({queryform,pagination});
     }
   }
   getDetailUrl =(followupType,type,supplierId,text)=>{
@@ -103,7 +103,7 @@ class MainTable extends React.Component {
         }
         detailUrl +='?supplierId='+supplierId;
       }
-      return detailUrl.indexOf('?')==0? <span>{text}</span>:<a href={detailUrl}>{text}</a>;
+      return detailUrl.indexOf('?')==0? <span>{text}</span>:<a target="_blank" href={detailUrl}>{text}</a>;
   }
   render() {
     const columns = [{

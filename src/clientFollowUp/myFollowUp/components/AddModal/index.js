@@ -66,12 +66,12 @@ class ModalForm extends React.Component {
 		let {pagination,isFetching,query} = this.props.AddModal;
 		if(!isFetching){
 		  pagination.current = 1;  //刷新重置为查询第1页
-		  this.props.doRequest({query:query,pagination:pagination});
+		  this.props.doRequest({query,pagination});
 		}
 	  }
 	  handlePageChange = (pagination, filters, sorter) => {  //点击分页控件调用  比如换页或者换pageSize
         let {query} = this.props.AddModal
-        this.props.doRequest({query:query,pagination:pagination});
+        this.props.doRequest({query,pagination});
 	  }
 	render() {
 		const {visible,tableData,pagination,isFetching } = this.props.AddModal;

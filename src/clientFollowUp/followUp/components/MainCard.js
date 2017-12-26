@@ -1,10 +1,9 @@
 import axios from 'axios';
 import React from 'react';
 import PropTypes from 'prop-types'
-import { Card,Tag,Row,Col,Button,Icon,Input,message } from 'antd';
+import { Card,Tag,Row,Col,Button,Icon,Input } from 'antd';
 import CommentForm from './CommentForm';
 import { getLoginInfo} from '../../../util/baseTool.js';
-import { connect_srm } from '../../../util/connectConfig';
 import './MainCard.css';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -29,23 +28,9 @@ static propTypes = {
 componentWillMount() {
         // this.props.initSupplierTable();
     }      
-removeOneMess =(id)=>{
-    let _this = this;
-    var token = getLoginInfo()['token']; 
-    axios.get(connect_srm+'/supplier/delSupplierFollowupPostil.do',{
-        params: {
-          id: id ,
-          token
-        } 
-      })
-      .then(function (response) {
-        _this.props.doQueryFollow({query:_this.props.FollowUP.query,pagination:_this.props.FollowUP.pagination});
-        message.success('删除成功!');
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-}
+    handleRemoveOneMess = (followUpId, commentId) => {
+        this.props.onBeforeDelComment({confirmTarget: {action:'removeMess',data:{followUpId, commentId}}});
+    }
 showFrom = (id) =>{
     var list = this.props.FollowUP.list;
     this.props.showOneCommentForm(list,id);
@@ -100,7 +85,7 @@ showFrom = (id) =>{
                                         </Col>
                                         <Col span={4} className='card-option'>
                                             <div>{o.createTime}</div>
-                                            {o.self == 'Y' ? <div className='remove-btn' onClick={() => this.removeOneMess(o.id)}>删除</div> : ''}
+                                            {o.self == 'Y' ? <div className='remove-btn' onClick={() => this.handleRemoveOneMess(data.id, o.id)}>删除</div> : ''}
                                 
                                         </Col>
                                     </Row>

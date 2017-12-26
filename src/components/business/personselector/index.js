@@ -20,6 +20,10 @@ class PersonSelector extends React.Component {
         type:PropTypes.string,  // single 单选 multiple 多选 默认单选
         dataArea:PropTypes.string  // all 所有人  underling 下属  默认下属
     }
+    static defaultProps ={
+        type:'single',
+        dataArea:'underling'
+    }
     constructor(props) {
         super(props);
         this.state = {
@@ -161,32 +165,43 @@ class PersonSelector extends React.Component {
         });
     }
     handleRowClick =(record, index, event)=>{
-        console.log(event.target);
         var className = event.target.getAttribute("class");
         if(className.indexOf('js-checked')==-1 && className.indexOf('js-precheck')==-1){
             return;
         }
-
+        var {userId,realName}=record;
         var {checkedList,dataSource} = this.state;
-
-        const type = this.props.type?this.props.type:'single';
-        if(type=='single'  && checkedList.length==1 && className.indexOf('js-precheck')!=-1){ //单选超过1个之后不能再添加
-            return; 
-        }
-
+        const type = this.props.type;
         var i = checkedList.findIndex((d)=>{
             if(d.userId ==record.userId){
                 return d;
             }
         });
         var isChecked = record.isChecked;
-        if(i==-1){ //不存在
-            checkedList.push({userId:record.userId,realName:record.realName});
+        if(type=='single'){
+            if(i==-1){ //不存在
+                checkedList = [];
+                checkedList.push({userId,realName});
+            }else{
+                checkedList = [];
+            }
+            dataSource.map((o,dIndex)=>{
+                if(dIndex==index){
+                    o.isChecked = !isChecked;
+                }else{
+                    o.isChecked = false;
+                }
+                return o;
+            });
         }else{
-            checkedList.splice(i,1);
+            if(i==-1){ //不存在
+                checkedList.push({userId,realName});
+            }else{
+                checkedList.splice(i,1);
+            }
+            dataSource[index].isChecked = !isChecked;
         }
-        dataSource[index].isChecked = !isChecked;
-        this.setState({checkedList: checkedList, dataSource: dataSource});
+        this.setState({checkedList,dataSource});
     }
     handleClose =(tag)=>{
         var userId = tag.userId;
@@ -234,7 +249,7 @@ class PersonSelector extends React.Component {
 
 
         const WrappedQueryForm = Form.create()(QueryForm);
-        const type = this.props.type?this.props.type:'single';
+        const type = this.props.type;
         
         var title = (this.props.title?this.props.title:'选择负责人') + (type=='single'?'(单选)':'(多选)');
         return (
