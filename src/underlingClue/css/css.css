@@ -1,5 +1,5 @@
 .newClue{/* padding-left:30px ; background: #edf0f5; padding-bottom: 30px*/;  height: 100%}
-.newClue h2{font-size: 16px; font-family: Microsoft yahei; line-height: 50px; color: #000}
+.newClue h2{font-size: 20px; font-family: Microsoft yahei; line-height: 60px; color: #666}
 .newClue .newCluewk{ /*min-width: 1130px; max-width: 1130px;*/ }
 .newClue .newCluenk{ border: 1px solid #e6eaee ; background: #fff; margin-bottom: 20px; }
 .newClue .newCluenk .title{padding-left: 20px;border-bottom:1px solid #e6eaee ; line-height: 50px;font-size: 16px; font-family: Microsoft yahei; color: #333}

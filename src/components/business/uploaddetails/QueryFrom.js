@@ -35,7 +35,7 @@ class QueryFrom extends React.Component {
 		});
 
 		let form = this.props.detailsmodalmodel.data;
-		var d1 = _.pick(form, ['id','quotationId', 'pName', 'brand', 'categoryName', 'specCode', 'unit', 'price', 'taux', 'minQuantity','invoice', 'deliveryTime', 'payWay']);
+		var d1 = _.pick(form, ['id','quotationId', 'pName', 'brand','specParams', 'categoryName', 'specCode', 'unit', 'price', 'taux', 'minQuantity','invoice', 'deliveryTime', 'payWay']);
 		d1 = _.omitBy(d1, _.isUndefined);
 		this.props.form.setFieldsValue(d1);
 
@@ -51,7 +51,9 @@ class QueryFrom extends React.Component {
 	}
 	selectcatName = () => {
 		const { catNamelist } = this.state;
+
 		const categorysarr = catNamelist.map((v) => (
+			
 			<Option key={v['cid']}>{v['c_name']}</Option>)
 		)
 		return categorysarr;
@@ -61,6 +63,7 @@ class QueryFrom extends React.Component {
 	detailsupdateSubmit=(e)=>{
 		e.preventDefault();
 		this.props.form.validateFields((err, values) => {
+
 			var params = { quotationId:values.quotationId,skuId:values.id,pName:values.pName,brand:values.brand,categoryName:values.categoryName,specCode:values.specCode,specParams:values.specParams,unit:values.unit,minQuantity:values.minQuantity,price:values.price,taux:values.taux,invoice:values.invoice,deliveryTime:values.deliveryTime,payWay:values.payWay};
 			axios.get(connect_srm + '/quotation/editQuotationSkuById.do', {params: params }).then((res) => {
 				if(res.data.code=="0")
@@ -159,7 +162,7 @@ class QueryFrom extends React.Component {
 							{getFieldDecorator('specParams', {
 								rules: [{ required: false, message: '规格型号' }],
 							})(
-								<Input placeholder="" />
+								<Input />
 								)}
 						</FormItem>
 					</Col>

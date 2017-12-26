@@ -33,8 +33,9 @@ class MainCard extends React.Component {
     render() {
         const data = this.props.data;
         // console.log(data)
-        const title = <div><span>{data.realName}</span><span className='card-date'>{data.thisContactTime}</span>
-		{data.followUpNode?<span style={{float:'right',padding:'2px 8px',borderRadius:'3px', margin:'7px 15px', background:'#fff',lineHeight:'20px',border:'1px solid #ccc', color:'#666',fontSize:'12px'}}>{data.followUpNode}</span>:''}</div>;
+        const title = <div>{data.followUpNode?<span style={{float:'right',padding:'2px 8px',borderRadius:'3px', margin:'7px 15px',
+            background:'#fff',lineHeight:'20px',border:'1px solid #ccc', color:'#666',fontSize:'12px'}}>{data.followUpNode}</span>:''}<span>{data.realName}</span><span className='card-date'>{data.thisContactTime}</span>
+		</div>;
         var followUpFlag = data.followUpFlag;
         followUpFlag = (followUpFlag == null || !followUpFlag) ? [] : followUpFlag.split(",");
         const tags = <div>{followUpFlag.map((o, index) => { return <Tag key={index} >{o}</Tag> })}</div>

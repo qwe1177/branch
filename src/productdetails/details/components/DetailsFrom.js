@@ -1,6 +1,6 @@
 import React from 'react';
 import './DetailsFrom.css';
-import { Form, Select, Input, Button, Table, Modal, Row, Col, DatePicker,notification } from 'antd';
+import { Form, Select, Input, Button, Table, Modal, Row, Col, DatePicker, notification } from 'antd';
 import moment from 'moment'
 import { connect_srm } from '../../../util/connectConfig';
 import axios from '../../../util/axios'
@@ -27,17 +27,17 @@ const renderContent = (value, row, index) => {
 class DetailsFrom extends React.Component {
 	constructor(props) {
 		super(props);
-	
+
 		this.state = {
-			quotationId:'',
-			selectedallKeys:[],
+			quotationId: '',
+			selectedallKeys: [],
 			brandSelectorVisible: false,
-			quotation:{
-				quotationId:'',//报价单编号
-				companyName:'',//供应商
-				contacts:'',//联系人
-				contactsWay:'',//联系人电话
-				userName:''//上传者
+			quotation: {
+				quotationId: '',//报价单编号
+				companyName: '',//供应商
+				contacts: '',//联系人
+				contactsWay: '',//联系人电话
+				userName: ''//上传者
 			}
 		};
 
@@ -82,7 +82,7 @@ class DetailsFrom extends React.Component {
 			dataIndex: 'minQuantity',
 			className: 'column-money',
 			render: renderContent,
-		},{
+		}, {
 			title: '进价',
 			dataIndex: 'price',
 			className: 'column-money',
@@ -122,35 +122,63 @@ class DetailsFrom extends React.Component {
 		}];
 	}
 
+	// componentWillMount() {
+	// 	axios.get(connect_srm + '/queryCategoryList.do').then((res) => {
+	// 		var data = res.data.data;
+	// 		this.setState({ catNamelist: data });
+	// 		//console.log(res);
+	// 	}).catch((e) => {
+	// 		this.setState({ isFetching: false });
+	// 		console.log('data error');
+	// 	});
+	// }
 
 	//页面加载之前调用URL地址的quotationId
 	componentDidMount() {
-		var quotationId=this.GetQueryString('quotationId');
-		var {quotation} = this.state;
-		this.setState({ quotationId: quotationId });
+		axios.get(connect_srm + '/queryCategoryList.do').then((res) => {
+			var catNamelist = res.data.data;
+			const map = new Map();
 
-		var params = { type: '',typeVale:'',quotationId:quotationId};
-		axios.get(connect_srm + '/quotation/viewQuotationSku.do', { params: params }).then((res) => {
-			console.log(res);
-			var data = res.data.data;
-			if (res.data.code == 1) {
-				this.setState({quotation: { ...quotation, quotationId: data.quotation.quotationId,companyName:data.quotation.companyName,contacts:data.quotation.contacts,contactsWay:data.quotation.contactsWay,userName:data.quotation.userName, }})
-				this.props.dispatch(tablemodelaction({ data: data.quotationSkus}));
-			} else if (res.data.code == 0) {
-				const args = {
-					message: '提示：',
-					description: res.data.msg,
-					duration: 3,
-				};
-				notification.open(args);
-			}
-			
+			catNamelist.forEach((o)=>{
+				map.set(o.cid, o.c_name)
+			})
+			var quotationId = this.GetQueryString('quotationId');
+			var { quotation } = this.state;
+			this.setState({ quotationId: quotationId });
+
+			var params = { type: '', typeVale: '', quotationId: quotationId };
+			axios.get(connect_srm + '/quotation/viewQuotationSku.do', { params: params }).then((res) => {
+				var data = res.data.data;
+				if (res.data.code == 1) {
+
+					const result = data.quotationSkus.map((v, index) => {
+						v.categoryName = map.get(parseInt(v.categoryName));
+						return v;
+					});
+					this.setState({ quotation: { ...quotation, quotationId: data.quotation.quotationId, companyName: data.quotation.companyName, contacts: data.quotation.contacts, contactsWay: data.quotation.contactsWay, userName: data.quotation.userName, } })
+					this.props.dispatch(tablemodelaction({ data: result }));
+
+				} else if (res.data.code == 0) {
+					const args = {
+						message: '提示：',
+						description: res.data.msg,
+						duration: 3,
+					};
+					notification.open(args);
+				}
+
+			}).catch((e) => {
+				this.setState({ isFetching: false });
+				console.log('data error');
+			});
+
 		}).catch((e) => {
 			this.setState({ isFetching: false });
 			console.log('data error');
 		});
 
 	}
+
 	//获取URL参数
 	GetQueryString = (name) => {
 		var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
@@ -160,8 +188,8 @@ class DetailsFrom extends React.Component {
 
 	//删除
 	handdel = () => {
-		const { selectedallKeys,quotationId} = this.state;
-		var params = { quotationId:quotationId,skuIds: selectedallKeys.join() };
+		const { selectedallKeys, quotationId } = this.state;
+		var params = { quotationId: quotationId, skuIds: selectedallKeys.join() };
 		axios.get(connect_srm + '/quotation/delQuotationSkuByIds.do?', { params: params }).then((res) => {
 			let code = res.data.code;
 			if (code == 1) {
@@ -180,7 +208,7 @@ class DetailsFrom extends React.Component {
 				};
 				notification.open(args);
 			}
-		
+
 			setTimeout(() => {
 				location.reload();
 			}, 1000);
@@ -191,11 +219,11 @@ class DetailsFrom extends React.Component {
 
 	}
 
-	
-	uploaddetails =(e) => {
-	
-		this.props.dispatch(modalmodelaction({ data:e }));
-	  
+
+	uploaddetails = (e) => {
+		console.log(e);
+		this.props.dispatch(modalmodelaction({ data: e }));
+
 		this.setState({ brandSelectorVisible: true });
 	}
 	handleSubmit = (e) => {
@@ -203,28 +231,28 @@ class DetailsFrom extends React.Component {
 		this.props.form.validateFields((err, values) => {
 			var { quotationId } = this.state;
 			var typeValue = values.typeValue;
-			if(typeValue==undefined||typeValue==null){
-				typeValue="";
+			if (typeValue == undefined || typeValue == null) {
+				typeValue = "";
 			}
-			var type=values.type;
-			if(type=="全部"){
-				type="";
-			}else if(type=="规格型号"){
-				type="specParams";	
-			}else if(type=="规格编码"){
-				type="specCode";
-			}else if(type=="名称"){
-				type="pName";;
-			}else if(type=="品牌"){
-				type="brand";
+			var type = values.type;
+			if (type == "全部") {
+				type = "";
+			} else if (type == "规格型号") {
+				type = "specParams";
+			} else if (type == "规格编码") {
+				type = "specCode";
+			} else if (type == "名称") {
+				type = "pName";;
+			} else if (type == "品牌") {
+				type = "brand";
 			}
-			var params = { type: type,typeValue:typeValue,quotationId:quotationId};
+			var params = { type: type, typeValue: typeValue, quotationId: quotationId };
 			axios.get(connect_srm + '/quotation/viewQuotationSku.do', { params: params }).then((res) => {
 
 				var data = res.data.data;
 				if (res.data.code == 1) {
 					this.props.dispatch(tablemodelaction({ data: data.quotationSkus }));
-				
+
 				} else if (res.data.code == 0) {
 					const args = {
 						message: '提示：',
@@ -233,7 +261,7 @@ class DetailsFrom extends React.Component {
 					};
 					notification.open(args);
 				}
-				
+
 			}).catch((e) => {
 				this.setState({ isFetching: false });
 				console.log('data error');
@@ -242,27 +270,26 @@ class DetailsFrom extends React.Component {
 		});
 	}
 
-	handleChoosed = (bool,msg) => {
-		if(bool=='true')
-        {
-			this.setState({ brandSelectorVisible: false }); 
-
-            const args = {
-                message: '提示：',
-                description: msg,
-                duration: 2,
-            };
-            notification.open(args);
-			
-        }else{
+	handleChoosed = (bool, msg) => {
+		if (bool == 'true') {
 			this.setState({ brandSelectorVisible: false });
-            const args = {
-                message: '提示：',
-                description: msg,
-                duration: 2,
-            };
-            notification.open(args);
-			
+
+			const args = {
+				message: '提示：',
+				description: msg,
+				duration: 2,
+			};
+			notification.open(args);
+
+		} else {
+			this.setState({ brandSelectorVisible: false });
+			const args = {
+				message: '提示：',
+				description: msg,
+				duration: 2,
+			};
+			notification.open(args);
+
 		}
 		setTimeout(() => {
 			location.reload();
@@ -279,8 +306,8 @@ class DetailsFrom extends React.Component {
 			labelCol: { span: 5 },
 			wrapperCol: { span: 15 },
 		};
-		var  {quotation} =this.state;
-		
+		var { quotation } = this.state;
+
 		const { data } = this.props.tablemodel;
 		const rowSelection = this.rowSelection;
 		const columns = this.columns;
@@ -319,23 +346,23 @@ class DetailsFrom extends React.Component {
 				</div>
 				<div className="bjed"></div>
 				<Row gutter={24} style={{ 'padding': '8px 30px', 'margin': '0px' }}>
-					<Col span={5}  style={{ 'padding': '3px 0px', 'margin': '0px' }}>报价单编号：<span>{this.state.quotation.quotationId}</span></Col>
-					<Col span={5}  style={{ 'padding': '3px 0px', 'margin': '0px' }}>供应商：<span>{this.state.quotation.companyName}</span></Col>
-					<Col span={5}  style={{ 'padding': '3px 0px', 'margin': '0px' }}>联系人：<span>{this.state.quotation.contacts}</span></Col>
-					<Col span={5}  style={{ 'padding': '3px 0px', 'margin': '0px' }}>联系电话：<span>{this.state.quotation.contactsWay}</span> </Col>
-					<Col span={4}  style={{ 'padding': '3px 0px', 'margin': '0px' }}>上传者：<span>{this.state.quotation.userName}</span> </Col>
+					<Col span={5} style={{ 'padding': '3px 0px', 'margin': '0px' }}>报价单编号：<span>{this.state.quotation.quotationId}</span></Col>
+					<Col span={5} style={{ 'padding': '3px 0px', 'margin': '0px' }}>供应商：<span>{this.state.quotation.companyName}</span></Col>
+					<Col span={5} style={{ 'padding': '3px 0px', 'margin': '0px' }}>联系人：<span>{this.state.quotation.contacts}</span></Col>
+					<Col span={5} style={{ 'padding': '3px 0px', 'margin': '0px' }}>联系电话：<span>{this.state.quotation.contactsWay}</span> </Col>
+					<Col span={4} style={{ 'padding': '3px 0px', 'margin': '0px' }}>上传者：<span>{this.state.quotation.userName}</span> </Col>
 				</Row>
 				<div className="bjed"></div>
 
 				<div className="pd20">
 					<div className="tit"><div className="g-fl">商品信息</div></div>
-					<Table columns={columns} dataSource={data}  rowKey={record => record.id} bordered className="g-mt" rowSelection={rowSelection}
+					<Table columns={columns} dataSource={data} rowKey={record => record.id} bordered className="g-mt" rowSelection={rowSelection}
 						footer={() => <div>
 							<Button className="editable-add-btn" type="primary" onClick={this.handdel}>删除</Button>
 						</div>}
 					/>
 
-					<BrandSelector onChoosed={this.handleChoosed.bind(this)} 
+					<BrandSelector onChoosed={this.handleChoosed.bind(this)}
 						visible={this.state.brandSelectorVisible}
 						onCancel={this.handleCancel.bind(this)}
 					/>

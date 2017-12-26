@@ -60,9 +60,6 @@ export default class BrandSelector extends React.Component {
     }
 
     handleOk = (e) => {
-        this.props.form.validateFields((err, values) => {
-            console.log(values);
-        });
         this.restDefault();
     }
 
