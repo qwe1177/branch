@@ -209,7 +209,7 @@ class LeftWidget extends React.Component {
       <div className="leftwidget">
         <div className="leftlogo">
           <span className="sp1"><img src={require('./img/logo.png')} /></span>
-          <span className="sp2">CRM</span>
+          <span className="sp2">SRM</span>
         </div>
         <div className="switch">
           <div className='system'>奇智SRM系统</div><div className='switch-wrap'><a href={crmUrl} target='_blank' className='switch-icon'>CRM</a></div>

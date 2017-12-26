@@ -47,7 +47,6 @@ class UserForm extends Component {
         this.columns = [{
             title: '企业名称',
             dataIndex: 'companyName',
-            width: 160,
             render: (text, record, index) => {
                 let path = '';
                 switch (record.type) {
@@ -84,32 +83,31 @@ class UserForm extends Component {
             title: '线索级别',
             dataIndex: 'clueLevel',
             render: this.addinputdata,
-            width: 100,
+            width: 80,
         },
             {
                 title: '企业性质',
                 dataIndex: 'enterpriseType',
                 render: this.adduploaddata,
-                width: 100,
+                width: 80,
             },
             {
                 title: '主营类目',
                 dataIndex: 'varietyName',
                 render: this.adduploaddata,
-                width: 100,
             },
             {
                 title: '主营品牌',
                 dataIndex: 'mainBrand',
                 render: this.adduploaddata,
-                width: 100,
+                width: 80,
 
             },
             {
                 title: '联系人信息',
                 dataIndex: 'fullname',
                 render: this.adduploaddata,
-                width: 100,
+                width: 80,
             },
             {
                 title: '跟进次数',
@@ -121,17 +119,17 @@ class UserForm extends Component {
                 title: '创建时间',
                 dataIndex: 'createTime1',
                 render: this.adduploaddata,
-                width: 100,
+                width: 85,
             },
             {
                 title: '负责人',
                 dataIndex: 'realName',
                 render: this.adduploaddata,
-                width: 80,
+                width: 70,
             },
             {
                 title: '操作',
-                width: 120,
+                width: 80,
                 dataIndex: 'Operation',
                 render: (text, record, index) => {
                     var value = []

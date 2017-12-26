@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import { connect_cas } from '../../util/connectConfig';
 import { getLoginInfo ,setLoginAccount} from '../../util/baseTool';
 import axios from '../../util/axios';
-import data from './mock';
+// import data from './mock';
 
 export default class PlatformComponent extends Component {
   constructor(props,context) {
@@ -26,7 +26,7 @@ export default class PlatformComponent extends Component {
    * 获取左侧菜单和顶部菜单的原始数据 
    */
   getMenuData=()=>{
-    this.setState({ platformMenu:data }); //默认设置mock数据为了开发
+    // this.setState({ platformMenu:data }); //默认设置mock数据为了开发
     var loginInfo = getLoginInfo(); //从localstorage得到platformId,token 如果没有使用mock
     var platformId = loginInfo.platformId;//srm默认的platformId
     axios.get(connect_cas + '/api/menu/getPlatformMenu', { params: { platformId } }).then((res) => {
