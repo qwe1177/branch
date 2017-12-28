@@ -46,19 +46,26 @@ class ModalForm extends React.Component {
 	}
     addShow = (e) => {
         this.props.doAdd();
-        var queryParams =  this.props.AddModal;
-        queryParams = _.pick(queryParams,['query','pagination']);
-		this.props.doRequest(queryParams)
+        const {query,pagination} = this.props.AddModal;
+            var newPagination = {...pagination }; //点击按钮重新查询时候重置查询第一页
+            var newQuery = {...query};
+            newPagination.current = 1;
+            newQuery.companyName = '';
+            this.props.doRequest({query:newQuery,pagination:newPagination})
       }
     handleCancel = () => {
         this.props.doCancelForm();
+        this.props.form.resetFields();
 	  }
 	handleSubmit = (e) => {
 		e.preventDefault();
 		this.props.form.validateFields((err, values) => {
 			if (!err) {
-				console.log('Received values of form: ', values);
-				this.props.doRequest({query:values,pagination:this.props.AddModal.pagination});
+                console.log('Received values of form: ', values);
+                let {query,pagination} = this.props.AddModal;
+				var newPagination = {...pagination }; //点击按钮重新查询时候重置查询第一页
+				newPagination.current = 1;
+				this.props.doRequest({query:values,pagination:newPagination});
 			}
 		});
 	}

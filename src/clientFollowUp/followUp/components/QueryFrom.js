@@ -27,7 +27,10 @@ class QueryFrom extends React.Component {
 		this.props.form.validateFields((err, values) => {
 			if (!err) {
 				console.log('Received values of form: ', values);
-				this.props.doQueryFollow({query:values,userList:this.props.FollowUP.userList,pagination:this.props.FollowUP.pagination});
+				let {query,pagination,userList} = this.props.FollowUP;
+				var newPagination = {...pagination }; //点击按钮重新查询时候重置查询第一页
+				newPagination.current = 1;
+				this.props.doQueryFollow({query:values,userList,pagination:newPagination});
 			}
 		});
 	}

@@ -40,7 +40,8 @@ class QueryFrom extends React.Component {
       this.props.form.validateFieldsAndScroll((err, values) => {
         if (!err) {
 						console.log('Received values of form: ', values);
-						var newPagination = { current: 1, ...pagination }; //点击按钮重新查询时候重置查询第一页
+						var newPagination = { ...pagination }; //点击按钮重新查询时候重置查询第一页
+						newPagination.current = 1;
 						this.props.setQueryFrom({queryform:values}); 
 						this.props.queryTableData({queryform:values,pagination:newPagination});
         }
