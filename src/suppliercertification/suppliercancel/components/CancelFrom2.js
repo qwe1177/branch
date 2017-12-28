@@ -68,6 +68,12 @@ class CancelFrom2 extends React.Component {
     }
     return detailUrl == '' ? text : <a href={detailUrl + '?systemId=' + systemId + '&moduleId=' + moduleId + '&supplierId=' + supplierId} target='_blank'>{text}</a>;
   }
+
+  handleTableChange = (pagination, filters, sorter) => {  //点击分页控件调用  比如换页或者换pageSize
+    let { queryform } = this.props.mainQueryData;
+    this.props.queryTableData({ queryform: queryform, pagination: pagination });
+  }
+
   render() {
     let urlParams = getUrlParams();
     let moduleId = urlParams['moduleId'] ? urlParams['moduleId'] : '';
@@ -118,6 +124,8 @@ class CancelFrom2 extends React.Component {
         <Table
           columns={columns}
           dataSource={tableData}
+          pagination={pagination}
+          onChange={this.handleTableChange}
           loading={isFetching}
           rowKey={
             record => record.id

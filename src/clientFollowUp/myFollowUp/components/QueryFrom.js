@@ -44,9 +44,7 @@ class QueryFrom extends React.Component {
 		});
 	}
 	handleReset = () => {
-		this.props.form.resetFields();
-		const {query,pagination } = this.props.MyFollowUP;  
-		this.props.doQueryFollow();  
+		this.props.form.resetFields(); 
 	}
 	
     render() {

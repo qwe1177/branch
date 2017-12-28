@@ -8,6 +8,7 @@ import querystring  from 'querystring';
 import url from 'url';
 
 import { getUrlParams ,getLoginInfo} from '../../util/baseTool';
+import menuobj from '../../util/menuConfig';
 const SubMenu = Menu.SubMenu;
 
 
@@ -53,13 +54,13 @@ class Sider extends React.Component {
           var son2 = item.son;
           if(son2 && son2.length>0){
             for(var childItem of son2){
-              if(url.parse(childItem.url).pathname ==pathname){   
+              if(url.parse(childItem.url).pathname ==pathname||url.parse(childItem.url).pathname==menuobj[pathname]){
                   isMatched = true;
                   break;
               }
             }
           }else{
-            if(url.parse(item.url).pathname ==pathname){   
+            if(url.parse(item.url).pathname ==pathname||url.parse(item.url).pathname==menuobj[pathname]){
                 isMatched = true;
                 break;
             }
@@ -117,7 +118,7 @@ class Sider extends React.Component {
         var son = o.son;
         if(son && son.length>0){
           for(var item of son){
-            if(url.parse(item.url).pathname ==pathname){   
+            if(url.parse(item.url).pathname ==pathname||url.parse(item.url).pathname==menuobj[pathname]){
                 openKeys.push(o.moduleId);
                 selectedKeys.push(item.moduleId);
                 isMatched = true;
@@ -212,7 +213,7 @@ class LeftWidget extends React.Component {
           <span className="sp2">SRM</span>
         </div>
         <div className="switch">
-          <div className='system'>奇智SRM系统</div><div className='switch-wrap'><a href={crmUrl} target='_blank' className='switch-icon'>CRM</a></div>
+          <div className='system'>奇智SRM系统</div><div className='switch-wrap'><a title="切换到CRM" href={crmUrl} target='_blank' className='switch-icon'>CRM</a></div>
         </div>
         <div>
           <Sider data={this.props.data} />

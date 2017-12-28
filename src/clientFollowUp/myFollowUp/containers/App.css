@@ -21,16 +21,19 @@
   margin-right: 5px;
 }
 .content {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 150px;
+  position: relative;
 }
 .left-content{
-  flex: 1;
+  padding-right: 300px;
+  float: left;
+  width: 100%;
 }
 /* 跟进统计模块的样式 */
 .statistics {
-  width: 278px;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 280px;
   height: 300px;
   margin-left: 18px;
   padding: 20px;
@@ -91,7 +94,7 @@
 .ant-btn-danger {
   color: #a7a7a8;
 }
-.ant-btn-danger:hover {
+.ant-btn-danger:hover, .ant-btn-danger:focus {
   color: #a7a7a8;
   background-color: #f7f7f7;
   border-color: #d9d9d9;
@@ -101,15 +104,6 @@
   border-color: #6393bf;
 }
 .ant-btn-primary:hover, .ant-btn-primary:focus {
-  background-color: #6393bf;
-  border-color: #6393bf;
-}
-/* 分页 */
-.ant-pagination-item-active {
-  background-color: #6393bf;
-  border-color: #6393bf;
-}
-.ant-pagination-item-active:hover {
   background-color: #6393bf;
   border-color: #6393bf;
 }

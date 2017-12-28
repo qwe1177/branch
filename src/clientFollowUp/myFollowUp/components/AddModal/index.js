@@ -86,31 +86,6 @@ class ModalForm extends React.Component {
                     dataIndex: 'companyName',
                     key:'companyName',
                 } , {
-                    title: '联系人',
-                    dataIndex: 'fullnameanda0',
-                    render: (text, record) => {
-                        if(record.contactList.length>1){
-                            return (
-                                <div>
-                                    {record.contactList.map((tag, index)=>{
-                                        return(<div key={tag.contactId}>{tag.fullname}/{tag.mobile}</div>)
-                                    })}
-                                </div>
-                            );
-                        }else if(record.contactList.length==1){
-                            return (
-                                <div> 
-                                    {record.contactList[0].fullname}/{record.contactList[0].mobile}
-                                </div>
-                            );
-                        }else{
-                            return (
-                                <div></div>
-                            );
-                        }
-                    }
-        
-                }, {
                     title: '操作',
                     dataIndex: 'option',
                     key:'option',
@@ -122,7 +97,7 @@ class ModalForm extends React.Component {
         return (
             <div>
                 <Button size="large" onClick={this.addShow} type="primary" style={{ width: 236 }}>添加跟进</Button>
-                <Modal className="addFollowUp" visible={visible} title={title} onCancel={this.handleCancel} footer={null} width = {'600px'}>
+                <Modal className="addFollowUp" visible={visible} title={title} onCancel={this.handleCancel} footer={null} width = {'650px'}>
                     <Form layout="horizontal" onSubmit={this.handleSubmit} >
 						<Row type="flex" justify="space-between">
                             < Col span={16}>

@@ -1,5 +1,5 @@
 import { connect_srm } from '../../../util/connectConfig';
-import { getLoginInfo ,getUrlParams} from '../../../util/baseTool';
+import { getLoginInfo, getUrlParams } from '../../../util/baseTool';
 import axios from 'axios';
 import _ from 'lodash';
 
@@ -82,28 +82,28 @@ export const queryTableData = (data) => async (dispatch, getState) => {
         await dispatch(requestSupplier());
         var token = getLoginInfo()['token'];  //获取token　登录用
         var urlParams = getUrlParams();
-        var moduleId = urlParams['moduleId']?urlParams['moduleId']:'';
+        var moduleId = urlParams['moduleId'] ? urlParams['moduleId'] : '';
         var queryform = data.queryform;
         var pagination = data.pagination;
         // var paramPagination = _.pick(pagination, ['current', 'pageSize']);  //从分页数据中拿出第几页，每页多少条
-        var paramPagination = {pageNo :pagination.current,pageSize:pagination.pageSize};
+        var paramPagination = { pageNo: pagination.current, pageSize: pagination.pageSize };
         // var params = { ...queryform, ...paramPagination }; //查询条件和分页条件传入
         if (queryform.createdate && queryform.createdate.length > 0) {
             queryform.startTime = queryform.createdate[0].format("YYYY-MM-DD");
             queryform.endTime = queryform.createdate[1].format("YYYY-MM-DD");
         }
-        if(queryform.other && queryform.other.length>0){
+        if (queryform.other && queryform.other.length > 0) {
             var otherKeys = queryform.other;
-            for (let o of otherKeys){
-                queryform[o] ='yes';
+            for (let o of otherKeys) {
+                queryform[o] = 'yes';
             }
         }
-        queryform = _.omit(queryform, ['varietyNameNames', 'mainBrandNames','createdate','other']);
+        queryform = _.omit(queryform, ['varietyNameNames', 'mainBrandNames', 'createdate', 'other']);
         queryform = _.omitBy(queryform, _.isUndefined); //删除undefined参数
-        var params = { ...queryform, ...paramPagination,token, moduleId}; //查询条件和分页条件传入
+        var params = { isPass: 'yes', markToDistinguish: 'theHighSeas', ...queryform, ...paramPagination, token, moduleId }; //查询条件和分页条件传入
         // params = _.pick(params,['isPass','markToDistinguish','pageSize','offset','token','moduleId']);//因为数据问题，暂时只能传如下参数
-        let res = await axios.get(connect_srm + '/management/viewSupplierList.do', { params: params,timeout: 10000 });
-        return await dispatch(receiveSupplier({ tableData: res.data.data.data, pagination: { total: res.data.data.rowCount } }));
+        let res = await axios.get(connect_srm + '/management/viewSupplierList.do', { params: params, timeout: 10000 });
+        return await dispatch(receiveSupplier({ tableData: res.data.data.data, pagination: { total: res.data.data.rowCount, current: res.data.data.pageNo, pageSize: res.data.data.pageSize } }));
     } catch (error) {
         console.log('error: ', error)
         return await dispatch(receiveSupplierFail());

@@ -103,9 +103,9 @@ export const queryTableData = (data) => async (dispatch, getState) => {
         queryform = _.omitBy(queryform, _.isUndefined); //删除undefined参数
         var powerKey = { 'sign': 'lbcx' }; //要对照SASS平台中的权限
 
-        var params = { ...queryform, ...paramPagination, moduleId, ...powerKey }; //查询条件和分页条件传入
+        var params = { isPass: 'yes', markToDistinguish: 'all', ...queryform, ...paramPagination, moduleId, ...powerKey }; //查询条件和分页条件传入
         let res = await axios.get(connect_srm + '/management/viewSupplierList.do', { params: params });
-        return await dispatch(receiveSupplier({ tableData: res.data.data.data, pagination: { total: res.data.data.rowCount } }));
+        return await dispatch(receiveSupplier({ tableData: res.data.data.data, pagination: { total: res.data.data.rowCount, current: res.data.data.pageNo, pageSize: res.data.data.pageSize } }));
     } catch (error) {
         console.log('error: ', error)
         return await dispatch(receiveSupplierFail());

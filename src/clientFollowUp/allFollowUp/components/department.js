@@ -36,9 +36,9 @@ class Department extends React.Component {
         var _this = this;
         if(info.node.props.type == '11') {
             this.props.doQueryFollow({query:this.props.AllFollowUP.query,userList:selectedKeys.toString(),pagination:this.props.AllFollowUP.pagination});
-        }else if(info.node.props.dataRef&&info.node.props.dataRef != ''){
+        }else if(info.node.props.dataRef&&info.node.props.dataRef.children.length!=0){
+            console.log(info.node.props.dataRef.children)
             const userLists = _this.getUser(info.node.props.dataRef.children);
-            console.log(userLists)
              this.props.doQueryFollow({query:this.props.AllFollowUP.query,userList:userLists.toString(),pagination:this.props.AllFollowUP.pagination});
         }
       }

@@ -84,7 +84,7 @@ export const queryTableData = (data) => async (dispatch, getState) => {
         var moduleId = urlParams['moduleId'] ? urlParams['moduleId'] : '';
         var queryform = data.queryform;
         var pagination = data.pagination;
-     
+
         var paramPagination = { pageNo: pagination.current, pageSize: pagination.pageSize };
 
         if (queryform.createdate && queryform.createdate.length > 0) {
@@ -101,9 +101,9 @@ export const queryTableData = (data) => async (dispatch, getState) => {
 
         // var params = { ...queryform, ...paramPagination,token, moduleId,...powerKey}; //查询条件和分页条件传入
         var params = { ...queryform, ...paramPagination, state: '3', moduleId }; //查询条件和分页条件传入
-  
-        let res = await axios.get(connect_srm + '/qualityControl/viewQualityControlList.do', { params: params});
-        return await dispatch(receiveSupplier({ tableData: res.data.data.data, pagination: { total: res.data.data.rowCount } }));
+
+        let res = await axios.get(connect_srm + '/qualityControl/viewQualityControlList.do', { params: params });
+        return await dispatch(receiveSupplier({ tableData: res.data.data.data, pagination: { total: res.data.data.rowCount, current: res.data.data.pageNo, pageSize: res.data.data.pageSize } }));
     } catch (error) {
         console.log('error: ', error)
         return await dispatch(receiveSupplierFail());

@@ -9,8 +9,6 @@ import {
 // 初始化state数据
 
 const initQueryform = {
-  isPass:'yes',
-  markToDistinguish:'theHighSeas',
   compNameOrAddressOrMobile:'companyName',
   compNameOrAddressOrMobileValue: '',
   level:'',

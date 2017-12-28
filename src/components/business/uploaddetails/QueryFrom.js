@@ -49,17 +49,25 @@ class QueryFrom extends React.Component {
 			}
 		});
 	}
-	selectcatName = () => {
-		const { catNamelist } = this.state;
 
-		const categorysarr = catNamelist.map((v) => (
-			
-			<Option key={v['cid']}>{v['c_name']}</Option>)
-		)
-		return categorysarr;
+	selectcatName() {
+        const { catNamelist } = this.state;
+        var res = [];
+        var json = {};
+        catNamelist.forEach((o)=>{
+            if(!json[o['c_name']]){
+                res.push(o);
+                json[o['c_name']] = 1;
+            }
+        });
 
+        const categorysarr = res.map((v,index) => (
+            <Option key={index} value={v['c_name']}>{v['c_name']}</Option>)
+
+        )
+        return categorysarr;
 	}
-
+	
 	detailsupdateSubmit=(e)=>{
 		e.preventDefault();
 		this.props.form.validateFields((err, values) => {

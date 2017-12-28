@@ -831,7 +831,7 @@ class UserForm extends Component {
                     const arr0 = newarrobj[i][0]
                     const arr1 = newarrobj[i][1]
                     if (re.test(arr0)) {
-                        const key = arr0.replace(/(.*)\d+/, '$1')
+                        const key = arr0.replace(/(.*?)\d+/, '$1')
                         if (Reflect.has(params, key)) {
                             params[key].push(arr1)
                         } else {

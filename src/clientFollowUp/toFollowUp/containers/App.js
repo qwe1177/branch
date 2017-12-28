@@ -29,7 +29,7 @@ class App extends Component {
 		return (
 			<div >
 				<h3 className="page-title">跟进计划</h3>
-				<div className="content">
+				<div className="content clearfix">
 					<div className="left-content">
 						<div className="query-wrap">
 							<WrappedQueryFrom />

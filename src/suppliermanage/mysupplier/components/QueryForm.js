@@ -131,12 +131,6 @@ class QueryForm extends React.Component {
 			<Form layout="horizontal" onSubmit={this.handleSubmit} className='query-form'>
 				<Row gutter={16}>
 					<Col span={3}>
-						{getFieldDecorator('isPass')(
-							<Input type='hidden' />
-						)}
-						{getFieldDecorator('markToDistinguish')(
-							<Input type='hidden' />
-						)}
 						<FormItem >
 							{getFieldDecorator('compNameOrAddressOrMobile', { initialValue: 'companyName' })(
 								<Select style={{ width: '100%' }}  >

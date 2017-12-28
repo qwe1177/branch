@@ -14,7 +14,7 @@
 .ant-btn-danger {
   color: #a7a7a8;
 }
-.ant-btn-danger:hover {
+.ant-btn-danger:hover, .ant-btn-danger:focus {
   color: #a7a7a8;
   background-color: #f7f7f7;
   border-color: #d9d9d9;
@@ -33,49 +33,32 @@
   margin-right: 5px;
 }
 .content {
-  display: flex;
-  margin-bottom: 150px;
+  position: relative;
   margin-top: 20px;
 }
 
 /* 记录显示整体样式 */
+.right-content {
+  padding-left: 300px;
+  float: right;
+  width: 100%;
+}
 .card-wrap {
-  flex: 1;
   padding: 20px;
   background: #fff;
 }
 /* 部门筛选的样式 */
 .statistics {
+  position: absolute;
+  left: 0;
+  top: 0;
   width: 280px;
   margin-right: 18px;
   padding: 20px;
   background-color: #fff;
 }
-/* #root .statistics .ant-tree li span.ant-tree-switcher.ant-tree-switcher_open:after{
-  content: "\E621";
-  font-size: 30px;
-}
-#root .ant-tree li span.ant-tree-switcher.ant-tree-switcher_close:after {
-  content: "\E621";
-  font-size: 20px;
-}
-.ant-tree li span.ant-tree-switcher.ant-tree-switcher_close:after {
-  transform: none;
-}
-.ant-tree li .ant-tree-node-content-wrapper {
-  background-color: #fff;
-} */
 /* 分页的样式 */
 .pagination-wrap {
   display: flex;
   justify-content: flex-end;
-}
-/* 分页 */
-.ant-pagination-item-active {
-  background-color: #6393bf;
-  border-color: #6393bf;
-}
-.ant-pagination-item-active:hover {
-  background-color: #6393bf;
-  border-color: #6393bf;
 }

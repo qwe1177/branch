@@ -656,7 +656,7 @@ class UserForm extends Component {
 
                                     <PersonSelector onChoosed={this.handleChoosed} onCancel={this.handlePersonCancel}
                                                     type={this.state.PersonSelectortype}
-                                                    title={'分配负责人'} visible={this.state.personSelectorVisible}
+                                                    visible={this.state.personSelectorVisible}
                                                     actionInfo={this.state.actionInfo}/>
 
                                 </div>

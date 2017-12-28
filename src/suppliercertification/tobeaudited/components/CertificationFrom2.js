@@ -34,25 +34,31 @@ class CertificationFrom2 extends React.Component {
       this.queryWithDefault();
     }
   }
-  getDetailUrl =(type,supplierId,text)=>{
+  getDetailUrl = (type, supplierId, text) => {
     var urlParams = getUrlParams();
-    var moduleId = urlParams['moduleId']?urlParams['moduleId']:'';
-    var systemId = urlParams['systemId']?urlParams['systemId']:'';
-    var detailUrl ='';
-    if(type=='my'){
-      detailUrl ='/suppliermanage/myClueDetail/';
-    }else if(type=='theHighSeas'){
-      detailUrl ='/suppliermanage/publicClueDetail/';
-    }else if(type=='underling'){
-      detailUrl ='/suppliermanage/underlingClueDetail/';
+    var moduleId = urlParams['moduleId'] ? urlParams['moduleId'] : '';
+    var systemId = urlParams['systemId'] ? urlParams['systemId'] : '';
+    var detailUrl = '';
+    if (type == 'my') {
+      detailUrl = '/myClueDetail/';
+    } else if (type == 'theHighSeas') {
+      detailUrl = '/publicClueDetail/';
+    } else if (type == 'underling') {
+      detailUrl = '/underlingClueDetail/';
     }
-    return detailUrl==''?text:<a href={detailUrl+'?systemId='+systemId+'&moduleId='+moduleId+'&supplierId='+supplierId} target='_blank'>{text}</a>;
+    return detailUrl == '' ? text : <a href={detailUrl + '?systemId=' + systemId + '&moduleId=' + moduleId + '&supplierId=' + supplierId} target='_blank'>{text}</a>;
   }
+
+  handleTableChange = (pagination, filters, sorter) => {  //点击分页控件调用  比如换页或者换pageSize
+    let { queryform } = this.props.mainQueryData;
+    this.props.queryTableData({ queryform: queryform, pagination: pagination });
+  }
+
   render() {
     let urlParams = getUrlParams();
     let moduleId = urlParams['moduleId'] ? urlParams['moduleId'] : '';
     let systemId = urlParams['systemId'] ? urlParams['systemId'] : '';
-    let auditeUrl = '/suppliercertification/audit/?moduleId='+moduleId+'&systemId='+systemId;
+    let auditeUrl = '/suppliercertification/audit/?moduleId=' + moduleId + '&systemId=' + systemId;
     const columns = [
       {
         title: '企业名称',
@@ -60,7 +66,7 @@ class CertificationFrom2 extends React.Component {
         dataIndex: 'companyName',
         className: 'column-money',
         render: (text, record) => {
-          return this.getDetailUrl(record.type,record.supplierId,text)
+          return this.getDetailUrl(record.type, record.supplierId, text)
         }
       },
       {
@@ -92,12 +98,15 @@ class CertificationFrom2 extends React.Component {
       }
     ];
     const { tableData, pagination, isFetching } = this.props.mainTableData;
+
     return (
       <div className="pd20">
         <div className="tit"><div className="g-fl"><a href="javascript:;" onClick={this.handleRefresh}>刷新</a></div></div>
         <Table
           columns={columns}
           dataSource={tableData}
+          pagination={pagination}
+          onChange={this.handleTableChange}
           bordered
           rowKey={record => record.id}
           loading={isFetching}

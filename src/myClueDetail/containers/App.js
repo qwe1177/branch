@@ -335,7 +335,7 @@ class App extends Component {
                                         </Modal >
                                     </div>
                                     <Button className='more' onClick={() => this.showMoreBtn()}>更多</Button>
-                                    <PersonSelector onChoosed={this.handleChoosed.bind(this)} title={'分配负责人'}
+                                    <PersonSelector onChoosed={this.handleChoosed.bind(this)} 
                                                     visible={this.state.personSelectorVisible}
                                                     onCancel={this.handlePersonCancel.bind(this)}/>
                                     <MergeSuppliers onComfirm={this.handleMerged.bind(this)}

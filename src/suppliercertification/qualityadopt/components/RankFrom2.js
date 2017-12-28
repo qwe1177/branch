@@ -151,7 +151,6 @@ class RankFrom2 extends React.Component {
       }
     ];
     const { tableData, pagination, isFetching } = this.props.mainTableData;
-    console.log(pagination)
     return (
       <div className="pd20">
         <div className="tit"><div className="g-fl"><a href="javascript:;" onClick={this.handleRefresh}>刷新</a></div></div>

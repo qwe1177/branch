@@ -103,7 +103,7 @@ export const queryTableData = (data) => async (dispatch, getState) => {
         var params = { ...queryform, ...paramPagination, state: '2', moduleId }; //查询条件和分页条件传入
 
         let res = await axios.get(connect_srm + '/qualityControl/viewQualityControlList.do', { params: params });
-        return await dispatch(receiveSupplier({ tableData: res.data.data.data, pagination: { total: res.data.data.rowCount, current: res.data.data.pageNo } }));
+        return await dispatch(receiveSupplier({ tableData: res.data.data.data, pagination: { total: res.data.data.rowCount, current: res.data.data.pageNo, pageSize: res.data.data.pageSize } }));
     } catch (error) {
         console.log('error: ', error)
         return await dispatch(receiveSupplierFail());

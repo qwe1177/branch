@@ -4,7 +4,6 @@ import axios from '../../../util/axios'
 import { getLoginInfo, getUrlParams } from '../../../util/baseTool';
 import { connect_srm, crmnew_url } from '../../../util/connectConfig';
 
-import Modalmodel from '../../components/Modalmodel'
 import Modalmodellist from '../../components/Modalmodellist'
 
 import {
@@ -30,7 +29,6 @@ import { connect } from 'react-redux'
 import _ from 'lodash';
 import {
     tablemodelaction,
-    modalmodelaction,
     modalmodelallaction,
 } from '../../actions'
 import BrandSelector from '../../../components/business/uploadinquire';
@@ -158,8 +156,8 @@ class UploadFrom2 extends React.Component {
     };
 
     beforeUpload(file) {
-        const reg = /xls|xlsx/;
-        const isimgtype = reg.test(file.type);
+        const reg = /(xls$)|(xlsx$)/;
+        const isimgtype = reg.test(file.name);
         if (!isimgtype) {
             message.error('上传文件类型不符合！');
         }
@@ -172,11 +170,9 @@ class UploadFrom2 extends React.Component {
 
     uploads = {
         name: 'file',
-        //onChange: this.onchangdata,
         action: `${connect_srm}/quotation/uploadExcelQuotation.do?token=${getLoginInfo()['token']}`,
         onChange: (info) => {
             const status = info.file.status;
-
             if (status !== 'uploading') {
                 //console.log(info.file, info.fileList);
             }
@@ -184,9 +180,7 @@ class UploadFrom2 extends React.Component {
             if (status === 'done') {
                 if (info.file.response.code == 1) {
                     var respdata = info.file.response.data;
-
                     const { count, data } = this.props.tablemodel;
-                    //console.log(_.pick(info.file.response.data,['id','specCode','pName','brand','categoryName','specParams','unit','price','taux','invoice','deliveryTime','payWay']));
                     var respdatas = respdata.map((v) => {
                         var d1 = _.pick(v, ['id', 'specCode', 'pName', 'brand', 'categoryName', 'specParams', 'unit', 'minQuantity', 'price', 'taux', 'invoice', 'deliveryTime', 'payWay']);
                         d1 = _.omitBy(d1, _.isUndefined);
@@ -197,75 +191,75 @@ class UploadFrom2 extends React.Component {
                         return ({
                             id: count + index+1 + '',
                             specCode: {
-                                name: `specCode` + (count + v.id),
+                                name: `specCode` + (count + index+1 + ''),
                                 initialValue: v.specCode,
                                 message: '请输入规格编码',
                                 placeholder: '请输入规格编码',
                                 required: true
                             },
                             pName: {
-                                name: `pName` + (count + v.id),
+                                name: `pName` + (count + index+1 + ''),
                                 initialValue: v.pName,
                                 message: '请输入名称',
                                 placeholder: '请输入名称',
                             },
                             brand: {
-                                name: `brand` + (count + v.id),
+                                name: `brand` + (count + index+1 + ''),
                                 initialValue: v.brand,
                                 message: '请输入品牌',
                                 placeholder: '请输入品牌',
                                 required: true
                             },
                             categoryName: {
-                                name: `categoryName` + (count + v.id),
+                                name: `categoryName` + (count + index+1 + ''),
                                 initialValue: v.categoryName,
                                 message: '请选择所属类目',
                                 placeholder: '请选择所属类目',
                             },
                             specParams: {
-                                name: `specParams` + (count + v.id),
+                                name: `specParams` + (count + index+1 + ''),
                                 initialValue: v.specParams,
                                 message: '请输入规格型号',
                                 placeholder: '请输入规格型号',
                             },
                             unit: {
-                                name: `unit` + (count + v.id),
+                                name: `unit` + (count + index+1 + ''),
                                 initialValue: v.unit,
                                 message: '请输入单位',
                                 placeholder: '请输入单位',
                             },
                             minQuantity: {
-                                name: `minQuantity` + (count + v.id),
+                                name: `minQuantity` + (count + index+1 + ''),
                                 initialValue: v.minQuantity,
                                 message: '请输入最小起订量',
                                 placeholder: '请输入最小起订量',
                             },
                             price: {
-                                name: `price` + (count + v.id),
+                                name: `price` + (count + index+1 + ''),
                                 initialValue: v.price,
                                 message: '请输入进价(元)',
                                 placeholder: '请输入进价(元)',
                             },
                             taux: {
-                                name: `taux` + (count + v.id),
+                                name: `taux` + (count + index+1 + ''),
                                 initialValue: v.taux,
                                 message: '请输入税点',
                                 placeholder: '请输入税点',
                             },
                             invoice: {
-                                name: `invoice` + (count + v.id),
+                                name: `invoice` + (count + index+1 + ''),
                                 initialValue: v.invoice,
                                 message: '请选择发票',
                                 placeholder: '请选择发票',
                             },
                             deliveryTime: {
-                                name: `deliveryTime` + (count + v.id),
+                                name: `deliveryTime` + (count + index+1 + ''),
                                 initialValue: v.deliveryTime,
                                 message: '请输入交期',
                                 placeholder: '请输入交期',
                             },
                             payWay: {
-                                name: `payWay` + (count + v.id),
+                                name: `payWay` + (count + index+1 + ''),
                                 initialValue: v.payWay,
                                 message: '请输入付款方式',
                                 placeholder: '请输入付款方式',
@@ -276,9 +270,9 @@ class UploadFrom2 extends React.Component {
 
                     });
                     this.props.dispatch(tablemodelaction({ data: [...data, ...newrespList], count: parseInt(newrespList[newrespList.length-1].id)+ 1, }))
-
                 } else {
-                    if (info.file.response.msg == ' ' || info.file.response.msg == undefined) {
+
+                    if (info.file.response.msg =='' || info.file.response.msg == undefined) {
                         const args = {
                             message: '提示：',
                             description: '上传文件错误',
@@ -292,9 +286,7 @@ class UploadFrom2 extends React.Component {
                             description: info.file.response.msg,
                             duration: 3,
                         };
-                        //this.props.dispatch(modalmodelaction({ModalText: `${res.data.msg}`,visible: true,}));
                         notification.open(args);
-                       // message.error(`${info.file.name} file upload failed.`);
                     }
                 }
             } else if (status === 'error') {
@@ -349,14 +341,11 @@ class UploadFrom2 extends React.Component {
             )}
     </FormItem>)
 
-    ModalhandleCancel = (value) => () => {
-        this.props.dispatch(modalmodelaction({ [value]: false }))
-    }
 
     ModalhandleCancellist = (value) => () => {
         this.props.dispatch(modalmodelallaction({ [value]: false }))
     }
-
+    //类目选择
     categoryNamelist = ({ name, message, placeholder = '', initialValue = undefined }) => (
         <FormItem>
             {this.props.form.getFieldDecorator(name, {
@@ -371,28 +360,23 @@ class UploadFrom2 extends React.Component {
 
     selectcatName() {
         const { catNamelist } = this.state;
-        const categorysarr = catNamelist.map((v) => (
-            <Option key={v['cid']}>{v['c_name']}</Option>)
+        var res = [];
+        var json = {};
+        catNamelist.forEach((o)=>{
+            if(!json[o['c_name']]){
+                res.push(o);
+                json[o['c_name']] = 1;
+            }
+        });
+
+        const categorysarr = res.map((v,index) => (
+            <Option key={index} value={v['c_name']}>{v['c_name']}</Option>)
+
         )
         return categorysarr;
     }
 
-    //删除单行
-    ModalhandleOk = () => {
-        const data = [...this.props.tablemodel.data];
-        const delkey = this.props.tablemodel.delkey;
-        data.splice(delkey, 1);
-        this.props.dispatch(modalmodelaction({ ModalText: '删除中···', confirmLoading: true, }))
-        setTimeout(() => {
-            this.props.dispatch(tablemodelaction({ data: data }));
-            this.props.dispatch(modalmodelaction({
-                visible: false,
-                confirmLoading: false,
-            }));
-
-        }, 1000);
-    }
-
+    //批量删除确认
     ModalhandleallOk = () => {
         const { selectedallKeys } = this.state;
         const data = [...this.props.tablemodel.data];
@@ -402,22 +386,20 @@ class UploadFrom2 extends React.Component {
                 return v;
             }
         });
-
-        setTimeout(() => {
-            this.props.dispatch(tablemodelaction({ data: del }));
-            this.props.dispatch(modalmodelallaction({ visible: false }))
-        }, 1000);
+        this.props.dispatch(tablemodelaction({ data: del }));
+        this.props.dispatch(modalmodelallaction({ visible: false }))
     }
+
     //批量删除
     handledeleteall = () => {
-
         this.props.dispatch(modalmodelallaction({ visible: true }))
-
     }
-
+    //单条删除
     deleterow = (index) => {
-        this.props.dispatch(modalmodelaction({ visible: true, }))
-        this.props.dispatch(tablemodelaction({ delkey: index, }))
+        const data = [...this.props.tablemodel.data];
+        const delkey = index;
+        data.splice(delkey, 1);
+        this.props.dispatch(tablemodelaction({ data: data }));
     }
 
     //上传表单
@@ -503,11 +485,12 @@ class UploadFrom2 extends React.Component {
     }
     handleSubmit = (e) => {
         e.preventDefault();
-
         this.props.form.validateFields((err, values) => {
+
             if (!err) {
                 const params = {}
                 const newarrobj = this.objToarrsort(values);
+     
                 const newarrobjlen = newarrobj.length;
                 var { supplierList, BuyersList } = this.state;
                 for (let i = 0; i < newarrobjlen; i++) {
@@ -516,7 +499,8 @@ class UploadFrom2 extends React.Component {
                     const arr0 = newarrobj[i][0]
                     const arr1 = newarrobj[i][1]
                     if (re.test(arr0)) {
-                        const key = arr0.replace(/(.*)\d+/, '$1')
+                        const key = arr0.replace(/(.*?)\d+/, '$1')
+
                         if (Reflect.has(params, key)) {
                             params[key].push(arr1)
                         } else {
@@ -527,35 +511,17 @@ class UploadFrom2 extends React.Component {
                     } else {
                         params[arr0] = arr1
                     }
-
-
                 }
 
-
+               
                 const newparams = {}
                 for (let o in params) {
-                    if (typeof params[o] === 'object') {
-                        if (params[o].constructor === Array) {
-                            if (o == 'deadline') {
-                                newparams[o] = params[o].map(v => v ? v.format("YYYY-MM-DD") : '').join(',')
-                            } else if (o == 'birthday') {
-                                newparams[o] = params[o].map(v => v ? v.format("YYYY-MM-DD") : '').join(',')
-                            } else if (typeof params[o][0] == 'object' && params[o][0] && params[o][0].status) {
-                                newparams[o] = params[o].map(v => (v.response ? v.response.key : v.url).replace(/.*com/g, '')).join('@')
-                            } else if (typeof params[o][0] == 'object' && params[o][0].constructor == Array && params[o][0][0] && params[o][0][0].status) {
-                                newparams[o] = params[o].map(v => v.map(k => (k.response ? k.response.key : k.url).replace(/.*com/g, '')).join('@')).join(',')
-                            } else {
-                                newparams[o] = params[o].join(',')
-                            }
-                        } else {
-                            newparams[o] = params[o].label
-                        }
-                    } else {
                         if (params[o]) {
                             newparams[o] = params[o]
-                        }
+                        
                     }
                 }
+          
                 newparams.contactsId = supplierList.contactsId;
                 newparams.contacts = supplierList.contacts;
                 newparams.contactsWay = supplierList.contactsWay;
@@ -570,7 +536,7 @@ class UploadFrom2 extends React.Component {
                             description: res.data.msg,
                             duration: 3,
                         };
-                        //this.props.dispatch(modalmodelaction({ModalText: `${res.data.msg}`,visible: true,}));
+
                         notification.open(args);
                         setTimeout(() => {
                             this.hrefhost();
@@ -661,20 +627,16 @@ class UploadFrom2 extends React.Component {
                             rowSelection={rowSelection}
                             footer={() => <div style={{ textAlign: 'center' }}>
 
-                                <Button className="editable-add-btn" onClick={this.handleAdd}>+添加经营品牌</Button></div>} />
+                                <Button className="editable-add-btn" onClick={this.handleAdd}>+添加一条商品</Button></div>} />
                         <div className="com_ishdh">
                             <Button className="editable-delete-btn resetButton g-fl" type="primary"
                                 onClick={this.handledeleteall}>删除</Button>
-                            <Upload {...this.uploads} className="g-fl" beforeUpload={this.beforeUpload}>
+                            <Upload {...this.uploads} className="g-fl" beforeUpload={this.beforeUpload} showUploadList={false} >
                                 <Button className="editable-listall-btn resetButton">批量上传</Button>
                             </Upload>
                             <span className="editable-excel-btn resetButton g-fl"><a href="javascript:;"
                                 onClick={this.excelbtn}>下载Excel模板</a> （必须按模板格式并且文件大小不得超过8M）</span>
                         </div>
-
-                        <Modalmodel  {...{ ...this.props.modalmodel, ModalText: '确认删除吗？' }}
-                            onOk={this.ModalhandleOk} confirmLoading={this.props.modalmodel.confirmLoading}
-                            onCancel={this.ModalhandleCancel('visible')} />
 
                         <Modalmodellist  {...{ ...this.props.modalmodelall, ModalText: '确认全部删除吗？' }}
                             onOk={this.ModalhandleallOk} confirmLoading={this.props.modalmodelall.confirmLoading}

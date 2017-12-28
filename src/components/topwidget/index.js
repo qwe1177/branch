@@ -10,25 +10,9 @@ import EffectFrom from './EffectFrom';
 class TopWidget extends React.Component {
   constructor(props, context) {
     super(props, context);
-    // setLoginInfo();
   }
   state = {
-    // userInfo: {
-    //   realName: 'SRM默认用户',
-    //   userPhoto: require('./img/an13.jpg')
-    // },
     visible: false
-  }
-  // 从sass系统api中用户信息
-  componentWillMount() {
-    // var loginInfo = getLoginInfo(); //从localstorage得到platformId,token 如果没有使用mock
-    // var platformId = loginInfo.platformId == '' ? '757a6c1798f39e8c02ebe249f4bea326' : loginInfo.platformId;//srm默认的platformId
-    // var token = loginInfo.token == '' ? '47a7e78d3446cc69212c93b201a727ab272dd04a379d17fc4d686f2e5bce989a' : loginInfo.token; //用户和权限记录
-    // axios.get(connect_cas + '/api/login/chack', { params: { token: token } }).then((res) => {
-    //   if (res.data.code == '0') {
-    //     this.setState({ userInfo: Object.assign(this.state.userInfo, { realName: res.data.data.realName }) });
-    //   }
-    // });
   }
   handleCancel = () => {
     this.setState({ visible: false });
@@ -40,7 +24,6 @@ class TopWidget extends React.Component {
     this.setState({ visible: true });
   }
   render() {
-
     const menu = (
       <Menu>
         <Menu.Item key='updatepwd'>

@@ -10,8 +10,10 @@ import Modalmodel from '../../components/Modalmodel'
 import { connect } from 'react-redux'
 import {
 	tablemodelaction,
-	modalmodelaction
+	modalmodelaction,
+	modalmodelallaction
 } from '../../actions'
+import Modalmodellist from '../../components/Modalmodellist'
 
 //axios.defaults.timeout = 30000;                        //响应时间
 //axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8'; 
@@ -134,7 +136,7 @@ class QuoteFrom extends React.Component {
 
 				var paramsuuid = { pageNo: '' };
 				axios.get(connect_srm + '/quotation/queryQuotationUploader.do', { params: paramsuuid }).then((res) => {
-					console.log(res);
+
 					let code = res.data.code;
 					if (code == 1) {
 						this.setState({ usernamelist: res.data.data });
@@ -159,24 +161,7 @@ class QuoteFrom extends React.Component {
 				notification.open(args);
 			}
 		})
-		// var params = { pageNo: '' };
-		// axios.get(connect_srm + '/quotation/queryQuotationUploader.do', { params: params }).then((res) => {
-		// 	console.log(res);
-		// 	let code = res.data.code;
-		// 	if (code == 1) {
-		// 		this.setState({ usernamelist: res.data.data });
-		// 	} else {
-		// 		const args = {
-		// 			message: '提示：',
-		// 			description: res.data.msg,
-		// 			duration: 3,
-		// 		};
-		// 		notification.open(args);
-		// 	}
-		// }).catch((e) => {
-		// 	this.setState({ isFetching: false });
-		// 	console.log('data error');
-		// });
+		
 	}
 	
 
@@ -205,14 +190,12 @@ class QuoteFrom extends React.Component {
 	//刷新列表信息
 	subsellist = () => {
 		var { parlist, pagination } = this.state;
-
-		setTimeout(() => {
 			axios.get(connect_srm + '/quotation/viewQuotations.do', { params: parlist }).then((res) => {
 				var data = res.data.data;
 				//console.log(data);
 				if (res.data.code == 1) {
 					this.setState({ pagination: { ...pagination, total: data.rowCount }, isFetching: false });
-
+					
 					this.props.dispatch(tablemodelaction({ data: data.quotations }));
 				} else if (res.data.code == 0) {
 					const args = {
@@ -224,9 +207,8 @@ class QuoteFrom extends React.Component {
 				}
 
 			})
-		}, 2000);
 	}
-
+	//单行删除
 	ModalhandleOk = () => {
 		const { delids } = this.state;
 		var params = { quotationId: delids };
@@ -264,6 +246,11 @@ class QuoteFrom extends React.Component {
 		this.setState({ delids: e });
 		this.props.dispatch(modalmodelaction({ visible: true }))
 	}
+
+	ModalhandleCancellist = (value) => () => {
+        this.props.dispatch(modalmodelallaction({ [value]: false }))
+	}
+	
 	//页面加载调用接口赋值option
 	selectuserName = () => {
 		const { usernamelist } = this.state;
@@ -272,14 +259,14 @@ class QuoteFrom extends React.Component {
 		)
 		return categorysarr;
 	}
-
 	//多行删除
-	deletelistall = () => {
+	ModalhandleallOk = () => {
 		const { selectedallKeys } = this.state;
 		var params = { quotationId: selectedallKeys.join() };
 		axios.get(connect_srm + '/quotation/delQuotationById.do?', { params: params }).then((res) => {
 			let code = res.data.code;
 			if (code == 1) {
+				this.props.dispatch(modalmodelallaction({ visible: false }))
 				const args = {
 					message: '提示：',
 					description: res.data.msg,
@@ -288,6 +275,7 @@ class QuoteFrom extends React.Component {
 				notification.open(args);
 
 			} else {
+				this.props.dispatch(modalmodelallaction({ visible: false }))
 				const args = {
 					message: '提示：',
 					description: res.data.msg,
@@ -301,6 +289,10 @@ class QuoteFrom extends React.Component {
 			this.setState({ isFetching: false });
 			console.log('data error');
 		});
+	}
+	//多行删除弹窗
+	deletelistall = () => {
+		this.props.dispatch(modalmodelallaction({ visible: true }))
 	}
 
 	ModalhandleCancel = (value) => () => {
@@ -327,7 +319,11 @@ class QuoteFrom extends React.Component {
 			}
 
 		})
+	}
 
+	//重置按钮
+	handleReset= (e) => {
+		this.props.form.setFieldsValue({ type: '企业名称',typeValue:'',ssUserId:'',startDate:'',endDate:'',createdate:''})
 	}
 
 	//查询按钮调用
@@ -357,9 +353,9 @@ class QuoteFrom extends React.Component {
 
 				var params = { type: type, startDate: startDate, endDate: endDate, ssUserId: ssUserId, typeValue: typeValue, pageNo: pagination.current, pageSize: pagination.pageSize };
 				this.setState({ parlist: { type: type, startDate: startDate, endDate: endDate, ssUserId: ssUserId, typeValue: typeValue, pageNo: pagination.current, pageSize: pagination.pageSize } });
-				console.log(params);
+		
 				axios.get(connect_srm + '/quotation/viewQuotations.do', { params: params }).then((res) => {
-					console.log(res);
+		
 					var data = res.data.data;
 					//console.log(data);
 					if (res.data.code == 1) {
@@ -429,7 +425,7 @@ class QuoteFrom extends React.Component {
 								</FormItem>
 							</Col>
 							<Col span={7}>
-								<FormItem {...formItemLayout} label="申请时间">
+								<FormItem {...formItemLayout} label="上传时间">
 									{getFieldDecorator('createdate')(
 										<RangePicker />
 									)}
@@ -458,6 +454,11 @@ class QuoteFrom extends React.Component {
 				<Modalmodel  {...{ ...this.props.modalmodel, ModalText: '确认删除吗？' }}
 					onOk={this.ModalhandleOk} confirmLoading={this.props.modalmodel.confirmLoading}
 					onCancel={this.ModalhandleCancel('visible')} />
+
+				<Modalmodellist  {...{ ...this.props.modalmodelall, ModalText: '确认全部删除吗？' }}
+                            onOk={this.ModalhandleallOk} confirmLoading={this.props.modalmodelall.confirmLoading}
+                            onCancel={this.ModalhandleCancellist('visible')} />	
+
 			</div>
 		)
 	}

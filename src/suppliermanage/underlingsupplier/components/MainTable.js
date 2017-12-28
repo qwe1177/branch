@@ -246,7 +246,6 @@ class MainTable extends React.Component {
         </Modal>
         <PersonSelector onChoosed={this.handleChoosed.bind(this)}
           onCancel={this.handlePersonCancel.bind(this)}
-          title={'分配负责人'}
           visible={this.state.personSelectorVisible}
           actionInfo={this.state.actionInfo}
         />

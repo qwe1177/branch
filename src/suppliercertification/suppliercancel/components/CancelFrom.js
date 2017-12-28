@@ -95,7 +95,7 @@ class CancelFrom extends React.Component {
 								)}
 						</FormItem>
 					</Col>
-					<Col span={6}>
+					<Col span={7}>
 						<FormItem {...formItemLayout} label="申请时间">
 							{getFieldDecorator('applicationDate')(
 								<RangePicker />

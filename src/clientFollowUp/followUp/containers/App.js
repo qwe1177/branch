@@ -33,13 +33,15 @@ class App extends Component {
 						<div className="query-wrap">
 								<WrappedQueryFrom />
 						</div>
-						<div className="content">	
+						<div className="content clearfix">	
 								<div className="statistics">
 										<Department/>
-								</div>  							
-								<div className="card-wrap">
-										<MainList/>
-								</div>					
+								</div> 
+								<div className="right-content">
+									<div className="card-wrap">
+											<MainList/>
+									</div>	
+								</div> 											
 						</div>
 					</div>
 		);

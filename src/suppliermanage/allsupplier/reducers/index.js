@@ -12,8 +12,6 @@ import power from '../../../components/common/power/redux';
 // 初始化state数据
 
 const initQueryform = {
-  isPass:'yes',
-  markToDistinguish:'all',
   compNameOrAddressOrMobile:'companyName',
   compNameOrAddressOrMobileValue: '',
   level:'',

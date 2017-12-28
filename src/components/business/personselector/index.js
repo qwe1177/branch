@@ -22,7 +22,8 @@ class PersonSelector extends React.Component {
     }
     static defaultProps ={
         type:'single',
-        dataArea:'underling'
+        dataArea:'underling',
+        title:'选择负责人'
     }
     constructor(props) {
         super(props);
@@ -251,7 +252,7 @@ class PersonSelector extends React.Component {
         const WrappedQueryForm = Form.create()(QueryForm);
         const type = this.props.type;
         
-        var title = (this.props.title?this.props.title:'选择负责人') + (type=='single'?'(单选)':'(多选)');
+        var title = this.props.title + (type=='single'?'(单选)':'(多选)');
         return (
             <Modal title={title} visible={visible}
                 onOk={this.handleOk} onCancel={this.handleCancel} className='person-selector'

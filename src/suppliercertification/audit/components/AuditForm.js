@@ -290,12 +290,12 @@ class AuditForm extends React.Component {
         });
     }
     uploadsprops2 = {
+        showUploadList: {showRemoveIcon: false},
         disabled: true,
         name: 'Filedata',
         listType: 'picture',
         className: 'upload-list-inline',
         onPreview: this.handlePreview,
-        onRemove: () => false,
         multiple: true,
         accept: 'image/*',
         action: `${config.connect_img}/upload?type=approveLicensePic&token=${getLoginInfo()['token']}`

@@ -86,7 +86,7 @@ export const queryTableData = (data) => async (dispatch, getState) => {
         var pagination = data.pagination;
 
         var paramPagination = { pageNo: pagination.current, pageSize: pagination.pageSize };
-   
+
         if (queryform.createdate && queryform.createdate.length > 0) {
             queryform.applyStartTime = queryform.createdate[0].format("YYYY-MM-DD");
             queryform.applyEndTime = queryform.createdate[1].format("YYYY-MM-DD");
@@ -100,10 +100,10 @@ export const queryTableData = (data) => async (dispatch, getState) => {
         // var powerKey = {'sign':'lbcx'}; //要对照SASS平台中的权限
 
         // var params = { ...queryform, ...paramPagination,token, moduleId,...powerKey}; //查询条件和分页条件传入
-        var params = { ...queryform, ...paramPagination, state: '4',  moduleId }; //查询条件和分页条件传入
+        var params = { ...queryform, ...paramPagination, state: '4', moduleId }; //查询条件和分页条件传入
 
-        let res = await axios.get(connect_srm + '/qualityControl/viewQualityControlList.do', { params: params});
-        return await dispatch(receiveSupplier({ tableData: res.data.data.data, pagination: { total: res.data.data.rowCount } }));
+        let res = await axios.get(connect_srm + '/qualityControl/viewQualityControlList.do', { params: params });
+        return await dispatch(receiveSupplier({ tableData: res.data.data.data, pagination: { total: res.data.data.rowCount, current: res.data.data.pageNo, pageSize: res.data.data.pageSize } }));
     } catch (error) {
         console.log('error: ', error)
         return await dispatch(receiveSupplierFail());

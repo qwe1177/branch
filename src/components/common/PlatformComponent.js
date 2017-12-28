@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import { connect_cas } from '../../util/connectConfig';
 import { getLoginInfo ,setLoginAccount} from '../../util/baseTool';
 import axios from '../../util/axios';
+import { message } from 'antd';
 // import data from './mock';
 
 export default class PlatformComponent extends Component {
@@ -36,13 +37,13 @@ export default class PlatformComponent extends Component {
       });
   }
   getLoginAcct=()=>{
-    var loginInfo = getLoginInfo(); //从localstorage得到platformId,token 如果没有使用mock
-    // var platformId = loginInfo.platformId;//srm默认的platformId
-    // var token = loginInfo.token; //用户和权限记录
     axios.get(connect_cas + '/api/login/chack', { params: {} }).then((res) => {
       if (res.data.code == '0') {
         setLoginAccount(res.data.data);
         this.setState({ loginAcct: res.data.data});
+      }else{
+        message.error('登录过期!');
+        setTimeout(()=>{location.href='http://admin.csc86.com/login/index.html';},1000);
       }
     });
   }

@@ -8,10 +8,13 @@ import { render } from 'react-dom'
 import { connect } from 'react-redux'
 import {
 	tablemodelaction,
-	modalmodelaction
+	modalmodelaction,
+	modalmodelallaction
 } from '../../actions'
 
 import BrandSelector from '../../../components/business/uploaddetails';
+import Modalmodellist from '../../components/Modalmodellist'
+
 const FormItem = Form.Item;
 const Option = Select.Option;
 const { MonthPicker, RangePicker } = DatePicker;
@@ -31,6 +34,7 @@ class DetailsFrom extends React.Component {
 		this.state = {
 			quotationId: '',
 			selectedallKeys: [],
+			parlist:{},
 			brandSelectorVisible: false,
 			quotation: {
 				quotationId: '',//报价单编号
@@ -121,42 +125,32 @@ class DetailsFrom extends React.Component {
 			},
 		}];
 	}
-
-	// componentWillMount() {
-	// 	axios.get(connect_srm + '/queryCategoryList.do').then((res) => {
-	// 		var data = res.data.data;
-	// 		this.setState({ catNamelist: data });
-	// 		//console.log(res);
-	// 	}).catch((e) => {
-	// 		this.setState({ isFetching: false });
-	// 		console.log('data error');
-	// 	});
-	// }
-
 	//页面加载之前调用URL地址的quotationId
 	componentDidMount() {
 		axios.get(connect_srm + '/queryCategoryList.do').then((res) => {
 			var catNamelist = res.data.data;
-			const map = new Map();
+			//const map = new Map();
 
-			catNamelist.forEach((o)=>{
-				map.set(o.cid, o.c_name)
-			})
+			// catNamelist.forEach((o)=>{
+			// 	map.set(o.cid, o.c_name)
+			// })
 			var quotationId = this.GetQueryString('quotationId');
-			var { quotation } = this.state;
-			this.setState({ quotationId: quotationId });
+			var { quotation, parlist} = this.state;
+			this.setState({ quotationId: quotationId,parlist: { type:'',typeValue:'',quotationId:quotationId}});
 
 			var params = { type: '', typeVale: '', quotationId: quotationId };
+			//this.setState({ parlist: { type: type, typeValue: typeValue, quotationId: quotationId} });
 			axios.get(connect_srm + '/quotation/viewQuotationSku.do', { params: params }).then((res) => {
 				var data = res.data.data;
 				if (res.data.code == 1) {
+					//console.log(res.data.data);
+					// const result = data.quotationSkus.map((v, index) => {
+					// 	v.categoryName = map.get(parseInt(v.categoryName));
+					// 	return v;
+					// });
 
-					const result = data.quotationSkus.map((v, index) => {
-						v.categoryName = map.get(parseInt(v.categoryName));
-						return v;
-					});
 					this.setState({ quotation: { ...quotation, quotationId: data.quotation.quotationId, companyName: data.quotation.companyName, contacts: data.quotation.contacts, contactsWay: data.quotation.contactsWay, userName: data.quotation.userName, } })
-					this.props.dispatch(tablemodelaction({ data: result }));
+					this.props.dispatch(tablemodelaction({ data:res.data.data.quotationSkus}));
 
 				} else if (res.data.code == 0) {
 					const args = {
@@ -186,13 +180,34 @@ class DetailsFrom extends React.Component {
 		if (r != null) return unescape(r[2]); return null;
 	}
 
-	//删除
-	handdel = () => {
+
+	 //批量删除
+	 handledeleteall = () => {
+		const { selectedallKeys, quotationId } = this.state;
+		if(selectedallKeys==null ||selectedallKeys=="")
+		{
+			const args = {
+				message: '提示：',
+				description: '请选择需要删除的选择项',
+				duration: 3,
+			};
+			notification.open(args);
+		}else{
+			this.props.dispatch(modalmodelallaction({ visible: true }))
+		}
+	}
+	
+	ModalhandleCancellist = (value) => () => {
+        this.props.dispatch(modalmodelallaction({ [value]: false }))
+	}
+	
+	ModalhandleallOk = () => {
 		const { selectedallKeys, quotationId } = this.state;
 		var params = { quotationId: quotationId, skuIds: selectedallKeys.join() };
 		axios.get(connect_srm + '/quotation/delQuotationSkuByIds.do?', { params: params }).then((res) => {
 			let code = res.data.code;
 			if (code == 1) {
+				this.props.dispatch(modalmodelallaction({ visible: false }))
 				const args = {
 					message: '提示：',
 					description: res.data.msg,
@@ -201,6 +216,35 @@ class DetailsFrom extends React.Component {
 				notification.open(args);
 
 			} else {
+				this.props.dispatch(modalmodelallaction({ visible: false }))
+				const args = {
+					message: '提示：',
+					description: res.data.msg,
+					duration: 3,
+				};
+				notification.open(args);
+			}
+			this.subsellist();
+		}).catch((e) => {
+			this.setState({ isFetching: false });
+			console.log('data error');
+		});
+
+	}
+	
+	//刷新列表信息
+	subsellist = () => {
+		var { pagination, parlist } = this.state;
+		var params = parlist;
+		console.log(params);
+		axios.get(connect_srm + '/quotation/viewQuotationSku.do', { params: params }).then((res) => {
+			console.log(res);
+			var data = res.data.data;
+			if (res.data.code == 1) {
+
+				this.props.dispatch(tablemodelaction({ data: data.quotationSkus }));
+
+			} else if (res.data.code == 0) {
 				const args = {
 					message: '提示：',
 					description: res.data.msg,
@@ -209,23 +253,53 @@ class DetailsFrom extends React.Component {
 				notification.open(args);
 			}
 
-			setTimeout(() => {
-				location.reload();
-			}, 1000);
 		}).catch((e) => {
 			this.setState({ isFetching: false });
 			console.log('data error');
 		});
-
 	}
+
+	//删除
+	// handdel = () => {
+	// 	const { selectedallKeys, quotationId } = this.state;
+	// 	var params = { quotationId: quotationId, skuIds: selectedallKeys.join() };
+	// 	axios.get(connect_srm + '/quotation/delQuotationSkuByIds.do?', { params: params }).then((res) => {
+	// 		let code = res.data.code;
+	// 		if (code == 1) {
+	// 			const args = {
+	// 				message: '提示：',
+	// 				description: res.data.msg,
+	// 				duration: 3,
+	// 			};
+	// 			notification.open(args);
+
+	// 		} else {
+	// 			const args = {
+	// 				message: '提示：',
+	// 				description: res.data.msg,
+	// 				duration: 3,
+	// 			};
+	// 			notification.open(args);
+	// 		}
+
+	// 		// setTimeout(() => {
+	// 		// 	location.reload();
+	// 		// }, 1000);
+
+	// 	}).catch((e) => {
+	// 		this.setState({ isFetching: false });
+	// 		console.log('data error');
+	// 	});
+	// }
 
 
 	uploaddetails = (e) => {
-		console.log(e);
+		
 		this.props.dispatch(modalmodelaction({ data: e }));
 
 		this.setState({ brandSelectorVisible: true });
 	}
+	//查询列表
 	handleSubmit = (e) => {
 		e.preventDefault();
 		this.props.form.validateFields((err, values) => {
@@ -247,6 +321,7 @@ class DetailsFrom extends React.Component {
 				type = "brand";
 			}
 			var params = { type: type, typeValue: typeValue, quotationId: quotationId };
+			this.setState({ parlist: { type: type, typeValue: typeValue, quotationId: quotationId} });
 			axios.get(connect_srm + '/quotation/viewQuotationSku.do', { params: params }).then((res) => {
 
 				var data = res.data.data;
@@ -358,7 +433,7 @@ class DetailsFrom extends React.Component {
 					<div className="tit"><div className="g-fl">商品信息</div></div>
 					<Table columns={columns} dataSource={data} rowKey={record => record.id} bordered className="g-mt" rowSelection={rowSelection}
 						footer={() => <div>
-							<Button className="editable-add-btn" type="primary" onClick={this.handdel}>删除</Button>
+							<Button className="editable-add-btn" type="primary" onClick={this.handledeleteall}>删除</Button>
 						</div>}
 					/>
 
@@ -366,6 +441,11 @@ class DetailsFrom extends React.Component {
 						visible={this.state.brandSelectorVisible}
 						onCancel={this.handleCancel.bind(this)}
 					/>
+
+
+					<Modalmodellist  {...{ ...this.props.modalmodelall, ModalText: '确认全部删除吗？' }}
+                            onOk={this.ModalhandleallOk} confirmLoading={this.props.modalmodelall.confirmLoading}
+                            onCancel={this.ModalhandleCancellist('visible')} />
 
 				</div>
 
