@@ -64,7 +64,8 @@ class ModalForm extends React.Component {
                 console.log('Received values of form: ', values);
                 let {query,pagination} = this.props.AddModal;
 				var newPagination = {...pagination }; //点击按钮重新查询时候重置查询第一页
-				newPagination.current = 1;
+                newPagination.current = 1;
+                newPagination.pageSize = 5;
 				this.props.doRequest({query:values,pagination:newPagination});
 			}
 		});

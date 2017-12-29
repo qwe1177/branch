@@ -32,19 +32,21 @@ class Department extends React.Component {
         return userList;
     }
       onSelect = (selectedKeys,info) => {//选择的操作
-        // getUser(node.props)
         var _this = this;
+        const {query,pagination,userList} = this.props.AllFollowUP;
         if(info.node.props.type == '11') {
-            this.props.doQueryFollow({query:this.props.AllFollowUP.query,userList:selectedKeys.toString(),pagination:this.props.AllFollowUP.pagination});
+            this.props.doQueryFollow({query,userList:selectedKeys.toString(),pagination});
         }else if(info.node.props.dataRef&&info.node.props.dataRef.children.length!=0){
             console.log(info.node.props.dataRef.children)
-            const userLists = _this.getUser(info.node.props.dataRef.children);
-             this.props.doQueryFollow({query:this.props.AllFollowUP.query,userList:userLists.toString(),pagination:this.props.AllFollowUP.pagination});
+           let userLists = _this.getUser(info.node.props.dataRef.children);
+            userLists = userLists.length !=0 ? userLists : (userLists[0]='N');
+             this.props.doQueryFollow({query,userList:userLists.toString(),pagination});
+        }else {
+            this.props.doQueryFollow({query,userList:'N',pagination});
         }
       }
     componentWillMount() {
         this.props.doInitList();
-        
     }
     renderTreeNodes = (data) => {
         return data.map((item) => {

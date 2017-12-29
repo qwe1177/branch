@@ -93,6 +93,7 @@ export const doQueryFollow = (queryParams,userList) => async (dispatch, getState
         params.finishData = undefined
         params = _.omitBy(params, _.isUndefined); //删除undefined参数
         let res = await axios.get(connect_srm+'/supplier/viewSupplierFollowupAll.do', { params: params });
+        // let res = await axios.get('http://10.10.10.29:9407/v1/supplier/viewFollowupPlanList.do', { params: params });
         if(res.data.code =='1') {
             var list = res.data.data.data;
             pagination.total = res.data.data.rowCount;

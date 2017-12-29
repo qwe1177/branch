@@ -65,6 +65,30 @@ class UploadFrom2 extends React.Component {
             this.setState({ isFetching: false });
             console.log('data error');
         });
+
+        var supplierId = getUrlParams()['supplierId'];
+        if(supplierId!=undefined) {
+            var params = { supplierId:supplierId };
+            axios.get(connect_srm + '/clue/getCompanyInfo.do', { params: params }).then((res) => {
+                if(res.data.code=='1') {
+                    const data = res.data.data;
+                    var { supplierList } = this.state;
+                    supplierList.supplierId = data.supplierId;
+                    supplierList.contactsId = data.contactsId;
+                    supplierList.contacts = data.contacts;
+                    supplierList.contactsWay = data.contactsWay;
+                    this.setState({ supplierList });
+                    var contact = data.contacts!=''?data.contacts + "/" + data.contactsWay:'';
+                    this.props.form.setFieldsValue({ companyName: data.companyName, contact: contact })
+                }else {
+                    message('请求失败');
+                }
+            }).catch((e) => {
+                console.log('data error');
+            });
+          
+        }
+       
     }
 
     constructor(props) {
@@ -441,17 +465,19 @@ class UploadFrom2 extends React.Component {
         supplierList.contacts = company.companyuser;
         supplierList.contactsWay = company.companyipone;
         this.setState({ supplierList });
-        var contact = company.companyuser + "/" + company.companyipone;
+        var contact = company.companyuser!=''?company.companyuser + "/" + company.companyipone:'';
         this.props.form.setFieldsValue({ companyName: company.companyName, contact: contact })
         this.setState({ brandSelectorVisible: false });
     }
 
     handleBuyersChoosed = (company) => {
         var { BuyersList } = this.state;
-        BuyersList.name = company.name,
+        if(company!=undefined) {
+            BuyersList.name = company.name,
             BuyersList.id = company.id,
             this.setState({ BuyersList });
-        this.props.form.setFieldsValue({ purchaserName: company.name })
+        }
+        this.props.form.setFieldsValue({ purchaserName: (company!=undefined?company.name:'') })
         this.setState({ brandBuyersVisible: false });
     }
 

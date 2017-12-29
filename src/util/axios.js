@@ -6,12 +6,16 @@ axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded
 axios.interceptors.request.use(function (config) {
     const pathname = window.location.pathname;
     const dataarr = [`token=${getLoginInfo().token}`];
-    if(obj[pathname]){
+    if (obj[pathname]) {
         dataarr.push(obj[pathname])
     }
     if (config.method == 'post') {
-        const datastr = dataarr.join('&');
-        config.data = config.data ? `${config.data}&${datastr}` : `${datastr}`
+        if (config.data) {
+            const datastr = dataarr.filter(v=>!config.data.match(new RegExp(v))).join('&');
+            config.data = `${config.data}&${datastr}`
+        } else {
+            config.data = dataarr.join('&')
+        }
     } else {
         if (!config.params) {
             config.params = {}
@@ -23,10 +27,26 @@ axios.interceptors.request.use(function (config) {
                 config.params[key] = value
             }
         }
-
     }
     return config;
 }, function (error) {
+    return Promise.reject(error);
+});
+axios.interceptors.response.use(function (response) {
+    var sassApiReg = new RegExp("^http://admin.csc86.com/");
+    var srmApiReg = new RegExp("^http://srmapi.csc86.com");
+    var url = response.config.url;
+
+    if (sassApiReg.test(url) && response.data.code == '901') {
+        location.href = 'http://admin.csc86.com/login/index.html';
+    }
+    if (srmApiReg.test(url) && response.data.code == '10') {
+        location.href = 'http://admin.csc86.com/login/index.html';
+    }
+    // Do something with response data
+    return response;
+}, function (error) {
+    // Do something with response error
     return Promise.reject(error);
 });
 export default axios

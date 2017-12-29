@@ -195,11 +195,12 @@ class UserForm extends Component {
             if (response.status == 200) {
                 if (response.data.code == 1) {
                     message.success(`${response.data.msg}`);
-                    const newdata = data.filter(o=>actkey.every(j=>o.key != j))
+                    //const newdata = data.filter(o=>actkey.every(j=>o.key != j))
                     this.props.tablemodelaction({selectedRowKeys: [], actkey: []});
                     this.props.modalmodelaction({ModalText: '提交中···', confirmLoading: true,})
+                    this.props.fetchPosts({key: 'data', value: {isPass: 'no', markToDistinguish: 'theHighSeas'}})
                     setTimeout(() => {
-                        this.props.tablemodelaction({data: newdata,});
+                        //this.props.tablemodelaction({data: newdata,});
                         this.props.modalmodelaction({
                             visible: false,
                             confirmLoading: false,
@@ -290,8 +291,10 @@ class UserForm extends Component {
                 if (response.status == 200) {
                     if (response.data.code == 1) {
                         message.success(`${response.data.msg}`);
-                        const newdata = data.filter(o=>actkey.every(j=>o.key != j))
-                        this.props.tablemodelaction({data: newdata, actkey: [], selectedRowKeys: []});
+                        // const newdata = data.filter(o=>actkey.every(j=>o.key != j))
+                        // this.props.tablemodelaction({data: newdata, actkey: [], selectedRowKeys: []});
+                        this.props.tablemodelaction({actkey: [], selectedRowKeys: []});
+                        this.props.fetchPosts({key: 'data', value: {isPass: 'no', markToDistinguish: 'theHighSeas'}})
                         this.setState({personSelectorVisible: false});
                     } else {
                         message.error(`${response.data.msg}`);

@@ -89,7 +89,11 @@ class App extends Component {
         fetchSetContacts(supplierIds, ids, labels, responsibleSources).then((res)=> {
             if (res.data.code == '1') {
                 message.success('分配负责人操作成功!');
-                this.props.doChangeChargeMen(); //分配成功后不显示分配负责人按钮
+                //this.props.doChangeChargeMen(); //分配成功后不显示分配负责人按钮
+                window.opener && window.opener.location.reload()
+                setTimeout(()=> {
+                    location.href = document.referrer;
+                }, 1000)
             } else {
                 message.error('分配负责人操作失败!');
             }

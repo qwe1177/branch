@@ -9,6 +9,7 @@ import url from 'url';
 
 import { connect_cas } from '../../util/connectConfig';
 import { getUrlParams,getOneUrlParams } from '../../util/baseTool';
+import menuobj from '../../util/menuConfig';
 
 class TopTab extends React.Component {
   static propTypes = {
@@ -34,13 +35,13 @@ class TopTab extends React.Component {
             var son2 = item.son;
             if(son2 && son2.length>0){
               for(var childItem of son2){
-                if(url.parse(childItem.url).pathname ==pathname){   
+                if(url.parse(childItem.url).pathname ==pathname||url.parse(childItem.url).pathname==menuobj[pathname]){
                     isMatched = true;
                     break;
                 }
               }
             }else{
-              if(url.parse(item.url).pathname ==pathname){   
+              if(url.parse(item.url).pathname ==pathname||url.parse(item.url).pathname==menuobj[pathname]){
                   isMatched = true;
                   break;
               }

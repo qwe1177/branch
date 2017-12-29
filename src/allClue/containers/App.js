@@ -313,8 +313,10 @@ class UserForm extends Component {
                 if (response.status == 200) {
                     if (response.data.code == 1) {
                         message.success(`${response.data.msg}`);
-                        const newdata = data.filter(o=>actkey.every(j=>o.key != j))
-                        this.props.tablemodelaction({data: newdata, actkey: [], selectedRowKeys: []});
+                        // const newdata = data.filter(o=>actkey.every(j=>o.key != j))
+                        //this.props.tablemodelaction({data: newdata, actkey: [], selectedRowKeys: []});
+                        this.props.tablemodelaction({actkey: [], selectedRowKeys: []});
+                        this.props.fetchPosts({key: 'data', value: {isPass: 'no', markToDistinguish: 'all'}})
                         this.setState({personSelectorVisible: false});
                     } else {
                         message.error(`${response.data.msg}`);

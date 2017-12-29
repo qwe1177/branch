@@ -29,14 +29,21 @@ export default class BrandSelector extends React.Component {
                 showSizeChanger: true,
                 total:0,
                 current: 1,
-                pageSize: 10,
+                pageSize: 5,
+                pageSizeOptions:['5','10'],
                 showTotal: total => `共 ${total} 条`
             },
             query:{} //查询条件
         }
     }
     restDefault =() =>{
-        this.setState({visible: false,selectedRowKeys:[],pagination:{current:1,total:0,},reaiomoren:null,checkedlistall:[],checkedList:[],dataSource:[]}); //重置数据
+        this.setState({visible: false,selectedRowKeys:[],pagination:{  showQuickJumper: false,
+            showSizeChanger: true,
+            total:0,
+            current: 1,
+            pageSize: 5,
+            pageSizeOptions:['5','10'],
+            showTotal: total => `共 ${total} 条`},reaiomoren:null,checkedlistall:[],checkedList:[],dataSource:[]}); //重置数据
     }
     setVisible =(visible)=>{
         this.setState({visible:visible});
@@ -97,10 +104,13 @@ export default class BrandSelector extends React.Component {
 
     handleOk = (e) => {
         var {checkedlistall} = this.state;
-        var listall={
-            name:checkedlistall[0].purchaserName,
-            id:checkedlistall[0].purchaserId
+        if(checkedlistall.length!=0) {
+            var listall={
+                name:checkedlistall[0].purchaserName,
+                id:checkedlistall[0].purchaserId
+            }
         }
+     
         this.props.onChoosed(listall);
         this.restDefault();
     }
@@ -135,6 +145,7 @@ export default class BrandSelector extends React.Component {
 
         var params = {...query,page:pagination.current,pageSize:pagination.pageSize};
         axios.get(crmnew_url + '/api/purchaser/searchPurchaserList', {params: params }).then((res)=>{
+            console.log(res)
             var data = res.data.data.rows;
             var pageSize=parseInt(res.data.data.pageSize);
             var total=parseInt(res.data.data.total);

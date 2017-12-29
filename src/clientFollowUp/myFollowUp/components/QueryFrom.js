@@ -42,6 +42,7 @@ class QueryFrom extends React.Component {
 				let {query,pagination} = this.props.MyFollowUP;
 				var newPagination = {...pagination }; //点击按钮重新查询时候重置查询第一页
 				newPagination.current = 1;
+				newPagination.pageSize = 10;
 				this.props.doQueryFollow({query:values,pagination:newPagination});
 			}
 		});

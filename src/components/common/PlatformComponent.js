@@ -41,9 +41,6 @@ export default class PlatformComponent extends Component {
       if (res.data.code == '0') {
         setLoginAccount(res.data.data);
         this.setState({ loginAcct: res.data.data});
-      }else{
-        message.error('登录过期!');
-        setTimeout(()=>{location.href='http://admin.csc86.com/login/index.html';},1000);
       }
     });
   }
