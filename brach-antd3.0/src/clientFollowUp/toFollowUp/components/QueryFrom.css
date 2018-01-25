@@ -1,0 +1,21 @@
+/* 文本框和按钮的大小 */
+.ant-select-lg .ant-select-selection--single,.ant-btn-lg,.ant-input-lg {
+    height: 36px;
+    font-size: 14px;
+  }
+  /* 下拉框行高 */
+  .ant-select-lg .ant-select-selection__rendered {
+    line-height: 34px;
+  }
+  /* 标题的样式 */
+  .page-title{
+    color:#666666;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 60px;
+  }
+  /* 选择框的样式 */
+  .query-wrap{
+    padding: 20px;
+    background: #fff;
+  }

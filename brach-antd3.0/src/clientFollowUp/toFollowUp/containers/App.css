@@ -1,0 +1,45 @@
+* 跟进计划模块的样式 */
+#root{
+  height: 100%;
+  font-size: 14px;
+}
+/* label字体大小 */
+.main label {
+  font-size: 14px;
+}
+.content {
+  position: relative;
+}
+.left-content{
+  padding-right: 300px;
+  float: left;
+  width: 100%;
+}
+/* 跟进统计模块的样式 */
+.statistics {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 280px;
+  height: 400px;
+  margin-left: 18px;
+  padding: 20px;
+  background-color: #fff;
+}
+ /* 按钮的样式 */
+ .ant-btn-danger {
+  color: #a7a7a8;
+}
+.ant-btn-danger:hover, .ant-btn-danger:focus {
+  color: #a7a7a8;
+  background-color: #f7f7f7;
+  border-color: #d9d9d9;
+}
+.ant-btn-primary {
+  background-color: #6393bf;
+  border-color: #6393bf;
+}
+.ant-btn-primary:hover {
+  background-color: #6393bf;
+  border-color: #6393bf;
+}

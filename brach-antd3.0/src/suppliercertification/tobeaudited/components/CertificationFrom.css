@@ -1,0 +1,72 @@
+.pd20 {
+    padding: 20px 30px;
+}
+
+.tit {
+    color: #666666;
+    font-size: 16px;
+    overflow: hidden;
+}
+
+.g-fl {
+    float: left;
+}
+
+.g-rt {
+    float: right
+}
+
+.ant-table-thead>tr>th {
+    text-align: center
+}
+
+.column-money {
+    text-align: center;
+}
+
+.g-mt {
+    margin-top: 20px;
+}
+
+.ant-form-item {
+    margin-bottom: 0px;
+}
+
+.rangeButton {
+    color: #6699cc;
+    line-height: 36px;
+    cursor: pointer;
+}
+
+.resetButton {
+    margin-left: 18px;
+}
+
+
+/* 以下为覆盖antd样式 */
+
+.tobeaudited .ant-btn {
+    width: 42%;
+    height: 36px;
+    background-color: #6699cc;
+}
+
+.tobeaudited .ant-btn.resetButton {
+    background-color: #f4f6f8;
+}
+
+.tobeaudited .ant-select-lg .ant-select-selection--single {
+    height: 36px !important;
+}
+
+.tobeaudited .ant-select-lg .ant-select-selection__rendered {
+    line-height: 36px;
+}
+
+.tobeaudited .ant-input-lg {
+    height: 36px;
+}
+
+.tobeaudited .ant-form-item-label {
+    line-height: 36px;
+}

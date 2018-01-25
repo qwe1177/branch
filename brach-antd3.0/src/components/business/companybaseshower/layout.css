@@ -1,0 +1,47 @@
+.company-base-shower .title-1{
+    font-size: 16px;
+    color: #333333;
+    font-weight: bolder;
+}
+.company-base-shower .title-1 .company-name{
+    max-width: 70%;
+    display: inline-block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    cursor: pointer;
+}
+
+.company-base-shower .title-2{
+    color: #666666;
+}
+
+.company-base-shower .content-1{
+    color: #999999;
+}
+
+
+.company-base-shower .normal{
+    background-color: #6699cc;
+    border-color: #6699cc;
+    border-radius:0
+}
+
+
+.company-base-shower  .company-tag{
+    background-color: rgb(102, 153, 204);
+    line-height: 5px;
+    vertical-align: top;
+    display: inline;
+    font-size: 12px;
+    padding: 2px 4px;
+    color: #fff;
+    border-radius: 4px;
+    font-weight: lighter;
+    cursor: pointer;
+}
+
+.company-base-shower  .ant-btn-primary{
+    background-color: #6699cc;
+    border-color: #6699cc;
+}

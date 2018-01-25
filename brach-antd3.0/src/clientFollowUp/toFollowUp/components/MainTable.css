@@ -1,0 +1,61 @@
+.tabel-wrap{
+    margin-top:20px; 
+    background: #fff;
+    padding: 0 20px;
+  }
+  /* 表头的样式 */
+  .ant-table table {
+    text-align: center;
+  }
+  .ant-table-thead > tr {
+    height: 48px;
+    text-align: center;
+  }
+  .ant-table-thead > tr > th {
+    text-align: center;
+    padding: 0;
+  }
+  .ant-table-small .ant-table-thead > tr > th {
+    text-align: center;
+    background-color: #f4f4f4;
+  }
+  .ant-table-thead > tr > th, .ant-table-tbody > tr > td {
+    padding: 6px 0;
+  }
+  /* 刷新一栏的样式 */
+  .tabel-extend-option {
+   text-align: center;
+  }
+  .tabel-extend-option.title{
+    display: flex;
+    justify-content: flex-start;
+    line-height: 50px;
+ }
+ .tabel-extend-option span:first-child,.tabel-extend-option button {
+    border: none;
+    background-color: transparent; 
+    cursor: pointer;
+    color: #6699cc;
+    margin-right: 10px;
+    outline: none;
+ }
+ .tabel-extend-option button[disabled] {
+  color: #666;
+ }
+ /* 模态框的样式 */
+ .ant-modal-title {
+   font-size: 16px;
+   font-weight: 700;
+   color: #5d5d5d;
+ }
+ .ant-modal-body {
+  height: 200px;
+  font-size: 14px;
+  text-align: center;
+  font-weight: 700;
+  color: #999;
+  line-height: 9.5;
+}
+.ant-table table a {
+  color: #6699cc;
+}

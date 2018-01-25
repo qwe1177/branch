@@ -1,0 +1,14 @@
+.brand-selector .ant-tag{
+    margin-bottom: 4px;
+}
+
+.brand-selector .ant-btn-primary{
+    background-color: #6699cc;
+    border-color: #6699cc;
+    border-radius:0; 
+}
+
+.brand-selector .ant-pagination-item-active {
+    background-color: #6699cc;
+    border-color: #6699cc;
+}

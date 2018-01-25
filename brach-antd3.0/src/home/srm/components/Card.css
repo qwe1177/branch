@@ -1,0 +1,93 @@
+.briefly-card {
+    border: solid 1px #ebebeb;
+}
+
+.briefly-card .header {
+    color: #333;
+    font-size: 18px;
+    line-height: 40px;
+    padding: 0 12px;
+    font-weight: bold;
+}
+
+.briefly-card .title {
+    font-size: 16px;
+    color: #666;
+    line-height: 46px;
+    height: 40px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.briefly-card .count {
+    color: #5489bf;
+    font-size: 30px;
+    line-height: 40px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-align: center;
+}
+
+.briefly-card .count-1 {
+    color: #5489bf;
+    font-size: 28px;
+    line-height: 80px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.briefly-card .modify-info {
+    color: #999999;
+    font-size: 12px;
+    line-height: 40px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.briefly-card .row {
+    border-top: solid 1px #ebebeb;
+}
+
+
+/**1/2占比**/
+
+.briefly-card .column-2 {
+    width: 50%;
+    float: left;
+    padding: 0 12px;
+    border-right: solid 1px #ebebeb;
+}
+
+.briefly-card div>.column-2:last-child {
+    border-right: none;
+}
+
+
+/**1/3占比**/
+
+.briefly-card .column-3 {
+    width: 33.3333333333333%;
+    float: left;
+    padding: 0 12px;
+    border-right: solid 1px #ebebeb;
+}
+
+.briefly-card div>.column-3:last-child {
+    border-right: none;
+}
+
+.briefly-card .up {
+    color: #44c759;
+}
+
+.briefly-card .down {
+    color: #ff4040;
+}
+
+.briefly-card .just {
+    color: #797979;
+}

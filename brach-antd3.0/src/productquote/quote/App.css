@@ -1,0 +1,41 @@
+
+#root{
+  height: 100%;
+}
+
+.page-title{
+  color:#666666;
+  font-size: 20px;
+  line-height: 60px;
+}
+
+.query-wrap{
+  padding: 20px 30px;
+  background: #fff;
+}
+
+.ant-modal-body .one-condition, .query-wrap .one-condition{
+  display: inline-block;  
+  margin-right: 12px;
+}
+.ant-modal-body .one-condition:last-child,.query-wrap .one-condition:last-child{
+  margin-right: 0;
+}
+
+.one-condition .ant-checkbox-group{
+  display: inline-block;
+}
+
+.left-margin-12 {
+  margin-left:12px;
+}
+
+.select-top-margin{
+  margin-top:2px;
+}
+
+.tabel-wrap{
+  background: #fff;
+}
+
+.g-fl{float: left;}

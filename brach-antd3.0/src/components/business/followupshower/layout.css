@@ -1,0 +1,40 @@
+.followup-shower .card-wrap{
+    padding: 0 12px 12px 12px;
+}
+
+.followup-shower .pagination-wrap{
+    padding: 0 12px 20px 12px;
+    text-align: right;
+}
+
+
+.followup-shower .normal{
+    background-color: #6699cc;
+    border-color: #6699cc;
+    border-radius:0
+}
+
+.followup-shower .query-wrap{
+    padding: 0 12px;
+}
+
+.followup-shower .my-submit .ant-form-item{
+    margin-bottom: 0px;
+    margin-top: 40px;
+}
+
+.followup-shower .my-submit .ant-form-item-control{
+    text-align: center;
+}
+
+
+.followup-shower .pagination-wrap .ant-pagination-item-active{
+    background-color: #6699cc;
+    border-color: #6699cc;
+}
+
+.followup-shower .card-wrap .ant-btn-primary{
+    background-color: #6699cc;
+    border-color: #6699cc;
+    border-radius:0; 
+}

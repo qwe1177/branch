@@ -1,0 +1,86 @@
+
+/* 去掉默认的样式 */
+.ant-card-wider-padding .ant-card-head {
+    padding: 0;
+    padding-left: 20px;
+}
+/* 去掉title的下边框 */
+.ant-card-head {
+    border: none;
+}
+/* title的样式 */
+.ant-card-head {
+    height: 41px;
+    line-height: 41px;
+    background-color: #ededed;
+}
+/* 标签的颜色 */
+.ant-tag {
+    background-color: #fff;
+}
+/* 标签的样式 */
+.card-date{
+    color:#999;
+    margin-left: 8px;
+}
+/* 内容区的样式 */
+.ant-card-wider-padding .ant-card-body,.ant-card-body {
+    padding: 20px;
+    background-color: #f4f4f4;
+}
+.allFollowUp .ant-card {
+    margin-bottom: 15px;
+}
+/* 设置每行文字的间距 */
+.marginStyle {
+    margin: 5px 0;
+}
+/* 添加批注 */
+.commont-form {
+    margin-top: 15px;
+}
+.commont-form button {
+  margin-top: 40px;
+}
+/* 批注 */
+.region-tool {
+    background-color: #fff;
+    height: 60px;
+    padding: 12px 15px;
+    margin-top: 20px;
+}
+/* 标题 */
+.ant-card-head-title a {
+    color: #6699cc;
+}
+/* 标题里的时间 */
+.card-date{
+    font-size: 12px;
+    color:#999;
+    margin-left: 20px;
+}
+
+.card-option{
+    text-align: right;
+    position: relative;
+}
+/* 删除 */
+.card-option .remove-btn{
+    color: #6699cc;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    cursor: pointer;
+}
+
+.card-edit{
+    text-align: right;
+}
+/* 编辑按钮 */
+.anticon-edit {
+    cursor: pointer;
+    color: #6699cc;
+}
+.anticon-edit:hover {
+    color: #6699cc;
+}

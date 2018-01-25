@@ -1,0 +1,64 @@
+
+/* 待跟进模块的样式 */
+#root{
+  height: 100%;
+  font-size: 14px;
+}
+
+/* 选择框整体的样式 */
+.query-wrap{
+  padding: 20px;
+  background: #fff;
+}
+
+/* label字体大小 */
+.main label {
+  font-size: 14px;
+  margin-right: 5px;
+}
+.content {
+  position: relative;
+  margin-top: 20px;
+}
+/* 按钮的样式 */
+.ant-btn-danger {
+  color: #a7a7a8;
+}
+.ant-btn-danger:hover, .ant-btn-danger:focus {
+  color: #a7a7a8;
+  background-color: #f7f7f7;
+  border-color: #d9d9d9;
+}
+.ant-btn-primary {
+  background-color: #6393bf;
+  border-color: #6393bf;
+}
+.ant-btn-primary:hover {
+  background-color: #6393bf;
+  border-color: #6393bf;
+}
+/* 记录显示整体样式 */
+.right-content {
+  padding-left: 300px;
+  float: right;
+  width: 100%;
+}
+.card-wrap {
+  padding: 20px;
+  background: #fff;
+}
+/* 部门筛选的样式 */
+.statistics {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 280px;
+  margin-right: 18px;
+  padding: 20px;
+  background-color: #fff;
+}
+/* 分页的样式 */
+.pagination-wrap {
+  display: flex;
+  justify-content: flex-end;
+}

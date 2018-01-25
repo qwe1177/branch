@@ -1,0 +1,11 @@
+.category-selector-tablewrap{
+    max-height: 500px;
+    overflow-y: scroll;
+}
+    
+.category-selector .ant-btn-primary{
+    background-color: #6699cc;
+    border-color: #6699cc;
+}
+
+    

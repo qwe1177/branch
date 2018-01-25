@@ -1,0 +1,30 @@
+.query-form .rangeButton {
+    color: #6699cc;
+    line-height: 32px;
+    cursor: pointer;
+}
+
+.query-form .resetButton {
+    margin-left: 8px;
+    padding: 0px 26px;
+    height: 36px;
+    line-height: 36px;
+    font-size: 14px;
+}
+
+.query-form .right-wrap {
+    text-align: right;
+}
+
+.query-form .ant-btn-primary {
+    background-color: #6699cc;
+    border-color: #6699cc;
+    padding: 0px 26px;
+    height: 36px;
+    line-height: 36px;
+    font-size: 14px;
+}
+.query-form .ant-form-item-control-wrapper{
+    display: inline-block;
+    vertical-align: middle;
+}
